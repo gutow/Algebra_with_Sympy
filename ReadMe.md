@@ -13,9 +13,8 @@ attempting to isolate (solve for) a variable. Thus the statement `Equation/b` yi
 
 The intent is to allow using the mathematical tools in SymPy to rearrange equations and perform algebra
 in a stepwise fashion. In this way more people can successfully perform algebraic rearrangements without stumbling
-over missed details such as a negative sign. This mimics the capabilities available in [SageMath]
-(https://www.sagemath.org/) and [Maxima](http://maxima.sourceforge.net/), but can be installed in a generic python
-environment.
+over missed details such as a negative sign. This mimics the capabilities available in [SageMath](https://www.sagemath.org/) 
+and [Maxima](http://maxima.sourceforge.net/), but can be installed in a generic python environment.
 
 _Setup/Installation_: Currently this tool is not available as a pip installable package. The file `algebraic_equation.py`
 must be available for import in the directory space of the active Python, IPython or Jupyter notebook. To activate issue
