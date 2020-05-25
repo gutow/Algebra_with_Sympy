@@ -24,4 +24,4 @@ from the global namespace you are working with change the import statement to `i
 
 Usage examples can be found in the docstrings and the demonstration Jupyter notebook `Demonstration of algebraic_equation.py.ipynb`. 
 
-Try in binder(too be inserted).
+Try in binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master)
