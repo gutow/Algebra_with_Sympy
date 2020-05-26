@@ -67,6 +67,7 @@ class Equation(Expr):
            raise NotImplementedError('"=" is the only relational operator presently supported in Equations.')        
         self.lhs = lhs
         self.rhs = rhs
+        self.relop=relop
     
 #####
 # Overrides of SymPy.Expr Arithmatic
@@ -147,10 +148,13 @@ class Equation(Expr):
         raise NotImplementedError('Modulus by equation not supported.')
             
     def __repr__(self):
-        return(str(self.lhs)+' = '+str(self.rhs))
+        return(str(self.lhs)+self.relop+str(self.rhs))
     
     def _latex(self,obj,**kwargs):
-        return(latex(self.lhs)+'='+latex(self.rhs))
+        return(latex(self.lhs)+self.relop+latex(self.rhs))
+
+    def __str__(self):
+        return(self.__repr__())
 
 equ = Equation
 
