@@ -1,7 +1,9 @@
 __Algebraic Equations with SymPy__
 
 author: Jonathan Gutow <gutow@uwosh.edu>
+
 date: May 2020
+
 license: GPL V3+
 
 These tools define relations that all high school and college students would recognize as mathematical equations.
