@@ -17,6 +17,7 @@ in a stepwise fashion. In this way more people can successfully perform algebrai
 over missed details such as a negative sign. This mimics the capabilities available in [SageMath]
 (https://www.sagemath.org/) and [Maxima](http://maxima.sourceforge.net/), but can be installed in a generic python
 environment.
+
 _Setup/Installation_: Currently this tool is not available as a pip installable package. The file `algebraic_equation.py`
 must be available for import in the directory space of the active Python, IPython or Jupyter notebook. To activate issue
 the command: `from algebraic_equation import *`. This will also import the SymPy tools. If you want to isolate this tool
@@ -58,6 +59,15 @@ class Equation(Expr):
         exp(a)=exp(b/c)
     >>> exp(log(t))
         a=b/c
+
+    SymPy's solvers do not understand these equations. They expect an expression that the solver assumes = 0.
+    Thus to use the solver the equation must be rearranged so that all non-zero symbols are on one side. Then
+    just the non-zero symbolic side is passed to `solve()`.
+    >>> t2 = t-t.rhs
+    >>> t2
+        a-b/c=0
+    >>> solve(t2.lhs,c)
+        [b/a]
     '''
     _op_priority = 11.0 # This makes sure the rules for equations are applied before those for expressions
                         # which have _op_priority = 10.0
