@@ -142,14 +142,34 @@ class Equation(Basic):
         ret.update(self.rhs.free_symbols)
         return ret
 
+    def _applyattrlhs(self,func, *args, **kwargs):
+        return getattr(self.lhs,str(func))(*args, **kwargs)
+    
+    def _applyattrrhs(self,func, *args, **kwargs):
+        return getattr(self.rhs,str(func))(*args, **kwargs)
+
     def applyfunc(self, func, *args, **kwargs):
-        return Equation(func(self.lhs, *args, **kwargs), func(self.rhs, *args, **kwargs))
+        # Assume if the expression has an attribute of name `func` that should override any general function
+        # Because there are name conflicts (e.g. `transpose` and `Matrix.transpose`) if either rhs or lhs
+        # has the attribute we will try to apply it to both. This will raise an error if both sides do
+        # not support the operation.
+        if (hasattr(self.lhs,str(func))) or (hasattr(self.rhs,str(func))):
+            return Equation(self._applyattrlhs(func, *args, **kwargs),self._applyattrrhs(func, *args, **kwargs))
+        else:
+            return Equation(func(self.lhs, *args, **kwargs), func(self.rhs, *args, **kwargs))
 
     def applylhs(self, func, *args, **kwargs):
-        return Equation(func(self.lhs, *args, **kwargs), self.rhs)
+        if (hasattr(self.lhs,str(func))):
+            return Equation(self._applyattrlhs(func, *args, **kwargs),self.rhs)
+        else:
+            return Equation(func(self.lhs, *args, **kwargs), self.rhs)
 
     def applyrhs(self, func, *args, **kwargs):
-        return Equation(self.lhs, func(self.rhs, *args, **kwargs))
+        if (hasattr(self.rhs,str(func))):
+            return Equation(self.lhs,self._applyattrrhs(func, *args, **kwargs))
+        else:
+            return Equation(self.lhs, func(self.rhs, *args, **kwargs))
+
 #####
 # Overrides of binary math operations
 #####
