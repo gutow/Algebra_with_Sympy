@@ -191,12 +191,18 @@ class Equation(Basic):
     def __rtruediv__(self, other):
         return self._binary_op(other, self, lambda a, b: a / b)
 
+    def __mod__(self, other):
+        return self._binary_op(self, other, lambda a, b: a % b)
+
+    def __rmod__(self,other):
+        return self._binary_op(other, self, lambda a, b: a % b)
+
     def __pow__(self, other):
         return self._binary_op(self, other, lambda a, b: a ** b)
 
     def __rpow__(self, other):
         return self._binary_op(other, self, lambda a, b: a ** b)
-    
+
     def _eval_power(self, other):
         return self.__pow__(other)
     
@@ -205,7 +211,7 @@ class Equation(Basic):
 #####
     def __repr__(self):
         return(str(self.lhs)+self.relop+str(self.rhs))
-    
+
     def _latex(self,obj,**kwargs):
         return(latex(self.lhs)+self.relop+latex(self.rhs))
 
@@ -219,18 +225,27 @@ class Equation(Basic):
         return Equation(self.lhs.expand(*args, **kwargs),self.rhs.expand(*args, **kwargs))
 
     def simplify(self, *args, **kwargs):
-        return simplify(self, *args, **kwargs)
+        return self._eval_simplify(*args, **kwargs)
 
     def _eval_simplify(self, *args, **kwargs):
         return Equation(self.lhs.simplify(*args, **kwargs),self.rhs.simplify(*args, **kwargs))
 
-    def factor(self, *args, **kwargs):
+    def _eval_factor(self, *args, **kwargs):
         # TODO: cancel out factors common to both sides.
         return Equation(self.lhs.factor(*args, **kwargs),self.rhs.factor(*args, **kwargs))
 
+    def factor(self, *args, **kwargs):
+        return self._eval_factor(*args, **kwargs)
+
+    def _eval_collect(self, *args, **kwargs):
+        return Equation(collect(self.lhs, *args, **kwargs),collect(self.rhs, *args, **kwargs))
+
+    def collect(self, *args, **kwargs):
+        return self._eval_collect(*args, **kwargs)
+
     def evalf(self, *args, **kwargs):
         return Equation(self.lhs.evalf(*args, **kwargs),self.rhs.evalf(*args, **kwargs))
-    
+
     def _eval_derivative(self, *args, **kwargs):
         # TODO Find why diff and Derivative do not appear to pass through kwargs to this.
         # Since we cannot set evaluation of lhs manually try to be intelligent about when
@@ -248,9 +263,9 @@ class Equation(Basic):
         integral of the lhs as the new lhs and the result of integrating the rhs as the new rhs.
         '''
         return Equation(Integral(self.lhs, *args, **kwargs), self.rhs.integrate(*args, **kwargs))
-        
-    def _eval_Integral(self, *args, **kwargs): # Make it require side specification?
-        side = kwargs.pop('side',None)
+
+    def _eval_Integral(self, *args, **kwargs):
+        side = kwargs.pop('side',None) # Could not seem to pass values for `evaluate` through to here.
         if (side is None):
             raise ValueError('You must specify `side="lhs"` or `side="rhs"` when integrating an Equation')
         else:
@@ -258,7 +273,7 @@ class Equation(Basic):
                 return (getattr(self,side).integrate(*args, **kwargs))
             except AttributeError:
                 raise AttributeError('`side` must equal "lhs" or "rhs".')
-    
+
 Eqn = Equation
 
 #####
@@ -271,7 +286,7 @@ class Function(Function):
         else:
             return(super().__new__(cls, *arg, **kwargs))
 
-for func in functions.__all__: # This will not be needed when incorporated into SymPy
+for func in functions.__all__: # TODO: This will not be needed when incorporated into SymPy
     # listed in `skip` cannot be extended because of `mro` error or `metaclass conflict`. Seems to reflect
     #   expectation that a helper function will be defined within the object (e.g. `_eval_power()` for
     #   all the flavors of `root`).
