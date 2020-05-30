@@ -149,23 +149,23 @@ class Equation(Basic):
         # not support the operation.
 
         side=kwargs.pop('Eqn_apply_side',None)
-        templhs=None
-        temprhs=None
         if (side=='both'):
             if (hasattr(self.lhs,str(func))) or (hasattr(self.rhs,str(func))):
                 return Equation(getattr(self.lhs,str(func))(*args, **kwargs),getattr(self.rhs,str(func))(*args, **kwargs))
             else:
                 return Equation(func(self.lhs, *args, **kwargs), func(self.rhs, *args, **kwargs))
-        if (side == 'lhs'):
+        elif (side == 'lhs'):
             if (hasattr(self.lhs,str(func))):
                 return Equation(getattr(self.lhs,str(func))(*args, **kwargs),self.rhs)
             else:
                 return Equation(func(self.lhs, *args, **kwargs), self.rhs)
-        if (side == 'rhs'):
+        elif (side == 'rhs'):
             if (hasattr(self.rhs,str(func))):
                 return Equation(self.lhs, getattr(self.rhs,str(func))(*args, **kwargs))
             else:
-                return Equation(self.lhs, func(self.rhs, *args, **kwargs))            
+                return Equation(self.lhs, func(self.rhs, *args, **kwargs))
+        else:
+            raise ValueError('keyword `Eqn_apply_side` must be one of "both", "lhs" or "rhs".')
 
     def applyfunc(self, func, *args, **kwargs):
         '''
