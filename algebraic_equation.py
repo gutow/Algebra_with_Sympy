@@ -1,5 +1,6 @@
 """
-__Algebraic Equations with SymPy__
+Algebraic Equations with SymPy
+==============================
 
 author: Jonathan Gutow <gutow@uwosh.edu>
 
@@ -13,11 +14,11 @@ These tools define relations that all high school and college students would rec
 They consist of a left hand side (lhs) and a right hand side (rhs) connected by a relation operator such as "=". At
 present only the "=" relation operator is recognized.
 
-This class should not be confused with the Boolean class `Equality` (abbreviated `Eq`) which specifies
-that the equality of two expressions is `True`.
+This class should not be confused with the Boolean class ``Equality`` (abbreviated ``Eq``) which specifies
+that the equality of two expressions is ``True``.
 
 This tool applies operations to both sides of the equation simultaneously, just as students are taught to do when 
-attempting to isolate (solve for) a variable. Thus the statement `Equation/b` yields a new equation `Equation.lhs/b = Equation.rhs/b`
+attempting to isolate (solve for) a variable. Thus the statement ``Equation/b`` yields a new equation ``Equation.lhs/b = Equation.rhs/b``
 
 The intent is to allow using the mathematical tools in SymPy to rearrange equations and perform algebra
 in a stepwise fashion. In this way more people can successfully perform algebraic rearrangements without stumbling
@@ -25,13 +26,13 @@ over missed details such as a negative sign. This mimics the capabilities availa
 (https://www.sagemath.org/) and [Maxima](http://maxima.sourceforge.net/), but can be installed in a generic python
 environment.
 
-_Setup/Installation_: Currently this tool is not available as a pip installable package. The file `algebraic_equation.py`
+_Setup/Installation_: Currently this tool is not available as a pip installable package. The file ``algebraic_equation.py``
 must be available for import in the directory space of the active Python, IPython or Jupyter notebook. To activate issue
-the command: `from algebraic_equation import *`. This will also import the SymPy tools. If you want to isolate this tool
-from the global namespace you are working with change the import statement to `import algebraic_equation as spa`, where 
-`spa` stands for "SymPy Algebra". Then all calls would be made to `spa.funcname()`.
+the command: ``from algebraic_equation import *``. This will also import the SymPy tools. If you want to isolate this tool
+from the global namespace you are working with change the import statement to ``import algebraic_equation as spa``, where 
+``spa`` stands for "SymPy Algebra". Then all calls would be made to ``spa.funcname()``.
 
-Usage examples can be found in the docstrings and the demonstration Jupyter notebook `Demonstration of algebraic_equation.py.ipynb`.
+Usage examples can be found in the docstrings and the demonstration Jupyter notebook ``Demonstration of algebraic_equation.py.ipynb``.
 
 J.G 28-5-20
 """
@@ -53,10 +54,13 @@ from sympy import latex
 from sympy import * # Replace with more selective import when folded into SymPy
 
 class Equation(Basic):
-    '''
-    This class defines relations that all high school and college students would recognize as mathematical equations.
-    They consist of a left hand side (lhs) and a right hand side (rhs) connected by a relation operator such as "=". At
-    present only the "=" relation operator is recognized.
+    """
+    This class defines an equation with a left-hand-side (lhs) and a right-hand-side (rhs) connected by an operator (e.g. $p*V = n*R*T$).
+    
+    Explanation
+    ===========
+    This class defines relations that all high school and college students would recognize as mathematical equations. 
+    At present only the "=" relation operator is recognized.
     
     This class is intended to allow using the mathematical tools in SymPy to rearrange equations and perform algebra
     in a stepwise fashion. In this way more people can successfully perform algebraic rearrangements without stumbling
@@ -64,50 +68,51 @@ class Equation(Basic):
     
     __Note__ that this module imports Sympy into its namespace so there is no need to import Sympy separately.
     
-    Create an equation with the call `Equation(lhs,rhs,relation_operator)`, where `lhs` and `rhs` are any valid Sympy
-    expression. `relation_operator` defaults to the string "=" if not supplied. Currently,"=" is the only valid option.
-    `Eqn(...)` is a synonym for `Equation(...)`.
+    Create an equation with the call ``Equation(lhs,rhs,relation_operator)``, where ``lhs`` and ``rhs`` are any valid Sympy
+    expression. ``relation_operator`` defaults to the string "=" if not supplied. Currently,"=" is the only valid option.
+    ``Eqn(...)`` is a synonym for ``Equation(...)``.
     
-    Examples:
+    Examples
+    ========
     >>> var('a b c')
     >>> equ(a,b/c)
-        a=b/c
+    a=b/c
     >>> t=equ(a,b/c)
     >>> t
-        a=b/c
+    a=b/c
     >>> t*c
-        a*c=b
+    a*c=b
     >>> c*t
-        a*c=b
+    a*c=b
     >>> exp(t)
-        exp(a)=exp(b/c)
+    exp(a)=exp(b/c)
     >>> exp(log(t))
-        a=b/c
-        
+    a=b/c
+
     Integration can only be performed on one side at a time.
-    >>> q=Eqn(a*c,b/c)                                                          
-    >>> integrate(q,b,side='rhs')                                               
-        b**2/(2*c)
-    >>> integrate(q,b,side='lhs')                                               
-        a*b*c
+    >>> q=Eqn(a*c,b/c)
+    >>> integrate(q,b,side='rhs')
+    b**2/(2*c)
+    >>> integrate(q,b,side='lhs')
+    a*b*c
 
     >>> # Make a pretty statement of integration from an equation 
-    ...: Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs'))                        
-         Integral(a*c, b)=b**2/(2*c)
+    >>> Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs'))                        
+    Integral(a*c, b)=b**2/(2*c)
     >>> # This is duplicated by the convenience function self.integ 
-    ...: q.integ(b)                                                              
-         Integral(a*c, b)=b**2/(2*c)
+    >>> q.integ(b)                                                              
+    Integral(a*c, b)=b**2/(2*c)
 
     SymPy's solvers do not understand these equations. They expect an expression that the solver assumes = 0.
     Thus to use the solver the equation must be rearranged so that all non-zero symbols are on one side. Then
-    just the non-zero symbolic side is passed to `solve()`.
+    just the non-zero symbolic side is passed to ``solve()``.
     >>> t2 = t-t.rhs
     >>> t2
-        a-b/c=0
+    a-b/c=0
     >>> solve(t2.lhs,c)
-        [b/a]
-    '''
-    
+    [b/a]
+    """
+
     def __new__(cls, lhs, rhs, relop='='):
         if not(relop == '='):
            raise NotImplementedError('"=" is the only relational operator presently supported in Equations.')
@@ -119,21 +124,36 @@ class Equation(Basic):
 
     @property
     def lhs(self):
+        """
+        Returns the lhs of the equation.
+        """
         return self.args[0]
 
     @property
     def rhs(self):
+        """
+        Returns the rhs of the equation.
+        """
         return self.args[1]
     
     @property
     def relop(self):
+        """
+        Returns the string representing the relationship operator.
+        """
         return self.args[2]
 
     def as_Boolean(self):
+        """
+        Converts the equation to an Equality.
+        """
         return Equality(self.lhs, self.rhs)
 
     @property
     def reversed(self):
+        """
+        Swaps the lhs and the rhs.
+        """
         return Equation(self.rhs, self.lhs)
     
     @property
@@ -168,24 +188,24 @@ class Equation(Basic):
             raise ValueError('keyword `Eqn_apply_side` must be one of "both", "lhs" or "rhs".')
 
     def applyfunc(self, func, *args, **kwargs):
-        '''
-        If either side of the equation has a defined subfunction (attribute) of name `func`, that will be applied
+        """
+        If either side of the equation has a defined subfunction (attribute) of name ``func``, that will be applied
         instead of the global function. The operation is applied to both sides.
-        '''
+        """
         return self._applyfunc(func, *args, **kwargs, Eqn_apply_side='both')
     
     def applylhs(self, func, *args, **kwargs):
-        '''
-        If lhsr side of the equation has a defined subfunction (attribute) of name `func`, that will be applied
+        """
+        If lhs side of the equation has a defined subfunction (attribute) of name ``func``, that will be applied
         instead of the global function. The operation is applied to only the lhs.
-        '''
+        """
         return self._applyfunc(func, *args, **kwargs, Eqn_apply_side='lhs')
 
     def applyrhs(self, func, *args, **kwargs):
-        '''
-        If rhs side of the equation has a defined subfunction (attribute) of name `func`, that will be applied
+        """
+        If rhs side of the equation has a defined subfunction (attribute) of name ``func``, that will be applied
         instead of the global function. The operation is applied to only the rhs.
-        '''
+        """
         return self._applyfunc(func, *args, **kwargs, Eqn_apply_side='rhs')
 
 #####
@@ -296,10 +316,10 @@ class Equation(Basic):
         return Equation(self.lhs.diff(*args, **kwargs, evaluate=eval_lhs), self.rhs.diff(*args, **kwargs))
 
     def integ(self, *args, **kwargs):
-        '''
+        """
         This function is a convenience function that returns a new equation consisting of an unevaluated
         integral of the lhs as the new lhs and the result of integrating the rhs as the new rhs.
-        '''
+        """
         return Equation(Integral(self.lhs, *args, **kwargs), self.rhs.integrate(*args, **kwargs))
 
     def _eval_Integral(self, *args, **kwargs):
