@@ -68,8 +68,8 @@ class Equation(Basic):
     
     __Note__ that this module imports Sympy into its namespace so there is no need to import Sympy separately.
     
-    Create an equation with the call ``Equation(lhs,rhs,relation_operator)``, where ``lhs`` and ``rhs`` are any valid Sympy
-    expression. ``relation_operator`` defaults to the string "=" if not supplied. Currently,"=" is the only valid option.
+    Create an equation with the call ``Equation(lhs,rhs)``, where ``lhs`` and ``rhs`` are any valid Sympy
+    expression.
     ``Eqn(...)`` is a synonym for ``Equation(...)``.
     
     Examples
@@ -113,14 +113,21 @@ class Equation(Basic):
     [b/a]
     """
 
-    def __new__(cls, lhs, rhs, relop='='):
-        if not(relop == '='):
+    def __new__(cls, lhs, rhs, **kwargs):
+        relop = kwargs.pop('relop','=')
+        check = kwargs.pop('check',True)
+        if (relop != '='):
            raise NotImplementedError('"=" is the only relational operator presently supported in Equations.')
+        cls.relop=relop
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
-        if (lhs.is_number) and (rhs.is_number) and not (lhs == rhs):
-           print('WARNING: did your really mean to define unequal numbers as equal? ' + str(lhs) +'='+ str(rhs))
-        return super().__new__(cls, lhs, rhs, relop)
+        if check:
+            lsimp = lhs.simplify()
+            rsimp = rhs.simplify()
+            if (lhs.is_number) and (rhs.is_number) and (lsimp != rsimp):
+                from warnings import warn
+                warn('Did your really mean to define unequal numbers as equal? ' + str(lsimp) +'='+ str(rsimp))
+        return super().__new__(cls, lhs, rhs, **kwargs)
 
     @property
     def lhs(self):
@@ -136,13 +143,6 @@ class Equation(Basic):
         """
         return self.args[1]
     
-    @property
-    def relop(self):
-        """
-        Returns the string representing the relationship operator.
-        """
-        return self.args[2]
-
     def as_Boolean(self):
         """
         Converts the equation to an Equality.
@@ -155,12 +155,6 @@ class Equation(Basic):
         Swaps the lhs and the rhs.
         """
         return Equation(self.rhs, self.lhs)
-    
-    @property
-    def free_symbols(self):
-        ret =self.lhs.free_symbols 
-        ret.update(self.rhs.free_symbols)
-        return ret
 
     def _applyfunc(self, func, *args, **kwargs):
         # Assume if the expression has an attribute of name `func` that should override any general function
@@ -171,19 +165,19 @@ class Equation(Basic):
         side=kwargs.pop('Eqn_apply_side',None)
         if (side=='both'):
             if (hasattr(self.lhs,str(func))) or (hasattr(self.rhs,str(func))):
-                return Equation(getattr(self.lhs,str(func))(*args, **kwargs),getattr(self.rhs,str(func))(*args, **kwargs))
+                return Equation(getattr(self.lhs,str(func))(*args, **kwargs),getattr(self.rhs,str(func))(*args, **kwargs), check=False)
             else:
-                return Equation(func(self.lhs, *args, **kwargs), func(self.rhs, *args, **kwargs))
+                return Equation(func(self.lhs, *args, **kwargs), func(self.rhs, *args, **kwargs), check=False)
         elif (side == 'lhs'):
             if (hasattr(self.lhs,str(func))):
-                return Equation(getattr(self.lhs,str(func))(*args, **kwargs),self.rhs)
+                return Equation(getattr(self.lhs,str(func))(*args, **kwargs),self.rhs, check=False)
             else:
-                return Equation(func(self.lhs, *args, **kwargs), self.rhs)
+                return Equation(func(self.lhs, *args, **kwargs), self.rhs, check=False)
         elif (side == 'rhs'):
             if (hasattr(self.rhs,str(func))):
-                return Equation(self.lhs, getattr(self.rhs,str(func))(*args, **kwargs))
+                return Equation(self.lhs, getattr(self.rhs,str(func))(*args, **kwargs),check=False)
             else:
-                return Equation(self.lhs, func(self.rhs, *args, **kwargs))
+                return Equation(self.lhs, func(self.rhs, *args, **kwargs),check=False)
         else:
             raise ValueError('keyword `Eqn_apply_side` must be one of "both", "lhs" or "rhs".')
 
@@ -217,11 +211,11 @@ class Equation(Basic):
     @classmethod
     def _binary_op(cls, a, b, opfunc_ab):
         if isinstance(a, Equation) and not isinstance(b, Equation):
-            return Equation(opfunc_ab(a.lhs, b), opfunc_ab(a.rhs, b))
+            return Equation(opfunc_ab(a.lhs, b), opfunc_ab(a.rhs, b),check=False)
         elif isinstance(b, Equation) and not isinstance(a, Equation):
-            return Equation(opfunc_ab(a, b.lhs), opfunc_ab(a, b.rhs))
+            return Equation(opfunc_ab(a, b.lhs), opfunc_ab(a, b.rhs),check=False)
         elif isinstance(a, Equation) and isinstance(b, Equation):
-            return Equation(opfunc_ab(a.lhs, b.lhs), opfunc_ab(a.rhs, b.rhs))
+            return Equation(opfunc_ab(a.lhs, b.lhs), opfunc_ab(a.rhs, b.rhs),check=False)
         else:
             raise TypeError('One of a or b should be an equation')
 
@@ -280,29 +274,29 @@ class Equation(Basic):
 # Operation helper functions
 #####
     def expand(self, *args, **kwargs):
-        return Equation(self.lhs.expand(*args, **kwargs),self.rhs.expand(*args, **kwargs))
+        return Equation(self.lhs.expand(*args, **kwargs),self.rhs.expand(*args, **kwargs),check=False)
 
     def simplify(self, *args, **kwargs):
         return self._eval_simplify(*args, **kwargs)
 
     def _eval_simplify(self, *args, **kwargs):
-        return Equation(self.lhs.simplify(*args, **kwargs),self.rhs.simplify(*args, **kwargs))
+        return Equation(self.lhs.simplify(*args, **kwargs),self.rhs.simplify(*args, **kwargs),check=False)
 
     def _eval_factor(self, *args, **kwargs):
         # TODO: cancel out factors common to both sides.
-        return Equation(self.lhs.factor(*args, **kwargs),self.rhs.factor(*args, **kwargs))
+        return Equation(self.lhs.factor(*args, **kwargs),self.rhs.factor(*args, **kwargs),check=False)
 
     def factor(self, *args, **kwargs):
         return self._eval_factor(*args, **kwargs)
 
     def _eval_collect(self, *args, **kwargs):
-        return Equation(collect(self.lhs, *args, **kwargs),collect(self.rhs, *args, **kwargs))
+        return Equation(collect(self.lhs, *args, **kwargs),collect(self.rhs, *args, **kwargs),check=False)
 
     def collect(self, *args, **kwargs):
         return self._eval_collect(*args, **kwargs)
 
     def evalf(self, *args, **kwargs):
-        return Equation(self.lhs.evalf(*args, **kwargs),self.rhs.evalf(*args, **kwargs))
+        return Equation(self.lhs.evalf(*args, **kwargs),self.rhs.evalf(*args, **kwargs),check=False)
 
     def _eval_derivative(self, *args, **kwargs):
         # TODO Find why diff and Derivative do not appear to pass through kwargs to this.
@@ -313,14 +307,14 @@ class Equation(Basic):
             for sym in args:
                 if sym in self.lhs.free_symbols and not(_sympify(sym).is_number):
                     eval_lhs=True
-        return Equation(self.lhs.diff(*args, **kwargs, evaluate=eval_lhs), self.rhs.diff(*args, **kwargs))
+        return Equation(self.lhs.diff(*args, **kwargs, evaluate=eval_lhs), self.rhs.diff(*args, **kwargs),check=False)
 
     def integ(self, *args, **kwargs):
         """
         This function is a convenience function that returns a new equation consisting of an unevaluated
         integral of the lhs as the new lhs and the result of integrating the rhs as the new rhs.
         """
-        return Equation(Integral(self.lhs, *args, **kwargs), self.rhs.integrate(*args, **kwargs))
+        return Equation(Integral(self.lhs, *args, **kwargs), self.rhs.integrate(*args, **kwargs),check=False)
 
     def _eval_Integral(self, *args, **kwargs):
         side = kwargs.pop('side',None) # Could not seem to pass values for `evaluate` through to here.
