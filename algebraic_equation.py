@@ -77,21 +77,24 @@ class Equation(Basic):
 
     Examples
     ========
-    >>> from algebraic_equation import *
-    >>> a,b,c = var('a b c')
-    >>> Eqn(a,b/c)
-    a=b/c
+    >>> from sympy import var, Equation, Eqn, exp, log, integrate, Integral
+    >>> from sympy import solve
+    >>> a, b, c = var('a b c')
+    >>> Equation(a,b/c)
+    Equation(a,b/c)
+    >>> str(Equation(a,b/c))
+    'a=b/c'
     >>> t=Eqn(a,b/c)
-    >>> t
-    a=b/c
-    >>> t*c
-    a*c=b
-    >>> c*t
-    a*c=b
-    >>> exp(t)
-    exp(a)=exp(b/c)
-    >>> exp(log(t))
-    a=b/c
+    >>> str(t)
+    'a=b/c'
+    >>> str(t*c)
+    'a*c=b'
+    >>> str(c*t)
+    'a*c=b'
+    >>> str(exp(t))
+    'exp(a)=exp(b/c)'
+    >>> str(exp(log(t)))
+    'a=b/c'
 
     Integration can only be performed on one side at a time.
     >>> q=Eqn(a*c,b/c)
@@ -101,19 +104,20 @@ class Equation(Basic):
     a*b*c
 
     Make a pretty statement of integration from an equation
-    >>> Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs'))
-    Integral(a*c, b)=b**2/(2*c)
-    This is duplicated by the convenience function ``self.integ``
-    >>> q.integ(b)
-    Integral(a*c, b)=b**2/(2*c)
+    >>> str(Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs')))
+    'Integral(a*c, b)=b**2/(2*c)'
+
+    This is duplicated by the convenience function self.integ
+    >>> str(q.integ(b))
+    'Integral(a*c, b)=b**2/(2*c)'
 
     SymPy's solvers do not understand these equations. They expect an
     expression that the solver assumes = 0. Thus to use the solver the
-    equation must be rearranged so that all non-zero symbols are on one
-    side. Then just the non-zero symbolic side is passed to ``solve()``.
+    equation must be rearranged so that all non-zero symbols are on one side.
+    Then just the non-zero symbolic side is passed to ``solve()``.
     >>> t2 = t-t.rhs
-    >>> t2
-    a-b/c=0
+    >>> str(t2)
+    'a-b/c=0'
     >>> solve(t2.lhs,c)
     [b/a]
     """
@@ -128,17 +132,19 @@ class Equation(Basic):
         cls.relop = relop
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
+        if not isinstance(lhs,Expr) or not isinstance(rhs,Expr):
+            raise TypeError('lhs and rhs must be valid sympy expressions.')
         if check:
             lsimp = lhs.simplify()
             rsimp = rhs.simplify()
             if lhs.is_number and rhs.is_number and lsimp != rsimp:
                 from warnings import warn
-                warn('Did your really mean to define unequal numbers ' + str(
-                    lsimp) + ' and ' + str(
-                    rsimp) +
-                     ' as equal? To suppress this warning include '
-                     '`check=False` in the equation definition: '
-                     '`Eqn(lhs,rhs,check=False)`.')
+                warnstr = '\nDid your really mean to define unequal numbers '
+                warnstr += str(lsimp) + ' and ' + str(rsimp) + ' as equal?\n'
+                warnstr += 'To suppress this warning include `check=False`'
+                warnstr += ' in the equation definition: '
+                warnstr += '`Eqn(lhs,rhs, check=False)`.'
+                warn(warnstr)
         return super().__new__(cls, lhs, rhs)
 
     @property
@@ -166,7 +172,7 @@ class Equation(Basic):
         """
         Swaps the lhs and the rhs.
         """
-        return Equation(self.rhs, self.lhs)
+        return Equation(self.rhs, self.lhs, check=False)
 
     def _applyfunc(self, func, *args, **kwargs):
         # Assume if the expression has an attribute of name `func` that should
@@ -233,7 +239,7 @@ class Equation(Basic):
     # Overrides of binary math operations
     #####
 
-    _op_priority = 11.0  # This makes sure the rules for equations are
+    #_op_priority = 11.0  # This makes sure the rules for equations are
     # applied before those for expressions
     # which have _op_priority = 10.0
 
