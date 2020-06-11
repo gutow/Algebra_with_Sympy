@@ -134,7 +134,7 @@ class Equation(Basic):
         rhs = _sympify(rhs)
         if not isinstance(lhs,Expr) or not isinstance(rhs,Expr):
             raise TypeError('lhs and rhs must be valid sympy expressions.')
-        if check:
+        if check and lhs.is_number and rhs.is_number:
             tst=(lhs-rhs)
             if tst.is_number:
                 print('Lhs & rhs are numbers. Checking statement validity.'
