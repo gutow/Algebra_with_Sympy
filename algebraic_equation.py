@@ -25,13 +25,24 @@ in [SageMath](https://www.sagemath.org/) and
 [Maxima](http://maxima.sourceforge.net/).
 """
 
-
-from .expr import Expr
-from .basic import Basic
-from .evalf import EvalfMixin
-from .sympify import _sympify
+from sympy.core.expr import Expr
+from sympy.core.basic import Basic
+from sympy.core.evalf import EvalfMixin
+from sympy.core.sympify import _sympify
 import functools
+from sympy import *
 
+def collect(expr, syms, func=None, evaluate=None, exact=False,
+            distribute_order_term=True):
+    # override of sympy `collect`.
+    from sympy.simplify.radsimp import collect
+    _eval_collect = getattr(expr, '_eval_collect', None)
+    if _eval_collect is not None:
+        return _eval_collect(syms, func, evaluate,
+                             exact, distribute_order_term)
+    else:
+        return collect(expr, syms, func, evaluate, exact,
+                       distribute_order_term)
 
 class Equation(Basic, EvalfMixin):
     """
@@ -284,7 +295,7 @@ class Equation(Basic, EvalfMixin):
         """
         Converts the equation to an Equality.
         """
-        from .relational import Equality
+        from sympy.core.relational import Equality
         return Equality(self.lhs, self.rhs)
 
     @property
@@ -496,6 +507,19 @@ class Equation(Basic, EvalfMixin):
             except AttributeError:
                 raise AttributeError('`side` must equal "lhs" or "rhs".')
 
+    #####
+    # Output helper functions
+    #####
+    def __repr__(self):
+        return str(self.lhs) + '=' + str(self.rhs)
+
+    def _latex(self, obj, **kwargs):
+        return latex(self.lhs, **kwargs) + '=' + latex(self.rhs,
+                                                              **kwargs)
+
+    def __str__(self):
+        return self.__repr__()
+
 Eqn = Equation
 
 
@@ -504,13 +528,13 @@ Eqn = Equation
 # become part of the class
 #####
 class Function(Function):
-    def __new__(cls, *arg, **kwargs):
+    def __new__(cls, *args, **kwargs):
         n = len(args)
 
         if (n > 0) and isinstance(args[0],Equation):
-            return arg[0].applyfunc(cls, *arg[1:], **kwargs)
+            return args[0].apply(cls, *args[1:], **kwargs)
         else:
-            return super().__new__(cls, *arg, **kwargs)
+            return super().__new__(cls, *args, **kwargs)
 
 
 for func in functions.__all__:
