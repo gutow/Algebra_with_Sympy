@@ -29,6 +29,7 @@ from sympy.core.expr import Expr
 from sympy.core.basic import Basic
 from sympy.core.evalf import EvalfMixin
 from sympy.core.sympify import _sympify
+from sympy import functions
 import functools
 from sympy import *
 
