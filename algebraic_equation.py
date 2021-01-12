@@ -33,6 +33,26 @@ from sympy import functions
 import functools
 from sympy import *
 
+def solve(f, *symbols, **flags):
+    # override of sympy solve()
+    # If it is passed an equation it will return the answer as an equation.
+    from sympy.solvers.solvers import solve
+    from IPython.display import display
+    if isinstance(f, Equation):
+        flags['dict']=True
+        result = solve(f.lhs-f.rhs, *symbols, **flags)
+        solns = []
+        #return result
+        for k in result:
+            for key in k.keys():
+                val = k[key]
+                tempeqn =Eqn(key,val)
+                display(tempeqn)
+                solns.append(tempeqn)
+        return solns
+    else:
+        return solve(f, *symbols, **flags)
+
 def collect(expr, syms, func=None, evaluate=None, exact=False,
             distribute_order_term=True):
     # override of sympy `collect`.
