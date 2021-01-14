@@ -6,7 +6,7 @@ date: January 2021
 
 license: GPL V3+
 
-This tool define relations that all high school and college students would
+This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
 They consist of a left hand side (lhs) and a right hand side (rhs) connected by
 the relation operator "=".
@@ -31,8 +31,8 @@ units into the solved equation to calculate a numerical solution with
 proper units.
 
 _Setup/Installation_: Use pip to install in your python environment: 
-`python pip -U Algebra_with_SymPy` To use issue the following command in a 
-running python session: `from algebra_with_sympy import *`. 
+`python pip -U Algebra_with_SymPy` To use in a running python session issue
+the following command : `from algebra_with_sympy import *`. 
 This will also import the SymPy tools. If you want to isolate this tool
 from the global namespace you are working with change the import statement 
 to `import algebra_with_sympy as spa`, where 

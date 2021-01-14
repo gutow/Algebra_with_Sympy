@@ -6,7 +6,7 @@ with open("ReadMe.md", "r") as f:
 setuptools.setup(
     name="Algebra_with_SymPy",
     url = "https://github.com/gutow/Algebra_with_Sympy",
-    version="0.9.0.rc0",
+    version="0.9.0.rc1",
     description="Equations that can be algebraicly manipulated.",
     long_description=long_description,
     long_description_content_type="text/markdown",
