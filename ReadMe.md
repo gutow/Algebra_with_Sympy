@@ -6,7 +6,7 @@ date: January 2021
 
 license: GPL V3+
 
-These tools define relations that all high school and college students would
+This tool define relations that all high school and college students would
 recognize as mathematical equations. 
 They consist of a left hand side (lhs) and a right hand side (rhs) connected by
 the relation operator "=".
@@ -26,17 +26,20 @@ available in [SageMath](https://www.sagemath.org/)
 and [Maxima](http://maxima.sourceforge.net/), but can be installed in a generic
 python environment.
 
-_Setup/Installation_: Currently this tool is not available as a pip installable
-package. The file `algebraic_equation.py`
-must be available for import in the directory space of the active Python,
-IPython or Jupyter notebook. To activate issue
-the command: `from algebra_with_sympy import *`. This will also import the 
-SymPy tools. If you want to isolate this tool
+Once the algebra is complete it is possible to substitute numbers with 
+units into the solved equation to calculate a numerical solution with 
+proper units.
+
+_Setup/Installation_: Use pip to install in your python environment: 
+`python pip -U Algebra_with_SymPy` To use issue the following command in a 
+running python session: `from algebra_with_sympy import *`. 
+This will also import the SymPy tools. If you want to isolate this tool
 from the global namespace you are working with change the import statement 
 to `import algebra_with_sympy as spa`, where 
-`spa` stands for "SymPy Algebra". Then all calls would be made to `spa.funcname()`.
+`spa` stands for "SymPy Algebra". Then all calls would be made to `
+spa.funcname()`.
 
 Usage examples can be found in the docstrings and the demonstration Jupyter 
-notebook `Demonstration of equation class.ipynb`. 
+notebook `Demonstration of equation class.ipynb` in this git repository.
 
 Try in binder: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master)
