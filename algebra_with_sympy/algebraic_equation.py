@@ -599,11 +599,19 @@ Eqn = Equation
 class Function(Function):
     def __new__(cls, *args, **kwargs):
         n = len(args)
-
-        if (n > 0) and isinstance(args[0], Equation):
-            return args[0].apply(cls, *args[1:], **kwargs)
-        else:
-            return super().__new__(cls, *args, **kwargs)
+        newargs=[]
+        for k in args:
+            newargs.append(k)
+        if (n > 0):
+            for i in range(n):
+                print(str(i)+':'+repr(args[i]))
+                if isinstance(args[i], Equation):
+                    newargs[i] = args[i].lhs
+                    lhs = super().__new__(cls, *newargs, **kwargs)
+                    newargs[i] = args[i].rhs
+                    rhs = super().__new__(cls, *newargs, **kwargs)
+                    return Equation(lhs,rhs)
+        return super().__new__(cls, *args, **kwargs)
 
 
 for func in functions.__all__:
