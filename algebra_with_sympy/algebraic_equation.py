@@ -33,25 +33,27 @@ from sympy import functions
 import functools
 from sympy import *
 
+
 def solve(f, *symbols, **flags):
     # override of sympy solve()
     # If it is passed an equation it will return the answer as an equation.
     from sympy.solvers.solvers import solve
     from IPython.display import display
     if isinstance(f, Equation):
-        flags['dict']=True
-        result = solve(f.lhs-f.rhs, *symbols, **flags)
+        flags['dict'] = True
+        result = solve(f.lhs - f.rhs, *symbols, **flags)
         solns = []
-        #return result
+        # return result
         for k in result:
             for key in k.keys():
                 val = k[key]
-                tempeqn =Eqn(key,val)
+                tempeqn = Eqn(key, val)
                 display(tempeqn)
                 solns.append(tempeqn)
         return solns
     else:
         return solve(f, *symbols, **flags)
+
 
 def collect(expr, syms, func=None, evaluate=None, exact=False,
             distribute_order_term=True):
@@ -64,6 +66,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False,
     else:
         return collect(expr, syms, func, evaluate, exact,
                        distribute_order_term)
+
 
 class Equation(Basic, EvalfMixin):
     """
@@ -93,9 +96,10 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
-    >>> from sympy import var, Equation, Eqn, exp, log, integrate, Integral
-    >>> from sympy import simplify, collect, expand, factor, diff
-    >>> from sympy import solve
+    # >>> from sympy import var, exp, log, integrate, Integral
+    # >>> from sympy import simplify, collect, expand, factor, diff
+    # >>> from sympy import solve
+    >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
     a = b/c
@@ -290,7 +294,7 @@ class Equation(Basic, EvalfMixin):
     def __new__(cls, lhs, rhs, **kwargs):
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
-        if not isinstance(lhs,Expr) or not isinstance(rhs,Expr):
+        if not isinstance(lhs, Expr) or not isinstance(rhs, Expr):
             raise TypeError('lhs and rhs must be valid sympy expressions.')
         return super().__new__(cls, lhs, rhs)
 
@@ -348,7 +352,7 @@ class Equation(Basic, EvalfMixin):
         # is a specialized version associated with the particular type of
         # expression. Errors will be raised if the function cannot be
         # applied to an expression.
-        funcname = getattr(func, '__name__',None)
+        funcname = getattr(func, '__name__', None)
         if funcname is not None:
             localfunc = getattr(expr, funcname, None)
             if localfunc is not None:
@@ -403,7 +407,8 @@ class Equation(Basic, EvalfMixin):
         Helper class for the `.do.`, `.dolhs.`, `.dorhs.` syntax for applying
         submethods of expressions.
         """
-        def __init__(self,eqn, side='both'):
+
+        def __init__(self, eqn, side='both'):
             self.eqn = eqn
             self.side = side
 
@@ -415,10 +420,11 @@ class Equation(Basic, EvalfMixin):
                 func = getattr(self.eqn.lhs, name, None)
             if func is None:
                 raise AttributeError('Expressions in the equation have no '
-                                     'attribute `'+str(name)+'`. Try `.apply('
-                                     +str(name)+', *args)` or '
-                                     'pass the equation as a parameter to `'
-                                     +str(name)+'()`.')
+                                     'attribute `' + str(
+                    name) + '`. Try `.apply('
+                                     + str(name) + ', *args)` or '
+                                                   'pass the equation as a parameter to `'
+                                     + str(name) + '()`.')
             return functools.partial(self.eqn.apply, func, side=self.side)
 
     @property
@@ -532,7 +538,7 @@ class Equation(Basic, EvalfMixin):
         if not (isinstance(self.lhs, Derivative)):
             for sym in args:
                 if sym in self.lhs.free_symbols and not (
-                _sympify(sym).is_number):
+                        _sympify(sym).is_number):
                     eval_lhs = True
         return Equation(self.lhs.diff(*args, **kwargs, evaluate=eval_lhs),
                         self.rhs.diff(*args, **kwargs))
@@ -553,14 +559,15 @@ class Equation(Basic, EvalfMixin):
     # Output helper functions
     #####
     def __repr__(self):
-        return str(self.lhs) + '=' + str(self.rhs)
+        return 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
 
     def _latex(self, obj, **kwargs):
         return latex(self.lhs, **kwargs) + '=' + latex(self.rhs,
-                                                              **kwargs)
+                                                       **kwargs)
 
     def __str__(self):
-        return self.__repr__()
+        return str(self.lhs) + ' = ' + str(self.rhs)
+
 
 Eqn = Equation
 
@@ -573,7 +580,7 @@ class Function(Function):
     def __new__(cls, *args, **kwargs):
         n = len(args)
 
-        if (n > 0) and isinstance(args[0],Equation):
+        if (n > 0) and isinstance(args[0], Equation):
             return args[0].apply(cls, *args[1:], **kwargs)
         else:
             return super().__new__(cls, *args, **kwargs)

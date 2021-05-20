@@ -1,7 +1,25 @@
-from sympy import var, integrate, simplify, expand, factor, log, Integral, \
-    diff, FiniteSet, Equality
-from algebraic_equation import Equation, Eqn
-from pytest import raises, warns
+from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
+    diff, FiniteSet, Equality, Function, functions, Matrix
+from .algebraic_equation import solve, collect, Equation, Eqn, Function
+from pytest import raises
+
+for func in functions.__all__:
+    # TODO: This will not be needed when incorporated into SymPy listed in
+    #  `skip` cannot be extended because of `mro` error or `metaclass
+    #  conflict`. Seems to reflect expectation that a helper function will be
+    #  defined within the object (e.g. `_eval_power()` for all the flavors of
+    #  `root`).
+    skip = ('sqrt', 'root', 'Min', 'Max', 'Id', 'real_root', 'cbrt',
+            'unbranched_argument', 'polarify', 'unpolarify',
+            'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
+            'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
+            'jacobi_normalized', 'Ynm_c')
+    if func not in skip:
+        execstr = 'from sympy import ' + str(func)
+        exec(execstr, globals(), locals())
+        execstr = 'class ' + str(func) + '(' + str(
+            func) + ',Function):\n    pass\n'
+        exec(execstr, globals(), locals())
 
 def test_define_equation():
     a, b, c = symbols('a b c')
@@ -47,7 +65,7 @@ def test_binary_op():
 
 
 def test_outputs():
-    a, b, c = var('a b c')
+    a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
     assert tsteqn.__repr__() == 'a=b/c'
     assert tsteqn.__str__() == 'a=b/c'
