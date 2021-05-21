@@ -599,18 +599,28 @@ Eqn = Equation
 class Function(Function):
     def __new__(cls, *args, **kwargs):
         n = len(args)
-        newargs=[]
+        eqnloc = None
+        neqns = 0
+        newargs = []
         for k in args:
             newargs.append(k)
         if (n > 0):
             for i in range(n):
-                print(str(i)+':'+repr(args[i]))
                 if isinstance(args[i], Equation):
-                    newargs[i] = args[i].lhs
-                    lhs = super().__new__(cls, *newargs, **kwargs)
-                    newargs[i] = args[i].rhs
-                    rhs = super().__new__(cls, *newargs, **kwargs)
-                    return Equation(lhs,rhs)
+                    neqns += 1
+                    eqnloc = i
+            if neqns > 1:
+                raise NotImplementedError('Function calls with more than one '
+                                          'Equation as a parameter are not '
+                                          'supported. You may be able to get '
+                                          'your desired outcome using .applyrhs'
+                                          ' and .applylhs.')
+            if neqns == 1:
+                newargs[eqnloc] = args[eqnloc].lhs
+                lhs = super().__new__(cls, *newargs, **kwargs)
+                newargs[eqnloc] = args[eqnloc].rhs
+                rhs = super().__new__(cls, *newargs, **kwargs)
+                return Equation(lhs,rhs)
         return super().__new__(cls, *args, **kwargs)
 
 
