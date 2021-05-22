@@ -67,6 +67,53 @@ def collect(expr, syms, func=None, evaluate=None, exact=False,
         return collect(expr, syms, func, evaluate, exact,
                        distribute_order_term)
 
+class algebra_with_sympy():
+    """
+    This is a class to hold parameters that control behavior of
+    the algebra_with_sympy package.
+
+    Settings
+    ========
+    Printing
+    --------
+    `print(Eqn)` or `str(Eqn)` will return a human readable text version of
+    the equation with the two sides connected by an equals sign. This is
+    consistent with python standards, but not sympy, where `str()` is supposed
+    to return something that can be copy-pasted into code. Use
+    `print(repr(Eqn))` instead of `print(Eqn)` or `repr(Eqn)` instead of `
+    str(Eqn)` to get a code compatible version of the equation.
+
+    In interactive environments you can get both types of output by setting
+    the `algebra_with_sympy.output.show_code` flag. If this flag is true
+    calls to `latex` and `str` will also print and additional line "code
+    version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
+    mathematics output followed by the a code version that can be copy-pasted.
+    Default is `False`.
+
+    A second flag `algebra_with_sympy.output.human_text` is useful in
+    text-based interactive environments such as command line python or
+    ipython. If this flag is true `repr` will return `str`. Thus the human
+    readable text will be printed as the output of a line that is an
+    expression containing an equation.
+    Default is `False`.
+
+    These flags have no impact on statements such as `eq1 = Eqn(a,b/c)`.
+    """
+
+    def __init__(self):
+        pass
+
+    class output():
+        def __init__(self):
+            pass
+
+        @property
+        def show_code(self):
+            return self.show_code
+
+        @property
+        def human_text(self):
+            return self.human_text
 
 class Equation(Basic, EvalfMixin):
     """
@@ -559,13 +606,19 @@ class Equation(Basic, EvalfMixin):
     # Output helper functions
     #####
     def __repr__(self):
+        if algebra_with_sympy.output.human_text:
+            return self.__str__()
         return 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
 
     def _latex(self, obj, **kwargs):
+        if algebra_with_sympy.output.show_code:
+            print('code version: '+str(self.__repr__()))
         return latex(self.lhs, **kwargs) + '=' + latex(self.rhs,
                                                        **kwargs)
 
     def __str__(self):
+        if algebra_with_sympy.output.show_code:
+            print('code version: '+str(self.__repr__()))
         return str(self.lhs) + ' = ' + str(self.rhs)
 
 
