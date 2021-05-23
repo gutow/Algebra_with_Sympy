@@ -97,9 +97,9 @@ class algebra_with_sympy():
 
     In interactive environments you can get both types of output by setting
     the `algebra_with_sympy.output.show_code` flag. If this flag is true
-    calls to `latex` and `str` will also print and additional line "code
+    calls to `latex` and `str` will also print an additional line "code
     version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
-    mathematics output followed by the a code version that can be copy-pasted.
+    mathematics output preceded by the a code version that can be copy-pasted.
     Default is `False`.
 
     A second flag `algebra_with_sympy.output.human_text` is useful in
@@ -108,6 +108,10 @@ class algebra_with_sympy():
     readable text will be printed as the output of a line that is an
     expression containing an equation.
     Default is `False`.
+
+    Setting both flags to true in a command line or ipython environment will
+    show both the code version and the human readable text. These flags impact
+    the behavior of the `print(Eqn)` statement.
 
     These flags have no impact on statements such as `eq1 = Eqn(a,b/c)`.
     """
@@ -155,84 +159,84 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
-    # >>> from sympy import var, exp, log, integrate, Integral
-    # >>> from sympy import simplify, collect, expand, factor, diff
-    # >>> from sympy import solve
+    #>>> from sympy import var, exp, log, integrate, Integral
+    #>>> from sympy import simplify, collect, expand, factor, diff
+    #>>> from sympy import solve
     >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
-    a = b/c
+    Equation(a, b/c)
     >>> t=Eqn(a,b/c)
     >>> t
-    a = b/c
+    Equation(a, b/c)
     >>> t*c
-    a*c = b
+    Equation(a*c, b)
     >>> c*t
-    a*c = b
+    Equation(a*c, b)
     >>> exp(t)
-    exp(a) = exp(b/c)
+    Equation(exp(a), exp(b/c))
     >>> exp(log(t))
-    a = b/c
+    Equation(a, b/c)
 
     Simplification and Expansion
     >>> f = Eqn(x**2 - 1, c)
     >>> f
-    x**2 - 1 = c
+    Equation(x**2 - 1, c)
     >>> f/(x+1)
-    (x**2 - 1)/(x + 1) = c/(x + 1)
+    Equation((x**2 - 1)/(x + 1), c/(x + 1))
     >>> (f/(x+1)).simplify()
-    x - 1 = c/(x + 1)
+    Equation(x - 1, c/(x + 1))
     >>> simplify(f/(x+1))
-    x - 1 = c/(x + 1)
+    Equation(x - 1, c/(x + 1))
     >>> (f/(x+1)).expand()
-    x**2/(x + 1) - 1/(x + 1) = c/(x + 1)
+    Equation(x**2/(x + 1) - 1/(x + 1), c/(x + 1))
     >>> expand(f/(x+1))
-    x**2/(x + 1) - 1/(x + 1) = c/(x + 1)
+    Equation(x**2/(x + 1) - 1/(x + 1), c/(x + 1))
     >>> factor(f)
-    (x - 1)*(x + 1) = c
+    Equation((x - 1)*(x + 1), c)
     >>> f.factor()
-    (x - 1)*(x + 1) = c
+    Equation((x - 1)*(x + 1), c)
     >>> f2 = f+a*x**2+b*x +c
     >>> f2
-    a*x**2 + b*x + c + x**2 - 1 = a*x**2 + b*x + 2*c
+    Equation(a*x**2 + b*x + c + x**2 - 1, a*x**2 + b*x + 2*c)
     >>> collect(f2,x)
-    b*x + c + x**2*(a + 1) - 1 = a*x**2 + b*x + 2*c
+    Equation(b*x + c + x**2*(a + 1) - 1, a*x**2 + b*x + 2*c)
 
     Apply operation to only one side
     >>> poly = Eqn(a*x**2 + b*x + c*x**2, a*x**3 + b*x**3 + c*x)
     >>> poly.applyrhs(factor,x)
-    a*x**2 + b*x + c*x**2 = x*(c + x**2*(a + b))
+    Equation(a*x**2 + b*x + c*x**2, x*(c + x**2*(a + b)))
     >>> poly.applylhs(factor)
-    x*(a*x + b + c*x) = a*x**3 + b*x**3 + c*x
+    Equation(x*(a*x + b + c*x), a*x**3 + b*x**3 + c*x)
     >>> poly.applylhs(collect,x)
-    b*x + x**2*(a + c) = a*x**3 + b*x**3 + c*x
+    Equation(b*x + x**2*(a + c), a*x**3 + b*x**3 + c*x)
 
     ``.apply...`` also works with user defined python functions
     >>> def addsquare(eqn):
     ...     return eqn+eqn**2
     ...
     >>> t.apply(addsquare)
-    a**2 + a = b**2/c**2 + b/c
+    Equation(a**2 + a, b**2/c**2 + b/c)
     >>> t.applyrhs(addsquare)
-    a = b**2/c**2 + b/c
+    Equation(a, b**2/c**2 + b/c)
     >>> t.apply(addsquare, side = 'rhs')
-    a = b**2/c**2 + b/c
+    Equation(a, b**2/c**2 + b/c)
     >>> t.applylhs(addsquare)
-    a**2 + a = b/c
+    Equation(a**2 + a, b/c)
     >>> addsquare(t)
-    a**2 + a = b**2/c**2 + b/c
+    Equation(a**2 + a, b**2/c**2 + b/c)
 
     Inaddition to ``.apply...`` there is also the less general ``.do``,
     ``.dolhs``, ``.dorhs``, which only works for operations defined on the
     ``Expr`` class (e.g.``.collect(), .factor(), .expand()``, etc...).
     >>> poly.dolhs.collect(x)
-    b*x + x**2*(a + c) = a*x**3 + b*x**3 + c*x
+    Equation(b*x + x**2*(a + c), a*x**3 + b*x**3 + c*x)
     >>> poly.dorhs.collect(x)
-    a*x**2 + b*x + c*x**2 = c*x + x**3*(a + b)
+    Equation(a*x**2 + b*x + c*x**2, c*x + x**3*(a + b))
     >>> poly.do.collect(x)
-    b*x + x**2*(a + c) = c*x + x**3*(a + b)
+    Equation(b*x + x**2*(a + c), c*x + x**3*(a + b))
     >>> poly.dorhs.factor()
-    a*x**2 + b*x + c*x**2 = x*(a*x**2 + b*x**2 + c)
+    Equation(a*x**2 + b*x + c*x**2, x*(a*x**2 + b*x**2 + c))
 
     ``poly.do.exp()`` or other sympy math functions will raise an error.
 
@@ -240,47 +244,47 @@ class Equation(Basic, EvalfMixin):
     >>> p, V, n, R, T = var('p V n R T')
     >>> eq1=Eqn(p*V,n*R*T)
     >>> eq1
-    V*p = R*T*n
+    Equation(V*p, R*T*n)
     >>> eq2 =eq1/V
     >>> eq2
-    p = R*T*n/V
+    Equation(p, R*T*n/V)
     >>> eq3 = eq2/R/T
     >>> eq3
-    p/(R*T) = n/V
+    Equation(p/(R*T), n/V)
     >>> eq4 = eq3*R/p
     >>> eq4
-    1/T = R*n/(V*p)
+    Equation(1/T, R*n/(V*p))
     >>> 1/eq4
-    T = V*p/(R*n)
+    Equation(T, V*p/(R*n))
     >>> eq5 = 1/eq4 - T
     >>> eq5
-    0 = -T + V*p/(R*n)
+    Equation(0, -T + V*p/(R*n))
 
     Substitution (#'s and units)
     >>> L, atm, mol, K = var('L atm mol K', positive=True, real=True) # units
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L})
-    p = 0.9334325*atm
+    Equation(p, 0.9334325*atm)
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L}).evalf(4)
-    p = 0.9334*atm
+    Equation(p, 0.9334*atm)
 
     Combining equations (Math with equations: lhs with lhs and rhs with rhs)
     >>> q = Eqn(a*c, b/c**2)
     >>> q
-    a*c = b/c**2
+    Equation(a*c, b/c**2)
     >>> t
-    a = b/c
+    Equation(a, b/c)
     >>> q+t
-    a*c + a = b/c + b/c**2
+    Equation(a*c + a, b/c + b/c**2)
     >>> q/t
-    c = 1/c
+    Equation(c, 1/c)
     >>> t**q
-    a**(a*c) = (b/c)**(b/c**2)
+    Equation(a**(a*c), (b/c)**(b/c**2))
 
     Utility operations
     >>> t.reversed
-    b/c = a
+    Equation(b/c, a)
     >>> t.swap
-    b/c = a
+    Equation(b/c, a)
     >>> t.lhs
     a
     >>> t.rhs
@@ -300,29 +304,29 @@ class Equation(Basic, EvalfMixin):
     both sides.
     >>> q=Eqn(a*c, b/c**2)
     >>> q
-    a*c = b/c**2
+    Equation(a*c, b/c**2)
     >>> diff(q,b)
-    Derivative(a*c, b) = c**(-2)
+    Equation(Derivative(a*c, b), c**(-2))
     >>> diff(q,c)
-    a = -2*b/c**3
+    Equation(a, -2*b/c**3)
     >>> diff(log(q),b)
-    Derivative(log(a*c), b) = 1/b
+    Equation(Derivative(log(a*c), b), 1/b)
     >>> diff(q,c,2)
-    Derivative(a, c) = 6*b/c**4
+    Equation(Derivative(a, c), 6*b/c**4)
 
     If you specify multiple differentiation all at once the assumption
     is order of differentiation matters and the lhs will not be
     evaluated.
     >>> diff(q,c,b)
-    Derivative(a*c, b, c) = -2/c**3
+    Equation(Derivative(a*c, b, c), -2/c**3)
 
     To overcome this specify the order of operations.
     >>> diff(diff(q,c),b)
-    Derivative(a, b) = -2/c**3
+    Equation(Derivative(a, b), -2/c**3)
 
     But the reverse order returns an unevaulated lhs (a may depend on b).
     >>> diff(diff(q,b),c)
-    Derivative(a*c, b, c) = -2/c**3
+    Equation(Derivative(a*c, b, c), -2/c**3)
 
     Integration can only be performed on one side at a time.
     >>> q=Eqn(a*c,b/c)
@@ -333,11 +337,11 @@ class Equation(Basic, EvalfMixin):
 
     Make a pretty statement of integration from an equation
     >>> Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs'))
-    Integral(a*c, b) = b**2/(2*c)
+    Equation(Integral(a*c, b), b**2/(2*c))
 
     Integration of each side with respect to different variables
     >>> q.dorhs.integrate(b).dolhs.integrate(a)
-    a**2*c/2 = b**2/(2*c)
+    Equation(a**2*c/2, b**2/(2*c))
 
     SymPy's solvers do not understand these equations. They expect an
     expression that the solver assumes = 0. Thus to use the solver the
@@ -345,9 +349,10 @@ class Equation(Basic, EvalfMixin):
     Then just the non-zero symbolic side is passed to ``solve()``.
     >>> t2 = t-t.rhs
     >>> t2
-    a - b/c = 0
+    Equation(a - b/c, 0)
     >>> solve(t2.lhs,c)
     [b/a]
+
     """
 
     def __new__(cls, lhs, rhs, **kwargs):
