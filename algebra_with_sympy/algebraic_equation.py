@@ -54,6 +54,18 @@ def solve(f, *symbols, **flags):
     else:
         return solve(f, *symbols, **flags)
 
+def sqrt(arg, evaluate = None):
+    """
+    Override of sympy convenience function `sqrt`. Simply divides equations
+    into two sides if `arg` is an instance of `Equation`. This avoids an
+    issue with the way sympy is delaying specialized applications of _Pow_ on
+    objects that are not basic sympy expressions.
+    """
+    from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
+    if isinstance(arg, Equation):
+        return Equation(symsqrt(arg.lhs, evaluate), symsqrt(arg.rhs, evaluate))
+    else:
+        return symsqrt(arg,evaluate)
 
 def collect(expr, syms, func=None, evaluate=None, exact=False,
             distribute_order_term=True):
@@ -616,12 +628,14 @@ class Equation(Basic, EvalfMixin):
     # Output helper functions
     #####
     def __repr__(self):
+        repstr = 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
         if algebra_with_sympy.output.human_text:
             return self.__str__()
-        return 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
+        return repstr
 
     def _latex(self, obj, **kwargs):
-        if algebra_with_sympy.output.show_code:
+        if algebra_with_sympy.output.show_code and not \
+            algebra_with_sympy.output.human_text:
             print('code version: '+str(self.__repr__()))
         tempstr = latex(self.lhs, **kwargs)
         tempstr += '='
@@ -633,12 +647,18 @@ class Equation(Basic, EvalfMixin):
         return tempstr
 
     def __str__(self):
-        if algebra_with_sympy.output.show_code:
+        if algebra_with_sympy.output.show_code and not \
+            algebra_with_sympy.output.human_text:
             print('code version: '+str(self.__repr__()))
+        if algebra_with_sympy.output.show_code and \
+            algebra_with_sympy.output.human_text:
+            algebra_with_sympy.output.human_text = False
+            print('code version: '+str(self.__repr__()))
+            algebra_with_sympy.output.human_text = True
         tempstr = str(self.lhs) + ' = ' + str(self.rhs)
         namestr = self._get_eqn_name()
         if namestr != '':
-            tempstr += '          ('+namestr+')'
+            tempstr += '          (' + namestr + ')'
         return tempstr
 
 
