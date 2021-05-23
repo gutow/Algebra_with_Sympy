@@ -1,6 +1,8 @@
 from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
     diff, FiniteSet, Equality, Function, functions, Matrix
 from .algebraic_equation import solve, collect, Equation, Eqn, Function
+from .algebraic_equation import algebra_with_sympy
+
 from pytest import raises
 
 for func in functions.__all__:
@@ -65,12 +67,17 @@ def test_binary_op():
 
 
 def test_outputs():
+    algebra_with_sympy.output.show_code = False
+    # True for above not tested as it sends output to standard out via
+    # `print()`.
+    algebra_with_sympy.output.human_text = False
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
-    assert tsteqn.__repr__() == 'a=b/c'
-    assert tsteqn.__str__() == 'a=b/c'
+    assert tsteqn.__repr__() == 'Equation(a, b/c)'
+    algebra_with_sympy.output.human_text = True
+    assert tsteqn.__repr__() == 'a = b/c'
+    assert tsteqn.__str__() == 'a = b/c'
     assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
-
 
 def test_helper_functions():
     a, b, c = symbols('a b c')
