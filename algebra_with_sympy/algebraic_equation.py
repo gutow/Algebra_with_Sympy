@@ -298,6 +298,16 @@ class Equation(Basic, EvalfMixin):
             raise TypeError('lhs and rhs must be valid sympy expressions.')
         return super().__new__(cls, lhs, rhs)
 
+    def _get_eqn_name(self):
+        from IPython import get_ipython
+        global_dict = get_ipython().user_ns
+        for var_name in global_dict:
+            if isinstance(global_dict[var_name], Equation):
+                if (global_dict[var_name]).__repr__()==self.__repr__() and not \
+                        var_name.startswith('_'):
+                    return var_name
+        return ''
+
     @property
     def lhs(self):
         """
