@@ -88,18 +88,28 @@ class algebra_with_sympy():
     ========
     Printing
     --------
-    `print(Eqn)` or `str(Eqn)` will return a human readable text version of
-    the equation with the two sides connected by an equals sign. This is
-    consistent with python standards, but not sympy, where `str()` is supposed
-    to return something that can be copy-pasted into code. Use
-    `print(repr(Eqn))` instead of `print(Eqn)` or `repr(Eqn)` instead of `
-    str(Eqn)` to get a code compatible version of the equation.
+    In interactive environments the default output of an equation is a
+    human readable string with the two sides connected by an equals
+    sign or a typeset equation with the two sides connected by an equals sign.
+    `print(Eqn)` or `str(Eqn)` will return this human readable text version of
+    the equation as well. This is consistent with python standards, but not
+    sympy, where `str()` is supposed to return something that can be
+    copy-pasted into code. If the equation has a declared name as in `eq1 =
+    Eqn(a,b/c)` the name will be displayed to the right of the equation in
+    parentheses (eg. `a = b/c    (eq1)`). Use `print(repr(Eqn))` instead of
+    `print(Eqn)` or `repr(Eqn)` instead of `str(Eqn)` to get a code
+    compatible version of the equation.
+
+    You can adjust this behvior using some flags that impact output:
+    * `algebra_with_sympy.output.show_code` default is `False`.
+    * `algebra_with_sympy.output.human_text` default is `False`.
+    * `algebra_with_sympy.output.label` default is `True`.
 
     In interactive environments you can get both types of output by setting
     the `algebra_with_sympy.output.show_code` flag. If this flag is true
     calls to `latex` and `str` will also print an additional line "code
     version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
-    mathematics output preceded by the a code version that can be copy-pasted.
+    mathematics output preceded by the code version that can be copy-pasted.
     Default is `False`.
 
     A second flag `algebra_with_sympy.output.human_text` is useful in
@@ -109,11 +119,13 @@ class algebra_with_sympy():
     expression containing an equation.
     Default is `False`.
 
-    Setting both flags to true in a command line or ipython environment will
-    show both the code version and the human readable text. These flags impact
-    the behavior of the `print(Eqn)` statement.
+    Setting both of these flags to true in a command line or ipython
+    environment will show both the code version and the human readable text.
+    These flags impact the behavior of the `print(Eqn)` statement.
 
-    These flags have no impact on statements such as `eq1 = Eqn(a,b/c)`.
+    The third flag `algebra_with_sympy.output.label` has a default value of
+    `True`. Setting this to `False` suppresses the labeling of an equation
+    with its python name off to the right of the equation.
     """
 
     def __init__(self):
@@ -130,6 +142,11 @@ class algebra_with_sympy():
         @property
         def human_text(self):
             return self.human_text
+
+        @property
+        def label(self):
+            return self.label
+
 
 class Equation(Basic, EvalfMixin):
     """
@@ -364,12 +381,13 @@ class Equation(Basic, EvalfMixin):
 
     def _get_eqn_name(self):
         from IPython import get_ipython
-        global_dict = get_ipython().user_ns
-        for var_name in global_dict:
-            if isinstance(global_dict[var_name], Equation):
-                if (global_dict[var_name]).__repr__()==self.__repr__() and not \
-                        var_name.startswith('_'):
-                    return var_name
+        global_dict = getattr(get_ipython(), 'user_ns', None)
+        if global_dict:
+            for var_name in global_dict:
+                if isinstance(global_dict[var_name], Equation):
+                    if (global_dict[var_name]).__repr__()==self.__repr__() and not \
+                            var_name.startswith('_'):
+                        return var_name
         return ''
 
     @property
@@ -646,7 +664,7 @@ class Equation(Basic, EvalfMixin):
         tempstr += '='
         tempstr += latex(self.rhs, **kwargs)
         namestr = self._get_eqn_name()
-        if namestr !='':
+        if namestr !='' and algebra_with_sympy.output.label:
             tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
             tempstr += '(\\text{'+namestr+'})'
         return tempstr
@@ -662,7 +680,7 @@ class Equation(Basic, EvalfMixin):
             algebra_with_sympy.output.human_text = True
         tempstr = str(self.lhs) + ' = ' + str(self.rhs)
         namestr = self._get_eqn_name()
-        if namestr != '':
+        if namestr != '' and algebra_with_sympy.output.label:
             tempstr += '          (' + namestr + ')'
         return tempstr
 
