@@ -572,11 +572,21 @@ class Equation(Basic, EvalfMixin):
         return 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
 
     def _latex(self, obj, **kwargs):
-        return latex(self.lhs, **kwargs) + '=' + latex(self.rhs,
-                                                       **kwargs)
+        tempstr = latex(self.lhs, **kwargs)
+        tempstr += '='
+        tempstr += latex(self.rhs, **kwargs)
+        namestr = self._get_eqn_name()
+        if namestr !='':
+            tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
+            tempstr += '(\\text{'+namestr+'})'
+        return tempstr
 
     def __str__(self):
-        return str(self.lhs) + ' = ' + str(self.rhs)
+        tempstr = str(self.lhs) + ' = ' + str(self.rhs)
+        namestr = self._get_eqn_name()
+        if namestr != '':
+            tempstr += '          ('+namestr+')'
+        return tempstr
 
 
 Eqn = Equation
