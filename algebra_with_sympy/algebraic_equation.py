@@ -34,75 +34,6 @@ import functools
 from sympy import *
 
 
-def solve(f, *symbols, **flags):
-    # override of sympy solve()
-    # If it is passed an equation it will return the answer as an equation.
-    from sympy.solvers.solvers import solve
-    from IPython.display import display
-    if isinstance(f, Equation):
-        flags['dict'] = True
-        result = solve(f.lhs - f.rhs, *symbols, **flags)
-        solns = []
-        # return result
-        for k in result:
-            for key in k.keys():
-                val = k[key]
-                tempeqn = Eqn(key, val)
-                display(tempeqn)
-                solns.append(tempeqn)
-        return solns
-    else:
-        return solve(f, *symbols, **flags)
-
-def sqrt(arg, evaluate = None):
-    """
-    Override of sympy convenience function `sqrt`. Simply divides equations
-    into two sides if `arg` is an instance of `Equation`. This avoids an
-    issue with the way sympy is delaying specialized applications of _Pow_ on
-    objects that are not basic sympy expressions.
-    """
-    from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
-    if isinstance(arg, Equation):
-        return Equation(symsqrt(arg.lhs, evaluate), symsqrt(arg.rhs, evaluate))
-    else:
-        return symsqrt(arg,evaluate)
-
-# Pick up the docstring for sqrt from sympy
-from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
-sqrt.__doc__+=symsqrt.__doc__
-del symsqrt
-
-def root(arg, n, k = 0, evaluate = None):
-    """
-    Override of sympy convenience function `root`. Simply divides equations
-    into two sides if `arg` is an instance of `Equation`. This avoids an
-    issue with the way sympy is delaying specialized applications of _Pow_ on
-    objects that are not basic sympy expressions.
-    """
-    from sympy.functions.elementary.miscellaneous import root as symroot
-    if isinstance(arg, Equation):
-        return Equation(symroot(arg.lhs, n, k, evaluate), symroot(arg.rhs,
-                                                            n, k, evaluate))
-    else:
-        return symsqrt(arg, n, k, evaluate)
-
-# pick up the docstring for root from sympy
-from sympy.functions.elementary.miscellaneous import root as symroot
-root.__doc__+=symroot.__doc__
-del symroot
-
-def collect(expr, syms, func=None, evaluate=None, exact=False,
-            distribute_order_term=True):
-    # override of sympy `collect`.
-    from sympy.simplify.radsimp import collect
-    _eval_collect = getattr(expr, '_eval_collect', None)
-    if _eval_collect is not None:
-        return _eval_collect(syms, func, evaluate,
-                             exact, distribute_order_term)
-    else:
-        return collect(expr, syms, func, evaluate, exact,
-                       distribute_order_term)
-
 class algebra_with_sympy():
     """
     This is a class to hold parameters that control behavior of
@@ -175,7 +106,7 @@ class algebra_with_sympy():
 class Equation(Basic, EvalfMixin):
     """
     This class defines an equation with a left-hand-side (lhs) and a right-
-    hand-side (rhs) connected by the "=" operator (e.g. $p*V = n*R*T$).
+    hand-side (rhs) connected by the "=" operator (e.g. `p*V = n*R*T`).
 
     Explanation
     ===========
@@ -200,9 +131,6 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
-    #>>> from sympy import var, exp, log, integrate, Integral
-    #>>> from sympy import simplify, collect, expand, factor, diff
-    #>>> from sympy import solve
     >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
@@ -711,6 +639,81 @@ class Equation(Basic, EvalfMixin):
 
 Eqn = Equation
 
+def solve(f, *symbols, **flags):
+    """
+    Override of sympy `solve()`. If it is passed an equation it will
+    output the solutions as typeset equations and return
+    the answer as a list of equations that can be accessed for additional
+    manipulations.
+    """
+    from sympy.solvers.solvers import solve
+    from IPython.display import display
+    if isinstance(f, Equation):
+        flags['dict'] = True
+        result = solve(f.lhs - f.rhs, *symbols, **flags)
+        solns = []
+        # return result
+        for k in result:
+            for key in k.keys():
+                val = k[key]
+                tempeqn = Eqn(key, val)
+                display(tempeqn)
+                solns.append(tempeqn)
+        return solns
+    else:
+        return solve(f, *symbols, **flags)
+
+def sqrt(arg, evaluate = None):
+    """
+    Override of sympy convenience function `sqrt`. Simply divides equations
+    into two sides if `arg` is an instance of `Equation`. This avoids an
+    issue with the way sympy is delaying specialized applications of _Pow_ on
+    objects that are not basic sympy expressions.
+    """
+    from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
+    if isinstance(arg, Equation):
+        return Equation(symsqrt(arg.lhs, evaluate), symsqrt(arg.rhs, evaluate))
+    else:
+        return symsqrt(arg,evaluate)
+
+# Pick up the docstring for sqrt from sympy
+from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
+sqrt.__doc__+=symsqrt.__doc__
+del symsqrt
+
+def root(arg, n, k = 0, evaluate = None):
+    """
+    Override of sympy convenience function `root`. Simply divides equations
+    into two sides if `arg` is an instance of `Equation`. This avoids an
+    issue with the way sympy is delaying specialized applications of _Pow_ on
+    objects that are not basic sympy expressions.
+    """
+    from sympy.functions.elementary.miscellaneous import root as symroot
+    if isinstance(arg, Equation):
+        return Equation(symroot(arg.lhs, n, k, evaluate), symroot(arg.rhs,
+                                                            n, k, evaluate))
+    else:
+        return symsqrt(arg, n, k, evaluate)
+
+# pick up the docstring for root from sympy
+from sympy.functions.elementary.miscellaneous import root as symroot
+root.__doc__+=symroot.__doc__
+del symroot
+
+def collect(expr, syms, func=None, evaluate=None, exact=False,
+            distribute_order_term=True):
+    """
+    Override of sympy `collect()`.
+    """
+    from sympy.simplify.radsimp import collect
+    _eval_collect = getattr(expr, '_eval_collect', None)
+    if _eval_collect is not None:
+        return _eval_collect(syms, func, evaluate,
+                             exact, distribute_order_term)
+    else:
+        return collect(expr, syms, func, evaluate, exact,
+                       distribute_order_term)
+
 
 #####
 # Extension of the Function class. For incorporation into SymPy this should
@@ -718,6 +721,11 @@ Eqn = Equation
 #####
 class Function(Function):
     def __new__(cls, *args, **kwargs):
+        """
+        Extension of the sympy Function class to understand equations. Each
+        sympy function impacted by this extension is listed in the documentation
+        that follows.
+        """
         n = len(args)
         eqnloc = None
         neqns = 0
