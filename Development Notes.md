@@ -11,14 +11,14 @@
    a copy of the file needs to be made and edited (will automate if this 
    becomes standard).
     * Copy of README.md from the root level to `docs/intro.md`.
-    * In the copy for each relative reference `src = "docs/DataSets/..."` 
-      remove `docs/` so that they read `src = "DataSets/..."`.
-    * DONOT change absolute (full url) paths.
-4. At the root level run pdoc `pdoc --logo alg_w_sympy.svg --logo-link 
-https://gutow.github.io/Algebra_with_Sympy/ --footer-text 
-   "Algebra with Sympy vX.X.X" -html -o docs 
-   algebra_with_sympy` where `X.X.X` is the version number.
-5. Edit the created `index.html`, if necessary, to point to an alternate 
+    * In the copy for each relative reference `src = "docs/resources/..."` 
+      remove `docs/` so that they read `src = "resources/..."`.
+    * DO NOT change absolute (full url) paths.
+3. At the root level run pdoc `pdoc --logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
+--logo-link https://gutow.github.io/Algebra_with_Sympy/
+--footer-text "Algebra with Sympy vX.X.X" -html -o docs algebra_with_sympy` 
+   where `X.X.X` is the version number.
+4. Edit the created `index.html`, if necessary, to point to an alternate 
    homepage from the pdoc default.
 
 ### Tasks for Documentation

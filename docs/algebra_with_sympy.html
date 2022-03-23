@@ -17,10 +17,15 @@
         <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
         <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
         <div>
-<a href="https://gutow.github.io/Algebra_with_Sympy/">            <img src="alg_w_sympy.svg" class="logo" alt="project logo"/>
+<a href="https://gutow.github.io/Algebra_with_Sympy/">            <img src="https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg" class="logo" alt="project logo"/>
 </a>
             <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
                    pattern=".+" required>
+
+        <h2>Contents</h2>
+        <ul>
+  <li><a href="#algebraic-equations-with-sympy">Algebraic Equations with SymPy</a></li>
+</ul>
 
 
         <h2>Submodules</h2>
@@ -43,13 +48,14 @@
                     <h1 class="modulename">
 algebra_with_sympy    </h1>
 
-                        <div class="docstring"><p>__Algebraic Equations with SymPy__</p>
+                        <div class="docstring"><h2 id="algebraic-equations-with-sympy">Algebraic Equations with SymPy</h2>
 
-<p>author: Jonathan Gutow <a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#103;&#117;&#x74;&#x6f;&#x77;&#64;&#117;&#x77;&#x6f;&#x73;&#x68;.&#x65;&#100;&#117;">&#103;&#117;&#x74;&#x6f;&#x77;&#64;&#117;&#x77;&#x6f;&#x73;&#x68;.&#x65;&#100;&#117;</a></p>
+<p><a href="#introduction">Introduction</a> | <a href="#setupinstallation">Installation</a> |
+<a href="#try-in-binder">Try Live</a> | <a href="#issues-or-comments">Issues or Comments</a> |
+<a href="#change-log">Change Log</a> |
+<a href="#this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses">License</a></p>
 
-<p>date: March 2022</p>
-
-<p>license: GPL V3+</p>
+<h4 id="introduction">Introduction</h4>
 
 <p>This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
@@ -66,28 +72,80 @@ equations and perform algebra
 in a stepwise fashion using as close to standard mathematical notation as 
 possible. In this way more people can successfully perform 
 algebraic rearrangements without stumbling
-over missed details such as a negative sign. This mimics the capabilities
-available in <a href="https://www.sagemath.org/">SageMath</a> 
-and <a href="http://maxima.sourceforge.net/">Maxima</a>, but can be installed in a generic
-python environment.</p>
+over missed details such as a negative sign.</p>
+
+<p>A simple example as it would appear in a <a href="https://jupyter.org">Jupyter</a> 
+notebook is shown immediately below:
+<img src="./resources/simple_example.png" alt="screenshot of simple example" /></p>
 
 <p>Once the algebra is complete it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
 proper units.</p>
 
-<p>_Setup/Installation_: Use pip to install in your python environment: 
-<code>python pip -U Algebra_with_SymPy</code> To use in a running python session issue
+<p><a href="Demonstration%20of%20equation%20class.html">More examples here</a>.</p>
+
+<p>Many math packages such as <a href="https://www.sagemath.org/">SageMath</a> 
+and <a href="http://maxima.sourceforge.net/">Maxima</a> have similar capabilities, 
+but require more knowledge of command syntax, plus they cannot easily be 
+installed in a generic python environment.</p>
+
+<h4 id="setupinstallation">Setup/Installation</h4>
+
+<ol>
+<li>Use pip to install in your python environment: 
+<code>pip install -U Algebra_with_SymPy</code></li>
+<li>To use in a running python session issue
 the following command : <code>from algebra_with_sympy import *</code>. 
-This will also import the SymPy tools. If you want to isolate this tool
-from the global namespace you are working with change the import statement 
+This will also import the SymPy tools. </li>
+<li>If you want to isolate this tool from the global namespace you are 
+working with change the import statement 
 to <code>import algebra_with_sympy as spa</code>, where 
 <code>spa</code> stands for "SymPy Algebra". Then all calls would be made to <code>
-spa.funcname()</code>.</p>
+spa.funcname()</code>.</li>
+</ol>
 
-<p>Usage examples can be found in the docstrings and the demonstration Jupyter 
-notebook <code>Demonstration of equation class.ipynb</code> in this git repository.</p>
+<h4 id="try-in-binder">Try in binder</h4>
 
-<p>Try in binder: <a href="https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+<p><a href="https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?urlpath=/tree/Demonstration%20of%20equation%20class.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<h4 id="issues-or-comments">Issues or Comments</h4>
+
+<ul>
+<li>Issues and bug reports should be <a href="https://github.com/gutow/Algebra_with_Sympy/issues">filed on 
+github</a>.</li>
+<li>Comments, questions, show and tell, etc. should go in the <a href="https://github.com/gutow/Algebra_with_Sympy/discussions">project 
+discussions</a>.</li>
+</ul>
+
+<h4 id="change-log">Change Log</h4>
+
+<ul>
+<li>0.9.1
+<ul>
+<li>Equations labeled with their python name, if they have one.</li>
+<li>Added flags to adjust human readable output and equation labeling.</li>
+<li>Accept equation as function argument in any position.</li>
+<li>First pass as <code>solve()</code> accepting equations.</li>
+<li>Added override of <code>root()</code> to avoid warning messages.</li>
+<li>More unit tests.</li>
+<li>First pass at documentation.</li>
+</ul></li>
+<li>0.9.0 functionality equivalent to extension of SymPy in
+<a href="https://github.com/sympy/sympy/pull/21333">PR#21333</a>.</li>
+</ul>
+
+<h5 id="this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses"><a href="https://gnu.org/licenses">This software is distributed under the GNU V3 license</a></h5>
+
+<p>This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.</p>
+
+<p>Copyright - Jonathan Gutow 2021, 2022</p>
 </div>
 
                         <details>
