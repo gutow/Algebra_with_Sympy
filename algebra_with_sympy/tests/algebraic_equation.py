@@ -1,1 +1,1 @@
-../algebraic_equation.py
+../algebra_with_sympy/algebraic_equation.py

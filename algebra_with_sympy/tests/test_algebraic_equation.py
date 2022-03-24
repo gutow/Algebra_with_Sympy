@@ -1,7 +1,40 @@
 from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
-    diff, FiniteSet, Equality, Function, functions, Matrix
-from .algebraic_equation import solve, collect, Equation, Eqn, Function
+    diff, FiniteSet, Equality, Function, functions, Matrix, S
+from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
+from .algebraic_equation import algwsym_config
+
 from pytest import raises
+
+#####
+# Extension of the Function class. For incorporation into SymPy this should
+# become part of the class
+#####
+class Function(Function):
+    def __new__(cls, *args, **kwargs):
+        n = len(args)
+        eqnloc = None
+        neqns = 0
+        newargs = []
+        for k in args:
+            newargs.append(k)
+        if (n > 0):
+            for i in range(n):
+                if isinstance(args[i], Equation):
+                    neqns += 1
+                    eqnloc = i
+            if neqns > 1:
+                raise NotImplementedError('Function calls with more than one '
+                                          'Equation as a parameter are not '
+                                          'supported. You may be able to get '
+                                          'your desired outcome using .applyrhs'
+                                          ' and .applylhs.')
+            if neqns == 1:
+                newargs[eqnloc] = args[eqnloc].lhs
+                lhs = super().__new__(cls, *newargs, **kwargs)
+                newargs[eqnloc] = args[eqnloc].rhs
+                rhs = super().__new__(cls, *newargs, **kwargs)
+                return Equation(lhs,rhs)
+        return super().__new__(cls, *args, **kwargs)
 
 for func in functions.__all__:
     # TODO: This will not be needed when incorporated into SymPy listed in
@@ -65,15 +98,34 @@ def test_binary_op():
 
 
 def test_outputs():
+    algwsym_config.output.show_code = False
+    # True for above not tested as it sends output to standard out via
+    # `print()`.
+    algwsym_config.output.human_text = False
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
-    assert tsteqn.__repr__() == 'a=b/c'
-    assert tsteqn.__str__() == 'a=b/c'
+    assert tsteqn.__repr__() == 'Equation(a, b/c)'
+    algwsym_config.output.human_text = True
+    assert tsteqn.__repr__() == 'a = b/c'
+    assert tsteqn.__str__() == 'a = b/c'
     assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
+
+def test_sympy_functions():
+    # TODO: To avoid problems if a function in sympy changes or is added this
+    #  should test all functions automatically.
+    a, b, c = symbols('a b c')
+    tsteqn = Equation(a, b/c)
+    assert sin(tsteqn) == Equation(sin(a),sin(b/c))
+    assert log(tsteqn) == Equation(log(a),log(b/c))
+    # Check matrix exponentiation is not overridden.
+    assert exp(tsteqn) == Equation(exp(tsteqn.lhs),exp(tsteqn.rhs))
+    tsteqn5 = Equation(a, Matrix([[1, 1], [1, 1]]))
+    assert exp(tsteqn5).lhs == exp(a)
+    assert exp(tsteqn5).rhs == exp(Matrix([[1, 1], [1, 1]]))
 
 
 def test_helper_functions():
-    a, b, c = symbols('a b c')
+    a, b, c, x= symbols('a b c x')
     tsteqn = Equation(a, b/c)
     raises(ValueError, lambda: integrate(tsteqn, c))
     raises(AttributeError, lambda: integrate(tsteqn, c, side='right'))
@@ -106,11 +158,14 @@ def test_helper_functions():
         a + 1, c)
     assert simplify(Equation((a + 1)**2/(a + 1), exp(log(c)))) == Equation(
         a + 1, c)
+    assert Equation(x, (b - sqrt(4*a*c + b**2))/(2*a)) in solve(Equation(
+        a*x**2,b*x+c),x)
+    assert Equation(x, (b + sqrt(4*a*c + b**2))/(2*a)) in solve(Equation(
+        a*x**2,b*x+c),x)
+    assert len(solve(Equation(a*x**2,b*x+c), x)) == 2
+    assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
+    assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
 
-    # Check matrix exponentiation is not overridden.
-    tsteqn5 = Equation(a, Matrix([[1, 1], [1, 1]]))
-    assert (exp(tsteqn5).lhs == exp(a))
-    assert (exp(tsteqn5).rhs == exp(Matrix([[1, 1], [1, 1]])))
 
 
 def test_apply_syntax():
