@@ -91,7 +91,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
   * Equations labeled with their python name, if they have one.
   * Added flags to adjust human readable output and equation labeling.
   * Accept equation as function argument in any position.
-  * First pass as `solve()` accepting equations.
+  * First pass at `solve()` accepting equations.
   * Added override of `root()` to avoid warning messages.
   * More unit tests.
   * First pass at documentation.
