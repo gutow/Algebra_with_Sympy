@@ -1,7 +1,7 @@
 from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
     diff, FiniteSet, Equality, Function, functions, Matrix, S
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
-from .algebraic_equation import algebra_with_sympy
+from .algebraic_equation import algwsym_config
 
 from pytest import raises
 
@@ -98,14 +98,14 @@ def test_binary_op():
 
 
 def test_outputs():
-    algebra_with_sympy.output.show_code = False
+    algwsym_config.output.show_code = False
     # True for above not tested as it sends output to standard out via
     # `print()`.
-    algebra_with_sympy.output.human_text = False
+    algwsym_config.output.human_text = False
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
     assert tsteqn.__repr__() == 'Equation(a, b/c)'
-    algebra_with_sympy.output.human_text = True
+    algwsym_config.output.human_text = True
     assert tsteqn.__repr__() == 'a = b/c'
     assert tsteqn.__str__() == 'a = b/c'
     assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
