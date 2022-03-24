@@ -34,72 +34,87 @@ import functools
 from sympy import *
 
 
-class algebra_with_sympy():
-    """
-    This is a class to hold parameters that control behavior of
-    the algebra_with_sympy package.
-
-    Settings
-    ========
-    Printing
-    --------
-    In interactive environments the default output of an equation is a
-    human readable string with the two sides connected by an equals
-    sign or a typeset equation with the two sides connected by an equals sign.
-    `print(Eqn)` or `str(Eqn)` will return this human readable text version of
-    the equation as well. This is consistent with python standards, but not
-    sympy, where `str()` is supposed to return something that can be
-    copy-pasted into code. If the equation has a declared name as in `eq1 =
-    Eqn(a,b/c)` the name will be displayed to the right of the equation in
-    parentheses (eg. `a = b/c    (eq1)`). Use `print(repr(Eqn))` instead of
-    `print(Eqn)` or `repr(Eqn)` instead of `str(Eqn)` to get a code
-    compatible version of the equation.
-
-    You can adjust this behvior using some flags that impact output:
-    * `algebra_with_sympy.output.show_code` default is `False`.
-    * `algebra_with_sympy.output.human_text` default is `False`.
-    * `algebra_with_sympy.output.label` default is `True`.
-
-    In interactive environments you can get both types of output by setting
-    the `algebra_with_sympy.output.show_code` flag. If this flag is true
-    calls to `latex` and `str` will also print an additional line "code
-    version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
-    mathematics output preceded by the code version that can be copy-pasted.
-    Default is `False`.
-
-    A second flag `algebra_with_sympy.output.human_text` is useful in
-    text-based interactive environments such as command line python or
-    ipython. If this flag is true `repr` will return `str`. Thus the human
-    readable text will be printed as the output of a line that is an
-    expression containing an equation.
-    Default is `False`.
-
-    Setting both of these flags to true in a command line or ipython
-    environment will show both the code version and the human readable text.
-    These flags impact the behavior of the `print(Eqn)` statement.
-
-    The third flag `algebra_with_sympy.output.label` has a default value of
-    `True`. Setting this to `False` suppresses the labeling of an equation
-    with its python name off to the right of the equation.
-    """
+class algwsym_config():
 
     def __init__(self):
+        """
+        This is a class to hold parameters that control behavior of
+        the algebra_with_sympy package.
+
+        Settings
+        ========
+        Printing
+        --------
+        In interactive environments the default output of an equation is a
+        human readable string with the two sides connected by an equals
+        sign or a typeset equation with the two sides connected by an equals sign.
+        `print(Eqn)` or `str(Eqn)` will return this human readable text version of
+        the equation as well. This is consistent with python standards, but not
+        sympy, where `str()` is supposed to return something that can be
+        copy-pasted into code. If the equation has a declared name as in `eq1 =
+        Eqn(a,b/c)` the name will be displayed to the right of the equation in
+        parentheses (eg. `a = b/c    (eq1)`). Use `print(repr(Eqn))` instead of
+        `print(Eqn)` or `repr(Eqn)` instead of `str(Eqn)` to get a code
+        compatible version of the equation.
+
+        You can adjust this behvior using some flags that impact output:
+        * `algwsym_config.output.show_code` default is `False`.
+        * `algwsym_config.output.human_text` default is `False`.
+        * `algwsym_config.output.label` default is `True`.
+
+        In interactive environments you can get both types of output by setting
+        the `algwsym_config.output.show_code` flag. If this flag is true
+        calls to `latex` and `str` will also print an additional line "code
+        version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
+        mathematics output preceded by the code version that can be copy-pasted.
+        Default is `False`.
+
+        A second flag `algwsym_config.output.human_text` is useful in
+        text-based interactive environments such as command line python or
+        ipython. If this flag is true `repr` will return `str`. Thus the human
+        readable text will be printed as the output of a line that is an
+        expression containing an equation.
+        Default is `False`.
+
+        Setting both of these flags to true in a command line or ipython
+        environment will show both the code version and the human readable text.
+        These flags impact the behavior of the `print(Eqn)` statement.
+
+        The third flag `algwsym_config.output.label` has a default value of
+        `True`. Setting this to `False` suppresses the labeling of an equation
+        with its python name off to the right of the equation.
+        """
         pass
 
     class output():
+
         def __init__(self):
+            """This holds settings that impact output.
+            """
             pass
 
         @property
         def show_code(self):
+            """
+            If `True` code versions of the equation expression will be
+            output in interactive environments. Default = `False`.
+            """
             return self.show_code
 
         @property
         def human_text(self):
+            """
+            If `True` the human readable equation expression will be
+            output in text interactive environments. Default = `False`.
+            """
             return self.human_text
 
         @property
         def label(self):
+            """
+            If `True` the human readable equation will be followed by the
+            python name it is assigned to. Default = `True`.
+            """
             return self.label
 
 
@@ -334,12 +349,16 @@ class Equation(Basic, EvalfMixin):
     def _get_eqn_name(self):
         from IPython import get_ipython
         global_dict = getattr(get_ipython(), 'user_ns', None)
+        human_text = algwsym_config.output.human_text
+        algwsym_config.output.human_text=False
         if global_dict:
             for var_name in global_dict:
                 if isinstance(global_dict[var_name], Equation):
                     if (global_dict[var_name]).__repr__()==self.__repr__() and not \
                             var_name.startswith('_'):
+                        algwsym_config.output.human_text=human_text
                         return var_name
+        algwsym_config.output.human_text = human_text
         return ''
 
     @property
@@ -604,35 +623,34 @@ class Equation(Basic, EvalfMixin):
     #####
     def __repr__(self):
         repstr = 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
-        if algebra_with_sympy.output.human_text:
+        if algwsym_config.output.human_text:
             return self.__str__()
         return repstr
 
     def _latex(self, obj, **kwargs):
-        if algebra_with_sympy.output.show_code and not \
-            algebra_with_sympy.output.human_text:
-            print('code version: '+str(self.__repr__()))
-        tempstr = latex(self.lhs, **kwargs)
+        tempstr = ''
+        if algwsym_config.output.show_code and not \
+            algwsym_config.output.human_text:
+            tempstr +='\\text{code version: '+ self.__repr__()+'} \\newline '
+        tempstr += latex(self.lhs, **kwargs)
         tempstr += '='
         tempstr += latex(self.rhs, **kwargs)
         namestr = self._get_eqn_name()
-        if namestr !='' and algebra_with_sympy.output.label:
+        if namestr !='' and algwsym_config.output.label:
             tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
             tempstr += '(\\text{'+namestr+'})'
         return tempstr
 
     def __str__(self):
-        if algebra_with_sympy.output.show_code and not \
-            algebra_with_sympy.output.human_text:
-            print('code version: '+str(self.__repr__()))
-        if algebra_with_sympy.output.show_code and \
-            algebra_with_sympy.output.human_text:
-            algebra_with_sympy.output.human_text = False
-            print('code version: '+str(self.__repr__()))
-            algebra_with_sympy.output.human_text = True
-        tempstr = str(self.lhs) + ' = ' + str(self.rhs)
+        tempstr = ''
+        if algwsym_config.output.show_code:
+            human_text = algwsym_config.output.human_text
+            algwsym_config.output.human_text=False
+            tempstr += 'code version: '+self.__repr__() +'\n'
+            algwsym_config.output.human_text=human_text
+        tempstr += str(self.lhs) + ' = ' + str(self.rhs)
         namestr = self._get_eqn_name()
-        if namestr != '' and algebra_with_sympy.output.label:
+        if namestr != '' and algwsym_config.output.label:
             tempstr += '          (' + namestr + ')'
         return tempstr
 
@@ -719,13 +737,13 @@ def collect(expr, syms, func=None, evaluate=None, exact=False,
 # Extension of the Function class. For incorporation into SymPy this should
 # become part of the class
 #####
-class Function(Function):
+class EqnFunction(Function):
+    """
+    Extension of the sympy Function class to understand equations. Each
+    sympy function impacted by this extension is listed in the documentation
+    that follows.
+    """
     def __new__(cls, *args, **kwargs):
-        """
-        Extension of the sympy Function class to understand equations. Each
-        sympy function impacted by this extension is listed in the documentation
-        that follows.
-        """
         n = len(args)
         eqnloc = None
         neqns = 0
@@ -765,5 +783,5 @@ for func in functions.__all__:
             'jacobi_normalized', 'Ynm_c')
     if func not in skip:
         execstr = 'class ' + str(func) + '(' + str(
-            func) + ',Function):\n    pass\n'
+            func) + ',EqnFunction):\n    pass\n'
         exec(execstr, globals(), locals())

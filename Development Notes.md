@@ -23,6 +23,11 @@
 
 ### Tasks for Documentation
 
+* Add explanation of output options to the first page/readme/intro
+* Fix the way parameters are listed or interpreted (change preferences in 
+  pdoc?)
+* Enable math display?
+
 ## Building PyPi package
 
 1. Make sure to update the version number in setup.py first.

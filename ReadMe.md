@@ -1,6 +1,7 @@
 ## Algebraic Equations with SymPy
 
-[Introduction](#introduction) | [Installation](#setupinstallation) |
+[Introduction](#introduction) | [Output Formatting](#controlling-the-format-of-interactive-outputs)
+| [Installation](#setupinstallation) |
 [Try Live](#try-in-binder) | [Issues or Comments](#issues-or-comments) |
 [Change Log](#change-log) |
 [License](#this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses)
@@ -39,11 +40,31 @@ and [Maxima](http://maxima.sourceforge.net/) have similar capabilities,
 but require more knowledge of command syntax, plus they cannot easily be 
 installed in a generic python environment.
 
+#### Controlling the Format of Interactive Outputs
+
+* **In graphical environments (Jupyter)** you will get rendered Latex such as 
+$\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
+  be copy and pasted for 
+  additional computation) set `algwsym_config.output.show_code = True`. 
+  This will print the code version (e.g. `Equation(a,b/c)`) of the equation as 
+  well. This code version can be accessed directly by calling `repr()` on the 
+  equation.
+
+* **In interactive text environments (ipython and command line)** the 
+  representation (code version) is returned by default. Calling `print()` 
+  or `str()` on an equation will return the human readable version with an 
+  equals sign. To have the human readable version returned by default set 
+`algwsym_config.output.human_text = True`. If combined with 
+`algwsym_config.output.show_code = True`, both code and human readable 
+versions will be shown.
+
+* **The equation label** can be turned off by setting
+  `algwsym_config.output.label = False`.
 
 #### Setup/Installation
 
 1. Use pip to install in your python environment: 
-`pip install -U Algebra_with_SymPy`
+`pip install -U Algebra-with-SymPy`
 2. To use in a running python session issue
 the following command : `from algebra_with_sympy import *`. 
 This will also import the SymPy tools. 
