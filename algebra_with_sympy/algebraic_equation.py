@@ -33,42 +33,95 @@ from sympy import functions
 import functools
 from sympy import *
 
-def solve(f, *symbols, **flags):
-    # override of sympy solve()
-    # If it is passed an equation it will return the answer as an equation.
-    from sympy.solvers.solvers import solve
-    from IPython.display import display
-    if isinstance(f, Equation):
-        flags['dict']=True
-        result = solve(f.lhs-f.rhs, *symbols, **flags)
-        solns = []
-        #return result
-        for k in result:
-            for key in k.keys():
-                val = k[key]
-                tempeqn =Eqn(key,val)
-                display(tempeqn)
-                solns.append(tempeqn)
-        return solns
-    else:
-        return solve(f, *symbols, **flags)
 
-def collect(expr, syms, func=None, evaluate=None, exact=False,
-            distribute_order_term=True):
-    # override of sympy `collect`.
-    from sympy.simplify.radsimp import collect
-    _eval_collect = getattr(expr, '_eval_collect', None)
-    if _eval_collect is not None:
-        return _eval_collect(syms, func, evaluate,
-                             exact, distribute_order_term)
-    else:
-        return collect(expr, syms, func, evaluate, exact,
-                       distribute_order_term)
+class algwsym_config():
+
+    def __init__(self):
+        """
+        This is a class to hold parameters that control behavior of
+        the algebra_with_sympy package.
+
+        Settings
+        ========
+        Printing
+        --------
+        In interactive environments the default output of an equation is a
+        human readable string with the two sides connected by an equals
+        sign or a typeset equation with the two sides connected by an equals sign.
+        `print(Eqn)` or `str(Eqn)` will return this human readable text version of
+        the equation as well. This is consistent with python standards, but not
+        sympy, where `str()` is supposed to return something that can be
+        copy-pasted into code. If the equation has a declared name as in `eq1 =
+        Eqn(a,b/c)` the name will be displayed to the right of the equation in
+        parentheses (eg. `a = b/c    (eq1)`). Use `print(repr(Eqn))` instead of
+        `print(Eqn)` or `repr(Eqn)` instead of `str(Eqn)` to get a code
+        compatible version of the equation.
+
+        You can adjust this behvior using some flags that impact output:
+        * `algwsym_config.output.show_code` default is `False`.
+        * `algwsym_config.output.human_text` default is `False`.
+        * `algwsym_config.output.label` default is `True`.
+
+        In interactive environments you can get both types of output by setting
+        the `algwsym_config.output.show_code` flag. If this flag is true
+        calls to `latex` and `str` will also print an additional line "code
+        version: `repr(Eqn)`". Thus in Jupyter you will get a line of typeset
+        mathematics output preceded by the code version that can be copy-pasted.
+        Default is `False`.
+
+        A second flag `algwsym_config.output.human_text` is useful in
+        text-based interactive environments such as command line python or
+        ipython. If this flag is true `repr` will return `str`. Thus the human
+        readable text will be printed as the output of a line that is an
+        expression containing an equation.
+        Default is `False`.
+
+        Setting both of these flags to true in a command line or ipython
+        environment will show both the code version and the human readable text.
+        These flags impact the behavior of the `print(Eqn)` statement.
+
+        The third flag `algwsym_config.output.label` has a default value of
+        `True`. Setting this to `False` suppresses the labeling of an equation
+        with its python name off to the right of the equation.
+        """
+        pass
+
+    class output():
+
+        def __init__(self):
+            """This holds settings that impact output.
+            """
+            pass
+
+        @property
+        def show_code(self):
+            """
+            If `True` code versions of the equation expression will be
+            output in interactive environments. Default = `False`.
+            """
+            return self.show_code
+
+        @property
+        def human_text(self):
+            """
+            If `True` the human readable equation expression will be
+            output in text interactive environments. Default = `False`.
+            """
+            return self.human_text
+
+        @property
+        def label(self):
+            """
+            If `True` the human readable equation will be followed by the
+            python name it is assigned to. Default = `True`.
+            """
+            return self.label
+
 
 class Equation(Basic, EvalfMixin):
     """
     This class defines an equation with a left-hand-side (lhs) and a right-
-    hand-side (rhs) connected by the "=" operator (e.g. $p*V = n*R*T$).
+    hand-side (rhs) connected by the "=" operator (e.g. `p*V = n*R*T`).
 
     Explanation
     ===========
@@ -93,83 +146,81 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
-    >>> from sympy import var, Equation, Eqn, exp, log, integrate, Integral
-    >>> from sympy import simplify, collect, expand, factor, diff
-    >>> from sympy import solve
+    >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
-    a = b/c
+    Equation(a, b/c)
     >>> t=Eqn(a,b/c)
     >>> t
-    a = b/c
+    Equation(a, b/c)
     >>> t*c
-    a*c = b
+    Equation(a*c, b)
     >>> c*t
-    a*c = b
+    Equation(a*c, b)
     >>> exp(t)
-    exp(a) = exp(b/c)
+    Equation(exp(a), exp(b/c))
     >>> exp(log(t))
-    a = b/c
+    Equation(a, b/c)
 
     Simplification and Expansion
     >>> f = Eqn(x**2 - 1, c)
     >>> f
-    x**2 - 1 = c
+    Equation(x**2 - 1, c)
     >>> f/(x+1)
-    (x**2 - 1)/(x + 1) = c/(x + 1)
+    Equation((x**2 - 1)/(x + 1), c/(x + 1))
     >>> (f/(x+1)).simplify()
-    x - 1 = c/(x + 1)
+    Equation(x - 1, c/(x + 1))
     >>> simplify(f/(x+1))
-    x - 1 = c/(x + 1)
+    Equation(x - 1, c/(x + 1))
     >>> (f/(x+1)).expand()
-    x**2/(x + 1) - 1/(x + 1) = c/(x + 1)
+    Equation(x**2/(x + 1) - 1/(x + 1), c/(x + 1))
     >>> expand(f/(x+1))
-    x**2/(x + 1) - 1/(x + 1) = c/(x + 1)
+    Equation(x**2/(x + 1) - 1/(x + 1), c/(x + 1))
     >>> factor(f)
-    (x - 1)*(x + 1) = c
+    Equation((x - 1)*(x + 1), c)
     >>> f.factor()
-    (x - 1)*(x + 1) = c
+    Equation((x - 1)*(x + 1), c)
     >>> f2 = f+a*x**2+b*x +c
     >>> f2
-    a*x**2 + b*x + c + x**2 - 1 = a*x**2 + b*x + 2*c
+    Equation(a*x**2 + b*x + c + x**2 - 1, a*x**2 + b*x + 2*c)
     >>> collect(f2,x)
-    b*x + c + x**2*(a + 1) - 1 = a*x**2 + b*x + 2*c
+    Equation(b*x + c + x**2*(a + 1) - 1, a*x**2 + b*x + 2*c)
 
     Apply operation to only one side
     >>> poly = Eqn(a*x**2 + b*x + c*x**2, a*x**3 + b*x**3 + c*x)
     >>> poly.applyrhs(factor,x)
-    a*x**2 + b*x + c*x**2 = x*(c + x**2*(a + b))
+    Equation(a*x**2 + b*x + c*x**2, x*(c + x**2*(a + b)))
     >>> poly.applylhs(factor)
-    x*(a*x + b + c*x) = a*x**3 + b*x**3 + c*x
+    Equation(x*(a*x + b + c*x), a*x**3 + b*x**3 + c*x)
     >>> poly.applylhs(collect,x)
-    b*x + x**2*(a + c) = a*x**3 + b*x**3 + c*x
+    Equation(b*x + x**2*(a + c), a*x**3 + b*x**3 + c*x)
 
     ``.apply...`` also works with user defined python functions
     >>> def addsquare(eqn):
     ...     return eqn+eqn**2
     ...
     >>> t.apply(addsquare)
-    a**2 + a = b**2/c**2 + b/c
+    Equation(a**2 + a, b**2/c**2 + b/c)
     >>> t.applyrhs(addsquare)
-    a = b**2/c**2 + b/c
+    Equation(a, b**2/c**2 + b/c)
     >>> t.apply(addsquare, side = 'rhs')
-    a = b**2/c**2 + b/c
+    Equation(a, b**2/c**2 + b/c)
     >>> t.applylhs(addsquare)
-    a**2 + a = b/c
+    Equation(a**2 + a, b/c)
     >>> addsquare(t)
-    a**2 + a = b**2/c**2 + b/c
+    Equation(a**2 + a, b**2/c**2 + b/c)
 
     Inaddition to ``.apply...`` there is also the less general ``.do``,
     ``.dolhs``, ``.dorhs``, which only works for operations defined on the
     ``Expr`` class (e.g.``.collect(), .factor(), .expand()``, etc...).
     >>> poly.dolhs.collect(x)
-    b*x + x**2*(a + c) = a*x**3 + b*x**3 + c*x
+    Equation(b*x + x**2*(a + c), a*x**3 + b*x**3 + c*x)
     >>> poly.dorhs.collect(x)
-    a*x**2 + b*x + c*x**2 = c*x + x**3*(a + b)
+    Equation(a*x**2 + b*x + c*x**2, c*x + x**3*(a + b))
     >>> poly.do.collect(x)
-    b*x + x**2*(a + c) = c*x + x**3*(a + b)
+    Equation(b*x + x**2*(a + c), c*x + x**3*(a + b))
     >>> poly.dorhs.factor()
-    a*x**2 + b*x + c*x**2 = x*(a*x**2 + b*x**2 + c)
+    Equation(a*x**2 + b*x + c*x**2, x*(a*x**2 + b*x**2 + c))
 
     ``poly.do.exp()`` or other sympy math functions will raise an error.
 
@@ -177,47 +228,47 @@ class Equation(Basic, EvalfMixin):
     >>> p, V, n, R, T = var('p V n R T')
     >>> eq1=Eqn(p*V,n*R*T)
     >>> eq1
-    V*p = R*T*n
+    Equation(V*p, R*T*n)
     >>> eq2 =eq1/V
     >>> eq2
-    p = R*T*n/V
+    Equation(p, R*T*n/V)
     >>> eq3 = eq2/R/T
     >>> eq3
-    p/(R*T) = n/V
+    Equation(p/(R*T), n/V)
     >>> eq4 = eq3*R/p
     >>> eq4
-    1/T = R*n/(V*p)
+    Equation(1/T, R*n/(V*p))
     >>> 1/eq4
-    T = V*p/(R*n)
+    Equation(T, V*p/(R*n))
     >>> eq5 = 1/eq4 - T
     >>> eq5
-    0 = -T + V*p/(R*n)
+    Equation(0, -T + V*p/(R*n))
 
     Substitution (#'s and units)
     >>> L, atm, mol, K = var('L atm mol K', positive=True, real=True) # units
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L})
-    p = 0.9334325*atm
+    Equation(p, 0.9334325*atm)
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L}).evalf(4)
-    p = 0.9334*atm
+    Equation(p, 0.9334*atm)
 
     Combining equations (Math with equations: lhs with lhs and rhs with rhs)
     >>> q = Eqn(a*c, b/c**2)
     >>> q
-    a*c = b/c**2
+    Equation(a*c, b/c**2)
     >>> t
-    a = b/c
+    Equation(a, b/c)
     >>> q+t
-    a*c + a = b/c + b/c**2
+    Equation(a*c + a, b/c + b/c**2)
     >>> q/t
-    c = 1/c
+    Equation(c, 1/c)
     >>> t**q
-    a**(a*c) = (b/c)**(b/c**2)
+    Equation(a**(a*c), (b/c)**(b/c**2))
 
     Utility operations
     >>> t.reversed
-    b/c = a
+    Equation(b/c, a)
     >>> t.swap
-    b/c = a
+    Equation(b/c, a)
     >>> t.lhs
     a
     >>> t.rhs
@@ -237,29 +288,29 @@ class Equation(Basic, EvalfMixin):
     both sides.
     >>> q=Eqn(a*c, b/c**2)
     >>> q
-    a*c = b/c**2
+    Equation(a*c, b/c**2)
     >>> diff(q,b)
-    Derivative(a*c, b) = c**(-2)
+    Equation(Derivative(a*c, b), c**(-2))
     >>> diff(q,c)
-    a = -2*b/c**3
+    Equation(a, -2*b/c**3)
     >>> diff(log(q),b)
-    Derivative(log(a*c), b) = 1/b
+    Equation(Derivative(log(a*c), b), 1/b)
     >>> diff(q,c,2)
-    Derivative(a, c) = 6*b/c**4
+    Equation(Derivative(a, c), 6*b/c**4)
 
     If you specify multiple differentiation all at once the assumption
     is order of differentiation matters and the lhs will not be
     evaluated.
     >>> diff(q,c,b)
-    Derivative(a*c, b, c) = -2/c**3
+    Equation(Derivative(a*c, b, c), -2/c**3)
 
     To overcome this specify the order of operations.
     >>> diff(diff(q,c),b)
-    Derivative(a, b) = -2/c**3
+    Equation(Derivative(a, b), -2/c**3)
 
     But the reverse order returns an unevaulated lhs (a may depend on b).
     >>> diff(diff(q,b),c)
-    Derivative(a*c, b, c) = -2/c**3
+    Equation(Derivative(a*c, b, c), -2/c**3)
 
     Integration can only be performed on one side at a time.
     >>> q=Eqn(a*c,b/c)
@@ -270,11 +321,11 @@ class Equation(Basic, EvalfMixin):
 
     Make a pretty statement of integration from an equation
     >>> Eqn(Integral(q.lhs,b),integrate(q,b,side='rhs'))
-    Integral(a*c, b) = b**2/(2*c)
+    Equation(Integral(a*c, b), b**2/(2*c))
 
     Integration of each side with respect to different variables
     >>> q.dorhs.integrate(b).dolhs.integrate(a)
-    a**2*c/2 = b**2/(2*c)
+    Equation(a**2*c/2, b**2/(2*c))
 
     SymPy's solvers do not understand these equations. They expect an
     expression that the solver assumes = 0. Thus to use the solver the
@@ -282,17 +333,33 @@ class Equation(Basic, EvalfMixin):
     Then just the non-zero symbolic side is passed to ``solve()``.
     >>> t2 = t-t.rhs
     >>> t2
-    a - b/c = 0
+    Equation(a - b/c, 0)
     >>> solve(t2.lhs,c)
     [b/a]
+
     """
 
     def __new__(cls, lhs, rhs, **kwargs):
         lhs = _sympify(lhs)
         rhs = _sympify(rhs)
-        if not isinstance(lhs,Expr) or not isinstance(rhs,Expr):
+        if not isinstance(lhs, Expr) or not isinstance(rhs, Expr):
             raise TypeError('lhs and rhs must be valid sympy expressions.')
         return super().__new__(cls, lhs, rhs)
+
+    def _get_eqn_name(self):
+        from IPython import get_ipython
+        global_dict = getattr(get_ipython(), 'user_ns', None)
+        human_text = algwsym_config.output.human_text
+        algwsym_config.output.human_text=False
+        if global_dict:
+            for var_name in global_dict:
+                if isinstance(global_dict[var_name], Equation):
+                    if (global_dict[var_name]).__repr__()==self.__repr__() and not \
+                            var_name.startswith('_'):
+                        algwsym_config.output.human_text=human_text
+                        return var_name
+        algwsym_config.output.human_text = human_text
+        return ''
 
     @property
     def lhs(self):
@@ -348,7 +415,7 @@ class Equation(Basic, EvalfMixin):
         # is a specialized version associated with the particular type of
         # expression. Errors will be raised if the function cannot be
         # applied to an expression.
-        funcname = getattr(func, '__name__',None)
+        funcname = getattr(func, '__name__', None)
         if funcname is not None:
             localfunc = getattr(expr, funcname, None)
             if localfunc is not None:
@@ -403,7 +470,8 @@ class Equation(Basic, EvalfMixin):
         Helper class for the `.do.`, `.dolhs.`, `.dorhs.` syntax for applying
         submethods of expressions.
         """
-        def __init__(self,eqn, side='both'):
+
+        def __init__(self, eqn, side='both'):
             self.eqn = eqn
             self.side = side
 
@@ -415,10 +483,11 @@ class Equation(Basic, EvalfMixin):
                 func = getattr(self.eqn.lhs, name, None)
             if func is None:
                 raise AttributeError('Expressions in the equation have no '
-                                     'attribute `'+str(name)+'`. Try `.apply('
-                                     +str(name)+', *args)` or '
-                                     'pass the equation as a parameter to `'
-                                     +str(name)+'()`.')
+                                     'attribute `' + str(
+                    name) + '`. Try `.apply('
+                                     + str(name) + ', *args)` or '
+                                                   'pass the equation as a parameter to `'
+                                     + str(name) + '()`.')
             return functools.partial(self.eqn.apply, func, side=self.side)
 
     @property
@@ -532,7 +601,7 @@ class Equation(Basic, EvalfMixin):
         if not (isinstance(self.lhs, Derivative)):
             for sym in args:
                 if sym in self.lhs.free_symbols and not (
-                _sympify(sym).is_number):
+                        _sympify(sym).is_number):
                     eval_lhs = True
         return Equation(self.lhs.diff(*args, **kwargs, evaluate=eval_lhs),
                         self.rhs.diff(*args, **kwargs))
@@ -553,30 +622,152 @@ class Equation(Basic, EvalfMixin):
     # Output helper functions
     #####
     def __repr__(self):
-        return str(self.lhs) + '=' + str(self.rhs)
+        repstr = 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
+        if algwsym_config.output.human_text:
+            return self.__str__()
+        return repstr
 
     def _latex(self, obj, **kwargs):
-        return latex(self.lhs, **kwargs) + '=' + latex(self.rhs,
-                                                              **kwargs)
+        tempstr = ''
+        if algwsym_config.output.show_code and not \
+            algwsym_config.output.human_text:
+            tempstr +='\\text{code version: '+ self.__repr__()+'} \\newline '
+        tempstr += latex(self.lhs, **kwargs)
+        tempstr += '='
+        tempstr += latex(self.rhs, **kwargs)
+        namestr = self._get_eqn_name()
+        if namestr !='' and algwsym_config.output.label:
+            tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
+            tempstr += '(\\text{'+namestr+'})'
+        return tempstr
 
     def __str__(self):
-        return self.__repr__()
+        tempstr = ''
+        if algwsym_config.output.show_code:
+            human_text = algwsym_config.output.human_text
+            algwsym_config.output.human_text=False
+            tempstr += 'code version: '+self.__repr__() +'\n'
+            algwsym_config.output.human_text=human_text
+        tempstr += str(self.lhs) + ' = ' + str(self.rhs)
+        namestr = self._get_eqn_name()
+        if namestr != '' and algwsym_config.output.label:
+            tempstr += '          (' + namestr + ')'
+        return tempstr
+
 
 Eqn = Equation
+
+def solve(f, *symbols, **flags):
+    """
+    Override of sympy `solve()`. If it is passed an equation it will
+    output the solutions as typeset equations and return
+    the answer as a list of equations that can be accessed for additional
+    manipulations.
+    """
+    from sympy.solvers.solvers import solve
+    from IPython.display import display
+    if isinstance(f, Equation):
+        flags['dict'] = True
+        result = solve(f.lhs - f.rhs, *symbols, **flags)
+        solns = []
+        # return result
+        for k in result:
+            for key in k.keys():
+                val = k[key]
+                tempeqn = Eqn(key, val)
+                display(tempeqn)
+                solns.append(tempeqn)
+        return solns
+    else:
+        return solve(f, *symbols, **flags)
+
+def sqrt(arg, evaluate = None):
+    """
+    Override of sympy convenience function `sqrt`. Simply divides equations
+    into two sides if `arg` is an instance of `Equation`. This avoids an
+    issue with the way sympy is delaying specialized applications of _Pow_ on
+    objects that are not basic sympy expressions.
+    """
+    from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
+    if isinstance(arg, Equation):
+        return Equation(symsqrt(arg.lhs, evaluate), symsqrt(arg.rhs, evaluate))
+    else:
+        return symsqrt(arg,evaluate)
+
+# Pick up the docstring for sqrt from sympy
+from sympy.functions.elementary.miscellaneous import sqrt as symsqrt
+sqrt.__doc__+=symsqrt.__doc__
+del symsqrt
+
+def root(arg, n, k = 0, evaluate = None):
+    """
+    Override of sympy convenience function `root`. Simply divides equations
+    into two sides if `arg` is an instance of `Equation`. This avoids an
+    issue with the way sympy is delaying specialized applications of _Pow_ on
+    objects that are not basic sympy expressions.
+    """
+    from sympy.functions.elementary.miscellaneous import root as symroot
+    if isinstance(arg, Equation):
+        return Equation(symroot(arg.lhs, n, k, evaluate), symroot(arg.rhs,
+                                                            n, k, evaluate))
+    else:
+        return symsqrt(arg, n, k, evaluate)
+
+# pick up the docstring for root from sympy
+from sympy.functions.elementary.miscellaneous import root as symroot
+root.__doc__+=symroot.__doc__
+del symroot
+
+def collect(expr, syms, func=None, evaluate=None, exact=False,
+            distribute_order_term=True):
+    """
+    Override of sympy `collect()`.
+    """
+    from sympy.simplify.radsimp import collect
+    _eval_collect = getattr(expr, '_eval_collect', None)
+    if _eval_collect is not None:
+        return _eval_collect(syms, func, evaluate,
+                             exact, distribute_order_term)
+    else:
+        return collect(expr, syms, func, evaluate, exact,
+                       distribute_order_term)
 
 
 #####
 # Extension of the Function class. For incorporation into SymPy this should
 # become part of the class
 #####
-class Function(Function):
+class EqnFunction(Function):
+    """
+    Extension of the sympy Function class to understand equations. Each
+    sympy function impacted by this extension is listed in the documentation
+    that follows.
+    """
     def __new__(cls, *args, **kwargs):
         n = len(args)
-
-        if (n > 0) and isinstance(args[0],Equation):
-            return args[0].apply(cls, *args[1:], **kwargs)
-        else:
-            return super().__new__(cls, *args, **kwargs)
+        eqnloc = None
+        neqns = 0
+        newargs = []
+        for k in args:
+            newargs.append(k)
+        if (n > 0):
+            for i in range(n):
+                if isinstance(args[i], Equation):
+                    neqns += 1
+                    eqnloc = i
+            if neqns > 1:
+                raise NotImplementedError('Function calls with more than one '
+                                          'Equation as a parameter are not '
+                                          'supported. You may be able to get '
+                                          'your desired outcome using .applyrhs'
+                                          ' and .applylhs.')
+            if neqns == 1:
+                newargs[eqnloc] = args[eqnloc].lhs
+                lhs = super().__new__(cls, *newargs, **kwargs)
+                newargs[eqnloc] = args[eqnloc].rhs
+                rhs = super().__new__(cls, *newargs, **kwargs)
+                return Equation(lhs,rhs)
+        return super().__new__(cls, *args, **kwargs)
 
 
 for func in functions.__all__:
@@ -592,5 +783,5 @@ for func in functions.__all__:
             'jacobi_normalized', 'Ynm_c')
     if func not in skip:
         execstr = 'class ' + str(func) + '(' + str(
-            func) + ',Function):\n    pass\n'
+            func) + ',EqnFunction):\n    pass\n'
         exec(execstr, globals(), locals())

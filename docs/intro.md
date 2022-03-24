@@ -27,13 +27,13 @@ over missed details such as a negative sign.
 
 A simple example as it would appear in a [Jupyter](https://jupyter.org) 
 notebook is shown immediately below:
-![screenshot of simple example](./docs/resources/simple_example.png)
+![screenshot of simple example](./resources/simple_example.png)
 
 Once the algebra is complete it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
 proper units.
 
-[More examples here](docs/Demonstration%20of%20equation%20class.html).
+[More examples here](Demonstration%20of%20equation%20class.html).
 
 Many math packages such as [SageMath](https://www.sagemath.org/) 
 and [Maxima](http://maxima.sourceforge.net/) have similar capabilities, 
