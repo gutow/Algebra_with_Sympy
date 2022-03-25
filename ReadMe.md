@@ -31,7 +31,7 @@ over missed details such as a negative sign.
 
 A simple example as it would appear in a [Jupyter](https://jupyter.org) 
 notebook is shown immediately below:
-![screenshot of simple example](./docs/resources/simple_example.png)
+![screenshot of simple example](https://gutow.github.io/Algebra_with_Sympy/resources/simple_example.png)
 
 Once the algebra is complete it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
