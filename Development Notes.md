@@ -14,19 +14,15 @@
     * In the copy for each relative reference `src = "docs/resources/..."` 
       remove `docs/` so that they read `src = "resources/..."`.
     * DO NOT change absolute (full url) paths.
-3. At the root level run pdoc `pdoc --logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
+3. At the root level run pdoc `pdoc 
+--logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
 --logo-link https://gutow.github.io/Algebra_with_Sympy/
---footer-text "Algebra with Sympy vX.X.X" -html -o docs algebra_with_sympy` 
+--footer-text "Algebra with Sympy vX.X.X" --math -html -o docs algebra_with_sympy` 
    where `X.X.X` is the version number.
 4. Edit the created `index.html`, if necessary, to point to an alternate 
    homepage from the pdoc default.
 
 ### Tasks for Documentation
-
-* Add explanation of output options to the first page/readme/intro
-* Fix the way parameters are listed or interpreted (change preferences in 
-  pdoc?)
-* Enable math display?
 
 ## Building PyPi package
 
