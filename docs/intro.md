@@ -5,6 +5,10 @@
 [Try Live](#try-in-binder) | [Issues or Comments](#issues-or-comments) |
 [Change Log](#change-log) |
 [License](#this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses)
+| [GIT Repository](https://github.com/gutow/Algebra_with_Sympy)
+| [PyPi Link](https://pypi.org/project/Algebra-with-SymPy/)
+
+#### [Website/Documentation (including API)](https://gutow.github.io/Algebra_with_Sympy/)
 
 #### Introduction
 

@@ -5,13 +5,15 @@ with open("ReadMe.md", "r") as f:
 
 setuptools.setup(
     name="Algebra_with_SymPy",
-    url = "https://github.com/gutow/Algebra_with_Sympy",
-    version="0.9.1rc0",
+    url = "https://gutow.github.io/Algebra_with_Sympy/",
+    version="0.9.1",
     description="Equations that can be algebraicly manipulated.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Jonathan Gutow",
     author_email="gutow@uwosh.edu",
+    keywords="symbolic algebra, computer algebra, CAS, calculations with "
+             "units, sympy",
     license="GPL-3.0+",
     packages=setuptools.find_packages(),
     install_requires=[
@@ -19,7 +21,7 @@ setuptools.setup(
         #RPi.GPIO is required by pi-plates, not sure why not included in the
         # pi-plates setup.py.
         'jupyter>=1.0.0',
-        'sympy>=1.6'
+        'sympy>=1.10'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
