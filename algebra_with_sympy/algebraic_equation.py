@@ -666,20 +666,29 @@ def solve(f, *symbols, **flags):
     """
     from sympy.solvers.solvers import solve
     from IPython.display import display
-    if isinstance(f, Equation):
+    newf =[]
+    solns = []
+    contains_eqn = False
+    for k in f:
+        if isinstance(k, Equation):
+            newf.append(k.lhs-k.rhs)
+            contains_eqn = True
+        else:
+            newf.append(k)
         flags['dict'] = True
-        result = solve(f.lhs - f.rhs, *symbols, **flags)
-        solns = []
-        # return result
+    result = solve(newf, *symbols, **flags)
+    if contains_eqn:
         for k in result:
             for key in k.keys():
                 val = k[key]
                 tempeqn = Eqn(key, val)
                 display(tempeqn)
                 solns.append(tempeqn)
-        return solns
     else:
-        return solve(f, *symbols, **flags)
+        solns = result
+    return solns
+    # else:
+    #     return solve(f, *symbols, **flags)
 
 def sqrt(arg, evaluate = None):
     """
