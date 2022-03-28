@@ -669,13 +669,20 @@ def solve(f, *symbols, **flags):
     newf =[]
     solns = []
     contains_eqn = False
-    for k in f:
-        if isinstance(k, Equation):
-            newf.append(k.lhs-k.rhs)
+    if hasattr(f,'__iter__'):
+        for k in f:
+            if isinstance(k, Equation):
+                newf.append(k.lhs-k.rhs)
+                contains_eqn = True
+            else:
+                newf.append(k)
+    else:
+        if isinstance(f, Equation):
+            newf.append(f.lhs - f.rhs)
             contains_eqn = True
         else:
-            newf.append(k)
-        flags['dict'] = True
+            newf.append(f)
+    flags['dict'] = True
     result = solve(newf, *symbols, **flags)
     if contains_eqn:
         for k in result:
