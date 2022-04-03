@@ -748,6 +748,23 @@ def collect(expr, syms, func=None, evaluate=None, exact=False,
         return collect(expr, syms, func, evaluate, exact,
                        distribute_order_term)
 
+class Eq(Eq):
+    """
+    Extension of Equality class to include the ability to convert it to an
+    Equation.
+    """
+    def to_Equation(self):
+        """
+        Return: recasts the Equality as an Equation.
+        """
+        return Equation(self.lhs,self.rhs)
+
+    def to_Eqn(self):
+        """
+        Synonym for to_Equation.
+        Return: recasts the Equality as an Equation.
+        """
+        return self.to_Equation()
 
 #####
 # Extension of the Function class. For incorporation into SymPy this should
