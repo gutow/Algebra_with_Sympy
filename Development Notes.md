@@ -1,6 +1,14 @@
 [General](#general-notes) | [Make Docs](#constructing-the-documentation) | 
 [Build PyPi Package](#building-pypi-package)|
 ## General Notes
+* Important TODOs
+  * Build generic testing of all functions in `sympy.functions.__all__`. This 
+    will reveal any new functions that need special adaptations.
+  * Add tests for `Equality` conversion to an `Equation`.
+  * Add override for `roots`.
+* To consider
+  * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
+    `lhs, rhs`, rather than just `lhs, rhs`.
 
 ## Constructing the Documentation
 
@@ -23,6 +31,9 @@
    homepage from the pdoc default.
 
 ### Tasks for Documentation
+* Readme.md & intro.md
+  * Hard code anchors so that navigation links work on pypi page.
+  * Use absolute path to github pages for more examples.
 
 ## Building PyPi package
 
