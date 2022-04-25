@@ -8,6 +8,11 @@ def algebra_with_sympy_preparser(lines):
     the equation later. `equation.lhs` is the left-hand side of the equation
     and `equation.rhs` is the right-hand side of the equation. Each side of the
     equation must parse into a valid Sympy expression.
+
+    If the `equation_name` is omitted the equation will be formed, but it will
+    not be assigned to a name that can be used to refer to it later. You may be
+    able to access it through one of the special IPython underscore names. This
+    is not recommended.
     """
     new_lines = []
     for k in lines:
@@ -27,8 +32,9 @@ def algebra_with_sympy_preparser(lines):
                     templine = 'Eqn('+str(eqsplit[0])+','+str(eqsplit[1])+')\n'
             new_lines.append(templine)
         else:
-            new_lines.append(k)
+            new_lines.append(k+'\n')
     return(new_lines)
 
 from IPython import get_ipython
-get_ipython().input_transformers_cleanup.append(algebra_with_sympy_preparser)
+if get_ipython():
+    get_ipython().input_transformers_cleanup.append(algebra_with_sympy_preparser)
