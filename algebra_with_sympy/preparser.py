@@ -3,7 +3,7 @@ def algebra_with_sympy_preparser(lines):
     In IPython compatible environments (Jupyter, IPython, etc...) this supports
     a special compact input method for equations.
 
-    The syntax supported is `equation_name=:equation.lhs = equation.rhs`,
+    The syntax supported is `equation_name =@ equation.lhs = equation.rhs`,
     where `equation_name` is a valid Python name that can be used to refer to
     the equation later. `equation.lhs` is the left-hand side of the equation
     and `equation.rhs` is the right-hand side of the equation. Each side of the
@@ -21,13 +21,13 @@ def algebra_with_sympy_preparser(lines):
     """
     new_lines = []
     for k in lines:
-        if '=:' in k:
-            linesplit = k.split('=:')
+        if '=@' in k:
+            linesplit = k.split('=@')
             eqsplit = linesplit[1].split('=')
             if len(eqsplit)!=2:
                 raise ValueError('The two sides of the equation must be' \
                                  ' separated by an \"=\" sign when using' \
-                                 ' the \"=:\" special input method.')
+                                 ' the \"=*\" special input method.')
             templine =''
             if eqsplit[0]!='' and eqsplit[1]!='':
                 if linesplit[0]!='':

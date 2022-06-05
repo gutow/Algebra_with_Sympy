@@ -37,7 +37,20 @@ Once the algebra is complete it is possible to substitute numbers with
 units into the solved equation to calculate a numerical solution with 
 proper units.
 
-[More examples here](https://gutow.github.io/Algebra_with_Sympy/Demonstration%20of%20equation%20class.html).
+In IPython environments (IPython and Jupyter) there is also a shorthand 
+syntax for entering equations provided through the IPython preparser. An 
+equation can be specified as `eq1 =@ a/b = c/d`. If no Python name is 
+specified for the equation (`eq1` left out in the previous example), the 
+equation will still 
+be defined, but will not be easily accessible for further computation. The 
+`=@` symbol combination was chosen to avoid conflicts with reserved python 
+symbols while minimizing impacts on syntax highlighting and autoformatting. A 
+screenshot of an example in Jupyter is shown immediately below:
+
+![screenshot of short syntax](https://gutow.github.io/Algebra_with_Sympy/resources/short_syntax.png)
+
+[More examples of the capabilities of Algebra with Sympy are 
+here](https://gutow.github.io/Algebra_with_Sympy/Demonstration%20of%20equation%20class.html).
 
 Many math packages such as [SageMath](https://www.sagemath.org/) 
 and [Maxima](http://maxima.sourceforge.net/) have similar capabilities, 
@@ -48,7 +61,7 @@ installed in a generic python environment.
 
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
-  be copy and pasted for 
+  be copied and pasted for 
   additional computation) set `algwsym_config.output.show_code = True`. 
   This will print the code version (e.g. `Equation(a,b/c)`) of the equation as 
   well. This code version can be accessed directly by calling `repr()` on the 
@@ -91,6 +104,9 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 #### Change Log
 
+* 0.9.2
+  * `=@` shorthand syntax for defining equations in IPython compatible 
+    environments.
 * 0.9.1
   * Equations labeled with their python name, if they have one.
   * Added flags to adjust human readable output and equation labeling.

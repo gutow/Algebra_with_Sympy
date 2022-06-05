@@ -48,7 +48,7 @@ installed in a generic python environment.
 
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
-  be copy and pasted for 
+  be copied and pasted for 
   additional computation) set `algwsym_config.output.show_code = True`. 
   This will print the code version (e.g. `Equation(a,b/c)`) of the equation as 
   well. This code version can be accessed directly by calling `repr()` on the 
