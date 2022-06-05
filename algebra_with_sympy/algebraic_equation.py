@@ -727,7 +727,7 @@ def root(arg, n, k = 0, evaluate = None):
         return Equation(symroot(arg.lhs, n, k, evaluate), symroot(arg.rhs,
                                                             n, k, evaluate))
     else:
-        return symsqrt(arg, n, k, evaluate)
+        return symroot(arg, n, k, evaluate)
 
 # pick up the docstring for root from sympy
 from sympy.functions.elementary.miscellaneous import root as symroot

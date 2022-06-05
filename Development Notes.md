@@ -5,7 +5,6 @@
   * Build generic testing of all functions in `sympy.functions.__all__`. This 
     will reveal any new functions that need special adaptations.
   * Add tests for `Equality` conversion to an `Equation`.
-  * Add override for `roots`.
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
