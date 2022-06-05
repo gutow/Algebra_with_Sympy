@@ -104,7 +104,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 #### Change Log
 
-* 0.9.2rc0
+* 0.9.2
   * `=@` shorthand syntax for defining equations in IPython compatible 
     environments.
   * Fixed bug where `root()` override called `sqrt()` on bare expressions.
