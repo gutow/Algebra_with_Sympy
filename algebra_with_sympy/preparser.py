@@ -42,4 +42,13 @@ def algebra_with_sympy_preparser(lines):
 
 from IPython import get_ipython
 if get_ipython():
-    get_ipython().input_transformers_cleanup.append(algebra_with_sympy_preparser)
+    if hasattr(get_ipython(),'input_transformers_cleanup'):
+        get_ipython().input_transformers_cleanup.\
+            append(algebra_with_sympy_preparser)
+    else:
+        import warnings
+        warnings.warn('Compact equation input unavailable.\nYou will have ' \
+                      'to use the form "eq1 = Eqn(lhs,rhs)" instead of ' \
+                      '"eq1=@lhs=rhs".\nIt appears you are running an ' \
+                      'outdated version of IPython.\nTo fix, update IPython ' \
+                      'using "pip install -U IPython".')

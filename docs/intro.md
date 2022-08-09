@@ -31,6 +31,7 @@ over missed details such as a negative sign.
 
 A simple example as it would appear in a [Jupyter](https://jupyter.org) 
 notebook is shown immediately below:
+
 ![screenshot of simple example](https://gutow.github.io/Algebra_with_Sympy/resources/simple_example.png)
 
 Once the algebra is complete it is possible to substitute numbers with 
@@ -104,6 +105,9 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 #### Change Log
 
+* 0.9.3
+  * Added check for new enough version of IPython to use the preparser.
+  * If IPython version too old issue, warning and do not accept `=@` shorthand.
 * 0.9.2
   * `=@` shorthand syntax for defining equations in IPython compatible 
     environments.
