@@ -27,7 +27,7 @@ def algebra_with_sympy_preparser(lines):
             if len(eqsplit)!=2:
                 raise ValueError('The two sides of the equation must be' \
                                  ' separated by an \"=\" sign when using' \
-                                 ' the \"=*\" special input method.')
+                                 ' the \"=@\" special input method.')
             templine =''
             if eqsplit[0]!='' and eqsplit[1]!='':
                 if linesplit[0]!='':

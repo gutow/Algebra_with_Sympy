@@ -1,5 +1,5 @@
 """
-.. include:: ../docs/intro.md
+.. include:: ../ReadMe.md
 """
 __docformat__ = "numpy"
 

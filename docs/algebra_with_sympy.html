@@ -52,7 +52,7 @@
         </ul>
 
 
-            <footer>Algebra with Sympy v0.9.3</footer>
+            <footer>Algebra with Sympy v0.9.4</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -178,10 +178,19 @@ discussions</a>.</li>
 <h4 id="change-log">Change Log</h4>
 
 <ul>
+<li>0.9.4
+<ul>
+<li>Update to deal with new Sympy function <code>piecewise_exclusive</code> in v1.11.</li>
+<li>Added user warning if a function does not extend for use with <code>Equations</code> 
+as expected. This also allows the package to be used even when a function 
+extension does fail.</li>
+<li>Simplification of documentation preparation.</li>
+<li>Typo fixes in preparser error messages.</li>
+</ul></li>
 <li>0.9.3
 <ul>
 <li>Added check for new enough version of IPython to use the preparser.</li>
-<li>If IPython version too old issue, warning and do not accept <code>=@</code> shorthand.</li>
+<li>If IPython version too old, issue warning and do not accept <code>=@</code> shorthand.</li>
 </ul></li>
 <li>0.9.2
 <ul>
@@ -222,7 +231,7 @@ environments.</li>
                         <label class="view-source-button" for="algebra_with_sympy-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../docs/intro.md</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../ReadMe.md</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>

@@ -105,6 +105,13 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 #### Change Log
 
+* 0.9.4
+  * Update to deal with new Sympy function `piecewise_exclusive` in v1.11.
+  * Added user warning if a function does not extend for use with `Equations` 
+    as expected. This also allows the package to be used even when a function 
+    extension does fail.
+  * Simplification of documentation preparation.
+  * Typo fixes in preparser error messages.
 * 0.9.3
   * Added check for new enough version of IPython to use the preparser.
   * If IPython version too old, issue warning and do not accept `=@` shorthand.

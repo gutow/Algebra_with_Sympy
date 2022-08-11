@@ -13,21 +13,13 @@
 
 1. Make sure pdoc is installed and updated in the virtual environment `pip 
    install -U pdoc`.
-2. The main README is used as the first page of the documentation. However, 
-   the location requires some of the links to the images to be changed. So 
-   a copy of the file needs to be made and edited (will automate if this 
-   becomes standard).
-    * Copy of README.md from the root level to `docs/intro.md`.
-    * In the copy for each relative reference `src = "docs/resources/..."` 
-      remove `docs/` so that they read `src = "resources/..."`.
-    * DO NOT change absolute (full url) paths.
+2. Update any `.md` files included in `_init_.py`.
+   * Generally URLs should be absolute, not relative.
 3. At the root level run pdoc `pdoc 
 --logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
 --logo-link https://gutow.github.io/Algebra_with_Sympy/
 --footer-text "Algebra with Sympy vX.X.X" --math -html -o docs algebra_with_sympy` 
    where `X.X.X` is the version number.
-4. Edit the created `index.html`, if necessary, to point to an alternate 
-   homepage from the pdoc default.
 
 ### Tasks for Documentation
 * Readme.md & intro.md

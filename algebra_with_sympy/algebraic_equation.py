@@ -813,8 +813,15 @@ for func in functions.__all__:
             'unbranched_argument', 'polarify', 'unpolarify',
             'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
             'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
-            'jacobi_normalized', 'Ynm_c')
+            'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive')
     if func not in skip:
-        execstr = 'class ' + str(func) + '(' + str(
-            func) + ',EqnFunction):\n    pass\n'
-        exec(execstr, globals(), locals())
+        try:
+            execstr = 'class ' + str(func) + '(' + str(
+                func) + ',EqnFunction):\n    pass\n'
+            exec(execstr, globals(), locals())
+        except TypeError:
+            from warnings import warn
+            warn('SymPy function/operation '+str(func)+ ' may not work ' \
+                 'properly with Equations. If you use it with Equations, ' \
+                 'validate its behavior. We are working to address this ' \
+                 'issue.')
