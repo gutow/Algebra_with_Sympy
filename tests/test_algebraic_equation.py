@@ -2,6 +2,7 @@ from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
     diff, FiniteSet, Equality, Function, functions, Matrix, S
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
 from .algebraic_equation import algwsym_config
+from .algebraic_equation import EqnFunction
 
 from pytest import raises
 

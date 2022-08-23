@@ -347,6 +347,12 @@ class Equation(Basic, EvalfMixin):
         return super().__new__(cls, lhs, rhs)
 
     def _get_eqn_name(self):
+        """
+        Tries to find the python string name that refers to the equation. In
+        IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
+        If not in an IPython environment looks in __main__.
+        :return: string value if found or empty string.
+        """
         from IPython import get_ipython
         global_dict = getattr(get_ipython(), 'user_ns', None)
         human_text = algwsym_config.output.human_text
@@ -358,6 +364,15 @@ class Equation(Basic, EvalfMixin):
                             var_name.startswith('_'):
                         algwsym_config.output.human_text=human_text
                         return var_name
+        else:
+            import __main__ as shell
+            for k in dir(shell):
+                item = getattr(shell,k)
+                if isinstance(item,Equation):
+                    if item.__repr__()==self.__repr__() and not \
+                            k.startswith('_'):
+                        algwsym_config.output.human_text=human_text
+                        return k
         algwsym_config.output.human_text = human_text
         return ''
 
