@@ -20,6 +20,8 @@ def algebra_with_sympy_preparser(lines):
     DIRECTLY BY A USER**
     """
     new_lines = []
+    if isinstance(lines,str):
+        lines = [lines]
     for k in lines:
         if '=@' in k:
             linesplit = k.split('=@')
@@ -43,7 +45,7 @@ def algebra_with_sympy_preparser(lines):
 from IPython import get_ipython
 if get_ipython():
     if hasattr(get_ipython(),'input_transformers_cleanup'):
-        get_ipython().input_transformers_cleanup.\
+        get_ipython().input_transformers_post.\
             append(algebra_with_sympy_preparser)
     else:
         import warnings
