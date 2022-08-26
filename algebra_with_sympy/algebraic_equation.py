@@ -353,26 +353,16 @@ class Equation(Basic, EvalfMixin):
         If not in an IPython environment looks in __main__.
         :return: string value if found or empty string.
         """
-        from IPython import get_ipython
-        global_dict = getattr(get_ipython(), 'user_ns', None)
         human_text = algwsym_config.output.human_text
         algwsym_config.output.human_text=False
-        if global_dict:
-            for var_name in global_dict:
-                if isinstance(global_dict[var_name], Equation):
-                    if (global_dict[var_name]).__repr__()==self.__repr__() and not \
-                            var_name.startswith('_'):
-                        algwsym_config.output.human_text=human_text
-                        return var_name
-        else:
-            import __main__ as shell
-            for k in dir(shell):
-                item = getattr(shell,k)
-                if isinstance(item,Equation):
-                    if item.__repr__()==self.__repr__() and not \
-                            k.startswith('_'):
-                        algwsym_config.output.human_text=human_text
-                        return k
+        import __main__ as shell
+        for k in dir(shell):
+            item = getattr(shell,k)
+            if isinstance(item,Equation):
+                if item.__repr__()==self.__repr__() and not \
+                        k.startswith('_'):
+                    algwsym_config.output.human_text=human_text
+                    return k
         algwsym_config.output.human_text = human_text
         return ''
 
@@ -817,6 +807,12 @@ class EqnFunction(Function):
                 return Equation(lhs,rhs)
         return super().__new__(cls, *args, **kwargs)
 
+def extend_sympy_func(func:str):
+    """
+    Extends a sympy function to have the properties of the extended
+    EqnFunction class.
+    """
+
 
 for func in functions.__all__:
     # TODO: This will not be needed when incorporated into SymPy listed in
@@ -832,11 +828,13 @@ for func in functions.__all__:
     if func not in skip:
         try:
             execstr = 'class ' + str(func) + '(' + str(
-                func) + ',EqnFunction):\n    pass\n'
+                func) + ',EqnFunction):\n    ' \
+                        'pass\n'
             exec(execstr, globals(), locals())
         except TypeError:
             from warnings import warn
-            warn('SymPy function/operation '+str(func)+ ' may not work ' \
-                 'properly with Equations. If you use it with Equations, ' \
-                 'validate its behavior. We are working to address this ' \
-                 'issue.')
+
+            warn('SymPy function/operation ' + str(func) + ' may not work ' \
+                                                           'properly with Equations. If you use it with Equations, ' \
+                                                           'validate its behavior. We are working to address this ' \
+                                                           'issue.')
