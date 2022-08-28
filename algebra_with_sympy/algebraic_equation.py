@@ -507,7 +507,7 @@ class Equation(Basic, EvalfMixin):
     def dorhs(self):
         return self._sides(self, side='rhs')
     
-    def _eval_rewrite_as_Add(self, *args, **kwargs):
+    def _eval_rewrite(self, rule, args, **kwargs):
         """Return Equation(L, R) as Equation(L - R, 0) or as L - R.
 
         Parameters
@@ -541,25 +541,26 @@ class Equation(Basic, EvalfMixin):
         >>> eq.rewrite(Add, eqn=False, evaluate=False).args
         (b, x, b, -x)
         """
-        # NOTE: the code about `evaluate` is very similar to
-        # sympy.core.relational.Equality._eval_rewrite_as_Add
-        eqn = kwargs.pop("eqn", True)
-        evaluate = kwargs.get('evaluate', True)
-        L, R = args
-        if evaluate:
-            # allow cancellation of args
-            expr = L - R
-        else:
-            args = Add.make_args(L) + Add.make_args(-R)
-            if evaluate is None:
-                # no cancellation, but canonical
-                expr = _unevaluated_Add(*args)
+        if rule == Add:
+            # NOTE: the code about `evaluate` is very similar to
+            # sympy.core.relational.Equality._eval_rewrite_as_Add
+            eqn = kwargs.pop("eqn", True)
+            evaluate = kwargs.get('evaluate', True)
+            L, R = args
+            if evaluate:
+                # allow cancellation of args
+                expr = L - R
             else:
-                # no cancellation, not canonical
-                expr = Add._from_args(args)
-        if eqn:
-            return self.func(expr, 0)
-        return expr
+                args = Add.make_args(L) + Add.make_args(-R)
+                if evaluate is None:
+                    # no cancellation, but canonical
+                    expr = _unevaluated_Add(*args)
+                else:
+                    # no cancellation, not canonical
+                    expr = Add._from_args(args)
+            if eqn:
+                return self.func(expr, 0)
+            return expr
 
     #####
     # Overrides of binary math operations

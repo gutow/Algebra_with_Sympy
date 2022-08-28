@@ -1,6 +1,6 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
-from sympy import sin, cos, log, exp
+from sympy import sin, cos, log, exp, I
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
 from .algebraic_equation import algwsym_config
 from .algebraic_equation import EqnFunction, str_to_extend_sympy_func
@@ -171,3 +171,13 @@ def test_rewrite_add():
     assert set(eq.rewrite(Add, evaluate=False).lhs.args) == set((b, x, b, -x))
     assert eq.rewrite(Add, eqn=False) == 2 * b
     assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
+
+def test_rewrite():
+    x = symbols("x")
+    eq = Equation(exp(I*x),cos(x) + I*sin(x))
+
+    # NOTE: right now I must use `sexp` otherwise the test is going to fail.
+    # I absolutely have no idea what's going on.
+    from sympy import exp as sexp
+    assert eq.rewrite(exp) == Equation(exp(I*x), sexp(I*x))
+    assert eq.rewrite(Add) == Equation(exp(I*x) - I*sin(x) - cos(x), 0)
