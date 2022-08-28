@@ -25,11 +25,11 @@ in [SageMath](https://www.sagemath.org/) and
 [Maxima](http://maxima.sourceforge.net/).
 """
 
+from sympy.core.add import _unevaluated_Add
 from sympy.core.expr import Expr
 from sympy.core.basic import Basic
 from sympy.core.evalf import EvalfMixin
 from sympy.core.sympify import _sympify
-from sympy import functions
 import functools
 from sympy import *
 
@@ -506,6 +506,60 @@ class Equation(Basic, EvalfMixin):
     @property
     def dorhs(self):
         return self._sides(self, side='rhs')
+    
+    def _eval_rewrite_as_Add(self, *args, **kwargs):
+        """Return Equation(L, R) as Equation(L - R, 0) or as L - R.
+
+        Parameters
+        ==========
+
+        evaluate : bool, optional
+            Control the evaluation of the result. If `evaluate=None` then
+            terms in L and R will not cancel but they will be listed in
+            canonical order; otherwise non-canonical args will be returned.
+            Default to True.
+        
+        eqn : bool, optional
+            Control the returned type. If `eqn=True`, then Equation(L - R, 0)
+            is returned. Otherwise, the L - R symbolic expression is returned.
+            Default to True.
+
+        Examples
+        ========
+        >>> from sympy import Add
+        >>> from sympy.abc import b, x
+        >>> from algebra_with_sympy import Equation
+        >>> eq = Equation(x + b, x - b)
+        >>> eq.rewrite(Add)
+        Equation(2*b, 0)
+        >>> eq.rewrite(Add, evaluate=None).lhs.args
+        (b, x, b, -x)
+        >>> eq.rewrite(Add, evaluate=False).lhs.args
+        (b, x, b, -x)
+        >>> eq.rewrite(Add, eqn=False)
+        2*b
+        >>> eq.rewrite(Add, eqn=False, evaluate=False).args
+        (b, x, b, -x)
+        """
+        # NOTE: the code about `evaluate` is very similar to
+        # sympy.core.relational.Equality._eval_rewrite_as_Add
+        eqn = kwargs.pop("eqn", True)
+        evaluate = kwargs.get('evaluate', True)
+        L, R = args
+        if evaluate:
+            # allow cancellation of args
+            expr = L - R
+        else:
+            args = Add.make_args(L) + Add.make_args(-R)
+            if evaluate is None:
+                # no cancellation, but canonical
+                expr = _unevaluated_Add(*args)
+            else:
+                # no cancellation, not canonical
+                expr = Add._from_args(args)
+        if eqn:
+            return self.func(expr, 0)
+        return expr
 
     #####
     # Overrides of binary math operations

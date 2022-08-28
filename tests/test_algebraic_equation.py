@@ -1,4 +1,4 @@
-from sympy import symbols, integrate, simplify, expand, factor, Integral
+from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
 from sympy import sin, cos, log, exp
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
@@ -143,7 +143,6 @@ def test_helper_functions():
     assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
 
 
-
 def test_apply_syntax():
     a, b, c, x = symbols('a b c x')
     tsteqn = Equation(a, b/c)
@@ -162,3 +161,13 @@ def test_do_syntax():
     assert poly.dorhs.collect(x) == Eqn(poly.lhs, poly.rhs.collect(x))
     assert poly.dolhs.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs)
     assert poly.do.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs.collect(x))
+
+
+def test_rewrite_add():
+    b, x = symbols("x, b")
+    eq = Equation(x + b, x - b)
+    assert eq.rewrite(Add) == Equation(2 * b, 0)
+    assert set(eq.rewrite(Add, evaluate=None).lhs.args) == set((b, x, b, -x))
+    assert set(eq.rewrite(Add, evaluate=False).lhs.args) == set((b, x, b, -x))
+    assert eq.rewrite(Add, eqn=False) == 2 * b
+    assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
