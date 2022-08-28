@@ -1,6 +1,6 @@
 from .algebraic_equation import str_to_extend_sympy_func
-from .algebraic_equation import _skip_
-from sympy import functions, FunctionClass
+from .algebraic_equation import _skip_, Equation, EqnFunction
+from sympy import functions, FunctionClass, symbols
 import importlib
 temp = importlib.import_module('sympy',package=functions.__all__)
 for func in functions.__all__:
