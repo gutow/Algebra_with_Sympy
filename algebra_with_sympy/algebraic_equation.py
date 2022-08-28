@@ -807,34 +807,45 @@ class EqnFunction(Function):
                 return Equation(lhs,rhs)
         return super().__new__(cls, *args, **kwargs)
 
-def extend_sympy_func(func:str):
+def str_to_extend_sympy_func(func:str):
     """
-    Extends a sympy function to have the properties of the extended
-    EqnFunction class.
+    Generates the string command to execute necessary for a sympy function to
+    gain the properties of the extended EqnFunction class.
     """
+    execstr = 'class ' + str(func) + '(' + str(
+        func) + ',EqnFunction):\n    ' \
+                'pass\n'
+    return execstr
 
+# TODO: Below will not be needed when incorporated into SymPy.
+# This is hacky, but I have not been able to come up with another way
+# of extending the functions programmatically, if this is separate package
+# from sympy that extends it after loading sympy.
+#  Functions listed in
+#  `skip` cannot be extended because of `mro` error or `metaclass
+#  conflict`. This reflects that some of these are not members of the
+#  Sympy Function class.
+
+# Overridden elsewhere
+_extended_ = ('sqrt', 'root')
+
+# Either not applicable to equations or have not yet figured out a way
+# to systematically apply to an equation
+_not_applicable_to_equations_ = ('Min', 'Max', 'Id', 'real_root', 'cbrt',
+        'unbranched_argument', 'polarify', 'unpolarify',
+        'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
+        'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
+        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive')
+_skip_ = _extended_ + _not_applicable_to_equations_
 
 for func in functions.__all__:
-    # TODO: This will not be needed when incorporated into SymPy listed in
-    #  `skip` cannot be extended because of `mro` error or `metaclass
-    #  conflict`. Seems to reflect expectation that a helper function will be
-    #  defined within the object (e.g. `_eval_power()` for all the flavors of
-    #  `root`).
-    skip = ('sqrt', 'root', 'Min', 'Max', 'Id', 'real_root', 'cbrt',
-            'unbranched_argument', 'polarify', 'unpolarify',
-            'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
-            'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
-            'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive')
-    if func not in skip:
+
+    if func not in _skip_:
         try:
-            execstr = 'class ' + str(func) + '(' + str(
-                func) + ',EqnFunction):\n    ' \
-                        'pass\n'
-            exec(execstr, globals(), locals())
+            exec(str_to_extend_sympy_func(func), globals(), locals())
         except TypeError:
             from warnings import warn
-
             warn('SymPy function/operation ' + str(func) + ' may not work ' \
-                                                           'properly with Equations. If you use it with Equations, ' \
-                                                           'validate its behavior. We are working to address this ' \
-                                                           'issue.')
+                'properly with Equations. If you use it with Equations, ' \
+                'validate its behavior. We are working to address this ' \
+                'issue.')

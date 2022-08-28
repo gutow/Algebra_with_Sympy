@@ -5,6 +5,7 @@
   * Build generic testing of all functions in `sympy.functions.__all__`. This 
     will reveal any new functions that need special adaptations.
   * Add tests for `Equality` conversion to an `Equation`.
+  * Add tests for the preparser
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
@@ -26,6 +27,15 @@
   * Hard code anchors so that navigation links work on pypi page.
   * Use absolute path to github pages for more examples.
 
+## Running Tests
+
+1. Install updated pytest in the virtual environment:
+   ```
+   pipenv shell
+   pip install -U pytest
+   ```
+2. Run tests ignoring the manual tests in the `Developer Testing` directory:
+   `python -m pytest --ignore='Developer Testing'`.
 ## Building PyPi package
 
 1. Make sure to update the version number in setup.py first.

@@ -1,59 +1,34 @@
-from sympy import symbols, integrate, simplify, expand, factor, log, Integral, \
-    diff, FiniteSet, Equality, Function, functions, Matrix, S
+from sympy import symbols, integrate, simplify, expand, factor, Integral
+from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
+from sympy import sin, cos, log, exp
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
 from .algebraic_equation import algwsym_config
-from .algebraic_equation import EqnFunction
+from .algebraic_equation import EqnFunction, str_to_extend_sympy_func
+from .algebraic_equation import _skip_
 
 from pytest import raises
 
-#####
-# Extension of the Function class. For incorporation into SymPy this should
-# become part of the class
-#####
-class Function(Function):
-    def __new__(cls, *args, **kwargs):
-        n = len(args)
-        eqnloc = None
-        neqns = 0
-        newargs = []
-        for k in args:
-            newargs.append(k)
-        if (n > 0):
-            for i in range(n):
-                if isinstance(args[i], Equation):
-                    neqns += 1
-                    eqnloc = i
-            if neqns > 1:
-                raise NotImplementedError('Function calls with more than one '
-                                          'Equation as a parameter are not '
-                                          'supported. You may be able to get '
-                                          'your desired outcome using .applyrhs'
-                                          ' and .applylhs.')
-            if neqns == 1:
-                newargs[eqnloc] = args[eqnloc].lhs
-                lhs = super().__new__(cls, *newargs, **kwargs)
-                newargs[eqnloc] = args[eqnloc].rhs
-                rhs = super().__new__(cls, *newargs, **kwargs)
-                return Equation(lhs,rhs)
-        return super().__new__(cls, *args, **kwargs)
+def test_str_to_extend_sympy_func():
+    teststr = 'testname'
+    execstr = 'class %S(%S,EqnFunction):\n    pass\n'
+    execstr = execstr.replace('%S',str(teststr))
+    assert str_to_extend_sympy_func(teststr)==execstr
+    pass
 
-for func in functions.__all__:
-    # TODO: This will not be needed when incorporated into SymPy listed in
-    #  `skip` cannot be extended because of `mro` error or `metaclass
-    #  conflict`. Seems to reflect expectation that a helper function will be
-    #  defined within the object (e.g. `_eval_power()` for all the flavors of
-    #  `root`).
-    skip = ('sqrt', 'root', 'Min', 'Max', 'Id', 'real_root', 'cbrt',
-            'unbranched_argument', 'polarify', 'unpolarify',
-            'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
-            'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
-            'jacobi_normalized', 'Ynm_c')
-    if func not in skip:
-        execstr = 'from sympy import ' + str(func)
-        exec(execstr, globals(), locals())
-        execstr = 'class ' + str(func) + '(' + str(
-            func) + ',Function):\n    pass\n'
-        exec(execstr, globals(), locals())
+#####
+# Extension just the functions used for testing
+#####
+
+for func in ('sin', 'cos', 'log', 'exp'):
+    if func not in _skip_:
+        try:
+            exec(str_to_extend_sympy_func(func), globals(), locals())
+        except TypeError:
+            from warnings import warn
+            warn('SymPy function/operation ' + str(func) + ' may not work ' \
+                'properly with Equations. If you use it with Equations, ' \
+                'validate its behavior. We are working to address this ' \
+                'issue.')
 
 def test_define_equation():
     a, b, c = symbols('a b c')
@@ -159,10 +134,10 @@ def test_helper_functions():
         a + 1, c)
     assert simplify(Equation((a + 1)**2/(a + 1), exp(log(c)))) == Equation(
         a + 1, c)
-    assert Equation(x, (b - sqrt(4*a*c + b**2))/(2*a)) in solve(Equation(
-        a*x**2,b*x+c),x)
-    assert Equation(x, (b + sqrt(4*a*c + b**2))/(2*a)) in solve(Equation(
-        a*x**2,b*x+c),x)
+    assert Equation(x, ((b - sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
+        Equation(a*x**2,b*x+c),x)
+    assert Equation(x, ((b + sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
+        Equation(a*x**2,b*x+c),x)
     assert len(solve(Equation(a*x**2,b*x+c), x)) == 2
     assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
     assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))

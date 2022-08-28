@@ -2,11 +2,15 @@ import setuptools
 
 with open("ReadMe.md", "r") as f:
     long_description = f.read()
+try:
+    from algebra_with_sympy.version import __version__
+except Exception as e:
+    raise RuntimeError('Unable to find __version__') from e
 
 setuptools.setup(
     name="Algebra_with_SymPy",
     url = "https://gutow.github.io/Algebra_with_Sympy/",
-    version="0.9.4",
+    version=__version__,
     description="Equations that can be algebraicly manipulated.",
     long_description=long_description,
     long_description_content_type="text/markdown",
