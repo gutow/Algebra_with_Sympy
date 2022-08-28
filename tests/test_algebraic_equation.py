@@ -177,7 +177,9 @@ def test_rewrite():
     eq = Equation(exp(I*x),cos(x) + I*sin(x))
 
     # NOTE: right now I must use `sexp` otherwise the test is going to fail.
-    # I absolutely have no idea what's going on.
+    # I absolutely have no idea what's going on. Interesting to note that this
+    # only happens with pytest. On real life (inside Jupyter notebook),
+    # everything works as expected
     from sympy import exp as sexp
     assert eq.rewrite(exp) == Equation(exp(I*x), sexp(I*x))
     assert eq.rewrite(Add) == Equation(exp(I*x) - I*sin(x) - cos(x), 0)
