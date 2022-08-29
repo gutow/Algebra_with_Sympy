@@ -6,6 +6,19 @@ temp = importlib.import_module('sympy',package=functions.__all__)
 for func in functions.__all__:
     globals()[func] = getattr(temp,func)
 
+# Needed for some tests so that extended functions are in the correct
+# namespace. The string that is executed has a test function below.
+for func in functions.__all__:
+    if func not in _skip_:
+        try:
+            exec(str_to_extend_sympy_func(func), globals(), locals())
+        except TypeError:
+            from warnings import warn
+            warn('SymPy function/operation ' + str(func) + ' may not work ' \
+                'properly with Equations. If you use it with Equations, ' \
+                'validate its behavior. We are working to address this ' \
+                'issue.')
+
 def test_sympy_import():
     for func in functions.__all__:
         if func not in _skip_:
@@ -32,24 +45,39 @@ def extend_sympy_func(func):
         return str(func)+' failed to extend.'
     return True
 
-"""
+
 def test_functions_extensions():
+    from inspect import signature
     failures = []
     a, b , c = symbols('a b c')
     eq = Equation(a, b/c)
+    n = symbols('n', positive = True, integer = True)
     for func in functions.__all__:
         if func not in _skip_:
-            result = extend_sympy_func(func)
-            if isinstance(result,str):
-                failures.append(result)
             obj = globals()[func]
+            sig = signature(obj).parameters
+            if func == 'betainc' or func == 'betainc_regularized':
+                # The signature is undefined need 4 complex numbers:
+                # a, b, x1, x2.
+                sig = {'arg1':'a','arg2':'b','arg3':'x1','arg4':'x2'}
+            keylist = [key for key in sig]
+            tempargs = [eq]
+            largs = [eq.lhs]
+            rargs = [eq.rhs]
+            for key in sig:
+                if (str(sig[key]).find("="))==-1 and key != keylist[0]:
+                    tempargs.append(n)
+                    largs.append(n)
+                    rargs.append(n)
             try:
-                tst = obj(eq)
-                if not (tst == Equation(obj(a),obj(b/c))):
-                    failures.append(func + ' extended but not into same '
-                                           'namespace.')
+                tst = obj(*tempargs)
+                if not (tst == Equation(obj(*largs),obj(*rargs))):
+                    failures.append(func + ' extended but did not work.')
             except Exception as e:
-                failures.append(e)
+                failures.append(str(func) +': '+str(e))
     assert(failures == [])
     pass
-"""
+
+# TODO: check equation as argument other than first.
+# TODO: check operations/functions overridden elsewhere. These are members of
+#     algebraic_equation._extended_ list.

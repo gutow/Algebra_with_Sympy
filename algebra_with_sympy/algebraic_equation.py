@@ -793,6 +793,23 @@ from sympy.functions.elementary.miscellaneous import root as symroot
 root.__doc__+=symroot.__doc__
 del symroot
 
+def Heaviside(arg, **kwargs):
+    """
+    Overide of the Heaviside function as implemented in Sympy. Get a recursion
+    error if use the normal class extension of a function to do this.
+
+    """
+    from sympy.functions.special.delta_functions import Heaviside as symHeav
+    if isinstance(arg, Equation):
+        return Equation(symHeav((arg.lhs), **kwargs),symHeav((arg.rhs),
+                                                             **kwargs))
+    else:
+        return symHeav(arg, **kwargs)
+# Pick up the docstring for Heaviside from Sympy.
+from sympy.functions.special.delta_functions import Heaviside as symHeav
+Heaviside.__doc__ += symHeav.__doc__
+del symHeav
+
 def collect(expr, syms, func=None, evaluate=None, exact=False,
             distribute_order_term=True):
     """
@@ -875,21 +892,23 @@ def str_to_extend_sympy_func(func:str):
 # This is hacky, but I have not been able to come up with another way
 # of extending the functions programmatically, if this is separate package
 # from sympy that extends it after loading sympy.
-#  Functions listed in
-#  `skip` cannot be extended because of `mro` error or `metaclass
-#  conflict`. This reflects that some of these are not members of the
-#  Sympy Function class.
+#  Functions listed in `skip` are not applicable to equations or cannot be
+#  extended because of `mro` error or `metaclass conflict`. This reflects
+#  that some of these are not members of the Sympy Function class.
 
 # Overridden elsewhere
-_extended_ = ('sqrt', 'root')
+_extended_ = ('sqrt', 'root', 'Heaviside')
 
 # Either not applicable to equations or have not yet figured out a way
-# to systematically apply to an equation
+# to systematically apply to an equation.
+# TODO examine these more carefully (top priority: real_root, cbrt, Ynm_c).
 _not_applicable_to_equations_ = ('Min', 'Max', 'Id', 'real_root', 'cbrt',
         'unbranched_argument', 'polarify', 'unpolarify',
         'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
         'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
-        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive')
+        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive', 'Piecewise',
+        'motzkin', 'hyper','meijerg', 'chebyshevu_root', 'chebyshevt_root',
+        'betainc_regularized')
 _skip_ = _extended_ + _not_applicable_to_equations_
 
 for func in functions.__all__:
