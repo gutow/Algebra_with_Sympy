@@ -251,6 +251,20 @@ class Equation(Basic, EvalfMixin):
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L}).evalf(4)
     Equation(p, 0.9334*atm)
 
+    Substituting an equation into another equation:
+    >>> P, P1, P2, A1, A2, E1, E2 = symbols("P, P1, P2, A1, A2, E1, E2")
+    >>> eq1 = Eqn(P, P1 + P2)
+    >>> eq2 = Eqn(P1 / (A1 * E1), P2 / (A2 * E2))
+    >>> P1_val = (eq1 - P2).swap
+    >>> P1_val
+    P1 = P - P2
+    >>> eq2 = eq2.subs(P1_val)
+    >>> eq2
+    (P - P2)/(A1*E1) = P2/(A2*E2)
+    >>> P2_val = solve(eq2.subs(P1_val), P2)[0]
+    >>> P2_val
+    P2 = A2*E2*P/(A1*E1 + A2*E2)
+
     Combining equations (Math with equations: lhs with lhs and rhs with rhs)
     >>> q = Eqn(a*c, b/c**2)
     >>> q
@@ -560,6 +574,73 @@ class Equation(Basic, EvalfMixin):
         if eqn:
             return self.func(expr, 0)
         return expr
+    
+    def subs(self, *args, **kwargs):
+        """Substitutes old for new in an equation after sympifying args.
+    
+        `args` is either:
+
+        * one ore more arguments of type `Equation(old, new)`.
+        * two arguments, e.g. foo.subs(old, new)
+        * one iterable argument, e.g. foo.subs(iterable). The iterable may be:
+
+            - an iterable container with (old, new) pairs. In this case the
+              replacements are processed in the order given with successive
+              patterns possibly affecting replacements already made.
+            - a dict or set whose key/value items correspond to old/new pairs.
+              In this case the old/new pairs will be sorted by op count and in
+              case of a tie, by number of args and the default_sort_key. The
+              resulting sorted list is then processed as an iterable container
+              (see previous).
+        
+        If the keyword ``simultaneous`` is True, the subexpressions will not be
+        evaluated until all the substitutions have been made.
+
+        Please, read ``help(Expr.subs)`` for more examples.
+
+        Examples
+        ========
+
+        >>> from sympy.abc import a, b, c, x
+        >>> from algebra_with_sympy import Equation
+        >>> eq = Equation(x + a, b * c)
+
+        Substitute a single value:
+
+        >>> eq.subs(b, 4)
+        Equation(a + x, 4*c)
+
+        Substitute a multiple values:
+
+        >>> eq.subs([(a, 2), (b, 4)])
+        Equation(x + 2, 4*c)
+        >>> eq.subs({a: 2, b: 4})
+        Equation(x + 2, 4*c)
+
+        Substitute an equation into another equation:
+
+        >>> eq2 = Equation(x + a, 4)
+        >>> eq.subs(eq2)
+        Equation(4, b*c)
+
+        Substitute multiple equations into another equation:
+
+        >>> eq1 = Equation(x + a + b + c, x * a * b * c)
+        >>> eq2 = Equation(x + a, 4)
+        >>> eq3 = Equation(b, 5)
+        >>> eq1.subs(eq2, eq3)
+        Equation(c + 9, 5*a*c*x)
+
+        """
+        new_args = args
+        if all(isinstance(a, self.func) for a in args):
+            new_args = [{a.args[0]: a.args[1] for a in args}]
+        elif any(isinstance(a, self.func) for a in args):
+            raise ValueError("`args` contains one or more Equation and some "
+                "other data type. This mode of operation is not supported. "
+                "Please, read `subs` documentation to understand how to "
+                "use it.")
+        return super().subs(*new_args, **kwargs)
 
     #####
     # Overrides of binary math operations

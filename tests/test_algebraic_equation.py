@@ -171,3 +171,24 @@ def test_rewrite_add():
     assert set(eq.rewrite(Add, evaluate=False).lhs.args) == set((b, x, b, -x))
     assert eq.rewrite(Add, eqn=False) == 2 * b
     assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
+
+
+def test_subs():
+    a, b, c, x = symbols('a b c x')
+    eq1 = Equation(x + a + b + c, x * a * b * c)
+    eq2 = Equation(x + a, 4)
+    assert eq1.subs(a, 2) == Equation(x + b + c + 2, 2 * x * b * c)
+    assert eq1.subs([(a, 2), (b, 3)]) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs({a: 2, b: 3}) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs(eq2) == Equation(4 + b + c, x * a * b * c)
+
+    # verify that substituting an Equation into an expression is not supported
+    raises(ValueError, lambda: eq1.dolhs.subs(eq2))
+    raises(ValueError, lambda: eq1.dorhs.subs(eq2))
+    raises(ValueError, lambda: (x + a + b + c).subs(eq2))
+
+    # verify the effectivness of `simultaneous`
+    eq = Equation((x + a) / a, b * c)
+    sd = {x + a: a, a: x + a}
+    assert eq.subs(sd) == Equation(1, b * c)
+    assert eq.subs(sd, simultaneous=True) == Equation(a / (x + a), b * c)
