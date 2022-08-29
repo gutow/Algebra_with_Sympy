@@ -87,8 +87,6 @@ def test_outputs():
     assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
 
 def test_sympy_functions():
-    # TODO: To avoid problems if a function in sympy changes or is added this
-    #  should test all functions automatically.
     a, b, c = symbols('a b c')
     tsteqn = Equation(a, b/c)
     assert sin(tsteqn) == Equation(sin(a),sin(b/c))
@@ -98,7 +96,6 @@ def test_sympy_functions():
     tsteqn5 = Equation(a, Matrix([[1, 1], [1, 1]]))
     assert exp(tsteqn5).lhs == exp(a)
     assert exp(tsteqn5).rhs == exp(Matrix([[1, 1], [1, 1]]))
-
 
 def test_helper_functions():
     a, b, c, x= symbols('a b c x')
@@ -141,7 +138,6 @@ def test_helper_functions():
     assert len(solve(Equation(a*x**2,b*x+c), x)) == 2
     assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
     assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
-
 
 
 def test_apply_syntax():
