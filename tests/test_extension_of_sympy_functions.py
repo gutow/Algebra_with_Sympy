@@ -2,9 +2,9 @@ from .algebraic_equation import str_to_extend_sympy_func
 from .algebraic_equation import _skip_, Equation, EqnFunction
 from sympy import functions, FunctionClass, symbols
 import importlib
-temp = importlib.import_module('sympy',package=functions.__all__)
+temp = importlib.import_module('sympy', package=functions.__all__)
 for func in functions.__all__:
-    globals()[func] = getattr(temp,func)
+    globals()[func] = getattr(temp, func)
 
 # Needed for some tests so that extended functions are in the correct
 # namespace. The string that is executed has a test function below.
