@@ -2,10 +2,12 @@
 [Build PyPi Package](#building-pypi-package)|
 ## General Notes
 * Important TODOs
-  * Build generic testing of all functions in `sympy.functions.__all__`. This 
-    will reveal any new functions that need special adaptations.
+  * Build tests of equation not as first parameter of functions.
+  * Build tests of functions in `algebraic_equation._extended_`
+  * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
   * Add tests for `Equality` conversion to an `Equation`.
-  * Add tests for the preparser
+  * Add tests for the preparser.
+  * Add doctest examples of `rewrite(Add)`, `solve()`
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
