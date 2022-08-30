@@ -581,11 +581,13 @@ class Equation(Basic, EvalfMixin):
         new_args = args
         if all(isinstance(a, self.func) for a in args):
             new_args = [{a.args[0]: a.args[1] for a in args}]
-        elif (len(args) == 1) and all(isinstance(a, self.func) for a in args):
+        elif (len(args) == 1) and all(isinstance(a, self.func) for a in
+                                      args[0]):
             raise TypeError("You passed into `subs` a list of elements of "
                 "type `Equation`, but this is not supported. Please, consider "
                 "unpacking the list with `.subs(*eq_list)` or select your "
-                "equations from the list and use `.subs(eq1, eq2, ...)`.")
+                "equations from the list and use `.subs(eq_list[0], eq_list["
+                "2], ...)`.")
         elif any(isinstance(a, self.func) for a in args):
             raise ValueError("`args` contains one or more Equation and some "
                 "other data type. This mode of operation is not supported. "
