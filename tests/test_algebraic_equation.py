@@ -172,6 +172,11 @@ def test_subs():
     assert eq1.subs({a: 2, b: 3}) == Equation(x + c + 5, 6 * x * c)
     assert eq1.subs(eq2) == Equation(4 + b + c, x * a * b * c)
 
+    # verify that proper errors are raised
+    eq3 = Equation(b, 5)
+    raises(TypeError, lambda: eq1.subs([eq2, eq3]))
+    raises(ValueError, lambda: eq1.subs(eq2, {b: 5}))
+
     # verify that substituting an Equation into an expression is not supported
     raises(ValueError, lambda: eq1.dolhs.subs(eq2))
     raises(ValueError, lambda: eq1.dorhs.subs(eq2))
