@@ -1,4 +1,4 @@
-from sympy import symbols, integrate, simplify, expand, factor, Integral
+from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
 from sympy import sin, cos, log, exp
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
@@ -158,3 +158,29 @@ def test_do_syntax():
     assert poly.dorhs.collect(x) == Eqn(poly.lhs, poly.rhs.collect(x))
     assert poly.dolhs.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs)
     assert poly.do.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs.collect(x))
+
+
+def test_subs():
+    a, b, c, x = symbols('a b c x')
+    eq1 = Equation(x + a + b + c, x * a * b * c)
+    eq2 = Equation(x + a, 4)
+    assert eq1.subs(a, 2) == Equation(x + b + c + 2, 2 * x * b * c)
+    assert eq1.subs([(a, 2), (b, 3)]) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs({a: 2, b: 3}) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs(eq2) == Equation(4 + b + c, x * a * b * c)
+
+    # verify that proper errors are raised
+    eq3 = Equation(b, 5)
+    raises(TypeError, lambda: eq1.subs([eq2, eq3]))
+    raises(ValueError, lambda: eq1.subs(eq2, {b: 5}))
+
+    # verify that substituting an Equation into an expression is not supported
+    raises(ValueError, lambda: eq1.dolhs.subs(eq2))
+    raises(ValueError, lambda: eq1.dorhs.subs(eq2))
+    raises(ValueError, lambda: (x + a + b + c).subs(eq2))
+
+    # verify the effectivness of `simultaneous`
+    eq = Equation((x + a) / a, b * c)
+    sd = {x + a: a, a: x + a}
+    assert eq.subs(sd) == Equation(1, b * c)
+    assert eq.subs(sd, simultaneous=True) == Equation(a / (x + a), b * c)
