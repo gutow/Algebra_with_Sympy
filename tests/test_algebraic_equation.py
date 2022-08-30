@@ -163,16 +163,6 @@ def test_do_syntax():
     assert poly.do.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs.collect(x))
 
 
-def test_rewrite_add():
-    b, x = symbols("x, b")
-    eq = Equation(x + b, x - b)
-    assert eq.rewrite(Add) == Equation(2 * b, 0)
-    assert set(eq.rewrite(Add, evaluate=None).lhs.args) == set((b, x, b, -x))
-    assert set(eq.rewrite(Add, evaluate=False).lhs.args) == set((b, x, b, -x))
-    assert eq.rewrite(Add, eqn=False) == 2 * b
-    assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
-
-
 def test_subs():
     a, b, c, x = symbols('a b c x')
     eq1 = Equation(x + a + b + c, x * a * b * c)
