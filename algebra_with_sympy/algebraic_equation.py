@@ -720,14 +720,14 @@ class Equation(Basic, EvalfMixin):
             return self.__str__()
         return repstr
 
-    def _latex(self, obj, **kwargs):
+    def _latex(self, printer):
         tempstr = ''
         if algwsym_config.output.show_code and not \
             algwsym_config.output.human_text:
             tempstr +='\\text{code version: '+ self.__repr__()+'} \\newline '
-        tempstr += latex(self.lhs, **kwargs)
+        tempstr += printer._print(self.lhs)
         tempstr += '='
-        tempstr += latex(self.rhs, **kwargs)
+        tempstr += printer._print(self.rhs)
         namestr = self._get_eqn_name()
         if namestr !='' and algwsym_config.output.label:
             tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'

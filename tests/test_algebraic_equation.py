@@ -1,6 +1,8 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
-from sympy import sin, cos, log, exp
+from sympy import sin, cos, log, exp, latex, Symbol
+from sympy.core.function import AppliedUndef
+from sympy.printing.latex import LatexPrinter
 from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
 from .algebraic_equation import algwsym_config
 from .algebraic_equation import EqnFunction, str_to_extend_sympy_func
@@ -29,6 +31,20 @@ for func in ('sin', 'cos', 'log', 'exp'):
                 'properly with Equations. If you use it with Equations, ' \
                 'validate its behavior. We are working to address this ' \
                 'issue.')
+
+
+class CustomLatexPrinter(LatexPrinter):
+    """Print undefined applied functions without arguments"""
+    def _print_Function(self, expr, exp=None):
+        if isinstance(expr, AppliedUndef):
+            return self._print(Symbol(expr.func.__name__))
+        return super()._print_Function(expr, exp)
+
+
+def my_latex(expr, **settings):
+    """Mimic latex()"""
+    return CustomLatexPrinter(settings).doprint(expr)
+
 
 def test_define_equation():
     a, b, c = symbols('a b c')
@@ -84,7 +100,14 @@ def test_outputs():
     algwsym_config.output.human_text = True
     assert tsteqn.__repr__() == 'a = b/c'
     assert tsteqn.__str__() == 'a = b/c'
-    assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
+    assert latex(tsteqn) == 'a=\\frac{b}{c}'
+
+    f = Function("f")(a, b, c)
+    eq = Eqn(f, 2)
+    assert latex(eq) == "f{\\left(a,b,c \\right)}=2"
+    # use custom printer
+    assert my_latex(eq) == "f=2"
+
 
 def test_sympy_functions():
     a, b, c = symbols('a b c')
