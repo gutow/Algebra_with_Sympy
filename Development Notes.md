@@ -1,5 +1,7 @@
 [General](#general-notes) | [Make Docs](#constructing-the-documentation) | 
+[Running Tests](#running-tests) | 
 [Build PyPi Package](#building-pypi-package)|
+
 ## General Notes
 * Important TODOs
   * Build tests of equation not as first parameter of functions.
@@ -42,6 +44,8 @@
 4. Run doctests:
    `pytest --ignore='tests' --ignore='Developer Testing' 
    --ignore-glob='*old*' --doctest-modules`
+
+You can run all the test using the dotests script: `./dotests.sh`.
 
 ## Building PyPi package
 
