@@ -146,6 +146,10 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
+    NOTE: All the examples below are in vanilla python. You can get human
+    readable eqautions "lhs = rhs" in vanilla python by adjusting the settings
+    in `algwsym_config` (see it's documentation). Output is human readable by
+    default in IPython and Jupyter environments.
     >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
@@ -257,13 +261,14 @@ class Equation(Basic, EvalfMixin):
     >>> eq2 = Eqn(P1 / (A1 * E1), P2 / (A2 * E2))
     >>> P1_val = (eq1 - P2).swap
     >>> P1_val
-    P1 = P - P2
+    Equation(P1, P - P2)
     >>> eq2 = eq2.subs(P1_val)
     >>> eq2
-    (P - P2)/(A1*E1) = P2/(A2*E2)
+    Equation((P - P2)/(A1*E1), P2/(A2*E2))
     >>> P2_val = solve(eq2.subs(P1_val), P2)[0]
-    >>> P2_val
     P2 = A2*E2*P/(A1*E1 + A2*E2)
+    >>> P2_val
+    Equation(P2, A2*E2*P/(A1*E1 + A2*E2))
 
     Combining equations (Math with equations: lhs with lhs and rhs with rhs)
     >>> q = Eqn(a*c, b/c**2)
@@ -341,15 +346,19 @@ class Equation(Basic, EvalfMixin):
     >>> q.dorhs.integrate(b).dolhs.integrate(a)
     Equation(a**2*c/2, b**2/(2*c))
 
-    SymPy's solvers do not understand these equations. They expect an
-    expression that the solver assumes = 0. Thus to use the solver the
-    equation must be rearranged so that all non-zero symbols are on one side.
-    Then just the non-zero symbolic side is passed to ``solve()``.
-    >>> t2 = t-t.rhs
-    >>> t2
-    Equation(a - b/c, 0)
-    >>> solve(t2.lhs,c)
-    [b/a]
+    Automatic solutions using sympy solvers. THIS IS EXPERIMENTAL. Please
+    report issues at https://github.com/gutow/Algebra_with_Sympy/issues.
+    >>> tosolv = Eqn(a - b, c/a)
+    >>> solve(tosolv,a)
+    a = b/2 - sqrt(b**2 + 4*c)/2
+    a = b/2 + sqrt(b**2 + 4*c)/2
+    [Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2)]
+    >>> solve(tosolv, b)
+    b = (a**2 - c)/a
+    [Equation(b, (a**2 - c)/a)]
+    >>> solve(tosolv, c)
+    c = a**2 - a*b
+    [Equation(c, a**2 - a*b)]
 
     """
 

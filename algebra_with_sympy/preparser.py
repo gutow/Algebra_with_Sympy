@@ -32,15 +32,17 @@ def algebra_with_sympy_preparser(lines):
                                  ' the \"=@\" special input method.')
             templine =''
             if eqsplit[0]!='' and eqsplit[1]!='':
+                if eqsplit[1].endswith('\n'):
+                    eqsplit[1] = eqsplit[1][:-1]
                 if linesplit[0]!='':
-                    templine = str(linesplit[0])+'=Eqn('+str(eqsplit[0])+',' \
+                    templine = str(linesplit[0])+'= Eqn('+str(eqsplit[0])+',' \
                         ''+str(eqsplit[1])+')\n'
                 else:
                     templine = 'Eqn('+str(eqsplit[0])+','+str(eqsplit[1])+')\n'
             new_lines.append(templine)
         else:
-            new_lines.append(k+'\n')
-    return(new_lines)
+            new_lines.append(k)
+    return new_lines
 
 from IPython import get_ipython
 if get_ipython():

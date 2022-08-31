@@ -36,8 +36,14 @@
    pipenv shell
    pip install -U pytest
    ```
-2. Run tests ignoring the manual tests in the `Developer Testing` directory:
-   `python -m pytest --ignore='Developer Testing'`.
+2. Run standard tests:
+   `pytest --ignore='Developer Testing' --ignore-glob='*test_preparser.py'`.
+3. Run preparser tests:
+   `ipython -m pytest tests/test_preparser.py`
+4. Run doctests:
+   `pytest --ignore='tests' --ignore='Developer Testing' 
+   --ignore-glob='*old*' --doctest-modules`
+
 ## Building PyPi package
 
 1. Make sure to update the version number in setup.py first.

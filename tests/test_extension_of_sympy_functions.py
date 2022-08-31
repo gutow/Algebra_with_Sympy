@@ -1,5 +1,5 @@
-from .algebraic_equation import str_to_extend_sympy_func
-from .algebraic_equation import _skip_, Equation, EqnFunction
+from algebra_with_sympy.algebraic_equation import str_to_extend_sympy_func
+from algebra_with_sympy.algebraic_equation import _skip_, Equation, EqnFunction
 from sympy import functions, FunctionClass, symbols
 import importlib
 temp = importlib.import_module('sympy', package=functions.__all__)

@@ -3,10 +3,10 @@ from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
 from sympy import sin, cos, log, exp, latex, Symbol
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
-from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
-from .algebraic_equation import algwsym_config
-from .algebraic_equation import EqnFunction, str_to_extend_sympy_func
-from .algebraic_equation import _skip_
+from algebra_with_sympy.algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
+from algebra_with_sympy.algebraic_equation import algwsym_config
+from algebra_with_sympy.algebraic_equation import EqnFunction, str_to_extend_sympy_func
+from algebra_with_sympy.algebraic_equation import _skip_
 
 from pytest import raises
 
