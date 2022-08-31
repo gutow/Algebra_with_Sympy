@@ -1,16 +1,16 @@
-## Algebraic Equations with SymPy
+# Algebraic Equations with SymPy
 
 [Introduction](#introduction) | [Output Formatting](#controlling-the-format-of-interactive-outputs)
 | [Installation](#setupinstallation) |
 [Try Live](#try-in-binder) | [Issues or Comments](#issues-or-comments) |
 [Change Log](#change-log) |
-[License](#this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses)
+[License](#licensed-under-gnu-v3-licensehttpsgnuorglicenses)
 | [GIT Repository](https://github.com/gutow/Algebra_with_Sympy)
 | [PyPi Link](https://pypi.org/project/Algebra-with-SymPy/)
 
-#### [Website/Documentation (including API)](https://gutow.github.io/Algebra_with_Sympy/)
+## [Website/Documentation (including API)](https://gutow.github.io/Algebra_with_Sympy/)
 
-#### Introduction
+# Introduction
 
 This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
@@ -58,7 +58,7 @@ and [Maxima](http://maxima.sourceforge.net/) have similar capabilities,
 but require more knowledge of command syntax, plus they cannot easily be 
 installed in a generic python environment.
 
-#### Controlling the Format of Interactive Outputs
+# Controlling the Format of Interactive Outputs
 
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
@@ -79,7 +79,7 @@ versions will be shown.
 * **The equation label** can be turned off by setting
   `algwsym_config.output.label = False`.
 
-#### Setup/Installation
+# Setup/Installation
 
 1. Use pip to install in your python environment: 
 `pip install -U Algebra-with-SymPy`
@@ -92,19 +92,30 @@ to `import algebra_with_sympy as spa`, where
 `spa` stands for "SymPy Algebra". Then all calls would be made to `
 spa.funcname()`.
 
-#### Try in binder
+# Try in binder
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?urlpath=/tree/Demonstration%20of%20equation%20class.ipynb)
 
-#### Issues or Comments
+# Issues or Comments
 
 * Issues and bug reports should be [filed on 
 github](https://github.com/gutow/Algebra_with_Sympy/issues).
 * Comments, questions, show and tell, etc. should go in the [project 
   discussions](https://github.com/gutow/Algebra_with_Sympy/discussions).
 
-#### Change Log
+# Change Log
 
+* 0.10.0dev
+  * Significantly increased test coverage.
+  * Solving (e.g. `solve(Eqn,x)`) now supported fully. Still experimental.
+  * Bug fix: latex printing now supports custom printer.
+  * Substitution for expressions in an Eqnation using Equations is now 
+    supported (e.g. `eq1.subs(eq2, eq3, ...)`).
+  * `algebra_with_sympy.__version__` is now available for version checking 
+    within python.
+  * Bug fix: preparsing for `=@` syntax no longer blocks `obj?` syntax for 
+    getting docstrings in ipython.
+  * More robust determination of equation names for labeling.
 * 0.9.4
   * Update to deal with new Sympy function `piecewise_exclusive` in v1.11.
   * Added user warning if a function does not extend for use with `Equations` 
@@ -130,7 +141,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 * 0.9.0 functionality equivalent to extension of SymPy in
 [PR#21333](https://github.com/sympy/sympy/pull/21333).
 
-##### [This software is distributed under the GNU V3 license](https://gnu.org/licenses)
+# [licensed under GNU V3 license](https://gnu.org/licenses)
 
 This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
