@@ -24,3 +24,17 @@ def test_parsing():
     lines.append('obj?\n')
     expected_out.append('obj?\n')
     assert parser(lines) == expected_out
+    lines.append('eq1 =@a + b=c/d\n')
+    expected_out.append('eq1 = Eqn(a + b,c/d)\n')
+    assert parser(lines) == expected_out
+    lines.append('tst = (a\n')
+    expected_out.append('tst = (a\n')
+    lines.append('      +b)\n')
+    expected_out.append('      +b)\n')
+    assert parser(lines) == expected_out
+    lines.append('@property\n')
+    expected_out.append('@property\n')
+    assert parser(lines) == expected_out
+    lines.append('\n')
+    expected_out.append('\n')
+    assert parser(lines) == expected_out

@@ -6,8 +6,7 @@
   * Build tests of functions in `algebraic_equation._extended_`
   * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
   * Add tests for `Equality` conversion to an `Equation`.
-  * Add tests for the preparser.
-  * Add doctest examples of `rewrite(Add)`, `solve()`
+  * Add doctest examples of `rewrite(Add)`.
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
