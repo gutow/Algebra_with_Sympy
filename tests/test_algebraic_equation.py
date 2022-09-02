@@ -3,10 +3,12 @@ from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
 from sympy import sin, cos, log, exp, latex, Symbol
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
-from algebra_with_sympy.algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
+from algebra_with_sympy.algebraic_equation import solve, collect, Equation
+from algebra_with_sympy.algebraic_equation import Eqn, sqrt, root
 from algebra_with_sympy.algebraic_equation import algwsym_config
-from algebra_with_sympy.algebraic_equation import EqnFunction, str_to_extend_sympy_func
+from algebra_with_sympy.algebraic_equation import EqnFunction
 from algebra_with_sympy.algebraic_equation import _skip_
+from algebra_with_sympy.algebraic_equation import str_to_extend_sympy_func
 
 from pytest import raises
 
@@ -18,7 +20,7 @@ def test_str_to_extend_sympy_func():
     pass
 
 #####
-# Extension just the functions used for testing
+# Extension of just the functions used for testing
 #####
 
 for func in ('sin', 'cos', 'log', 'exp'):
@@ -57,7 +59,6 @@ def test_define_equation():
     assert tsteqn.rhs == b/c
     assert tsteqn.free_symbols == {a, b, c}
 
-
 def test_convert_equation():
     a, b, c = symbols('a b c')
     tsteqn = Equation(a, b/c)
@@ -90,15 +91,28 @@ def test_binary_op():
 
 
 def test_outputs():
-    algwsym_config.output.show_code = False
-    # True for above not tested as it sends output to standard out via
-    # `print()`.
-    algwsym_config.output.human_text = False
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
+    algwsym_config.output.show_code = True
+    assert (tsteqn.__str__() ==
+            'code version: Equation(a, b/c)\na = b/c')
+    assert (latex(tsteqn) ==
+            '\\text{code version: Equation(a, b/c)} \\newline a=\\frac{b}{c}')
+    algwsym_config.output.show_code = False
+    algwsym_config.output.human_text = False
     assert tsteqn.__repr__() == 'Equation(a, b/c)'
     algwsym_config.output.human_text = True
     assert tsteqn.__repr__() == 'a = b/c'
+    assert tsteqn.__str__() == 'a = b/c'
+    assert latex(tsteqn) == 'a=\\frac{b}{c}'
+
+    import __main__ as gs
+    vars(gs)['tsteqn'] = tsteqn
+    assert tsteqn._get_eqn_name() == 'tsteqn'
+    assert tsteqn.__str__() == 'a = b/c          (tsteqn)'
+    assert (latex(tsteqn) ==
+            'a=\\frac{b}{c}\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,(\\text{tsteqn})')
+    algwsym_config.output.label = False
     assert tsteqn.__str__() == 'a = b/c'
     assert latex(tsteqn) == 'a=\\frac{b}{c}'
 

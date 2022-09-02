@@ -820,14 +820,17 @@ del symsqrt
 def root(arg, n, k = 0, evaluate = None):
     """
     Override of sympy convenience function `root`. Simply divides equations
-    into two sides if `arg` is an instance of `Equation`. This avoids an
-    issue with the way sympy is delaying specialized applications of _Pow_ on
-    objects that are not basic sympy expressions.
+    into two sides if `arg`  or `n` is an instance of `Equation`. This
+    avoids an issue with the way sympy is delaying specialized applications
+    of _Pow_ on objects that are not basic sympy expressions.
     """
     from sympy.functions.elementary.miscellaneous import root as symroot
     if isinstance(arg, Equation):
-        return Equation(symroot(arg.lhs, n, k, evaluate), symroot(arg.rhs,
-                                                            n, k, evaluate))
+        return Equation(symroot(arg.lhs, n, k, evaluate),
+                        symroot(arg.rhs, n, k, evaluate))
+    if isinstance(n, Equation):
+        return Equation(symroot(arg, n.lhs, k, evaluate),
+                        symroot(arg, n.rhs, k, evaluate))
     else:
         return symroot(arg, n, k, evaluate)
 

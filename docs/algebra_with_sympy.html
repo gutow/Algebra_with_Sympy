@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.0.2"/>
+    <meta name="generator" content="pdoc 12.1.0"/>
     <title>algebra_with_sympy API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -41,7 +41,24 @@
 
         <h2>Contents</h2>
         <ul>
-  <li><a href="#algebraic-equations-with-sympy">Algebraic Equations with SymPy</a></li>
+  <li><a href="#algebraic-equations-with-sympy">Algebraic Equations with SymPy</a>
+  <ul>
+    <li><a href="#websitedocumentation-including-apihttpsgutowgithubioalgebra_with_sympy"><a href="https://gutow.github.io/Algebra_with_Sympy/">Website/Documentation (including API)</a></a></li>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#controlling-the-format-of-interactive-outputs">Controlling the Format of Interactive Outputs</a></li>
+    <li><a href="#setupinstallation">Setup/Installation</a></li>
+    <li><a href="#try-in-binder">Try in binder</a></li>
+    <li><a href="#issues-or-comments">Issues or Comments</a></li>
+    <li><a href="#change-log">Change Log</a></li>
+    <li><a href="#licensed-under-gnu-v3-licensehttpsgnuorglicenses"><a href="https://gnu.org/licenses">licensed under GNU V3 license</a></a></li>
+  </ul></li>
+  <li><a href="#development-notes">Development Notes</a>
+  <ul>
+    <li><a href="#general-notes">General Notes</a></li>
+    <li><a href="#constructing-the-documentation">Constructing the Documentation</a></li>
+    <li><a href="#running-tests">Running Tests</a></li>
+    <li><a href="#building-pypi-package">Building PyPi package</a></li>
+  </ul></li>
 </ul>
 
 
@@ -49,10 +66,11 @@
         <ul>
                 <li><a href="algebra_with_sympy/algebraic_equation.html">algebraic_equation</a></li>
                 <li><a href="algebra_with_sympy/preparser.html">preparser</a></li>
+                <li><a href="algebra_with_sympy/version.html">version</a></li>
         </ul>
 
 
-            <footer>Algebra with Sympy v0.9.4</footer>
+            <footer>Algebra with Sympy v0.10.0dev</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -66,19 +84,19 @@
                     <h1 class="modulename">
 algebra_with_sympy    </h1>
 
-                        <div class="docstring"><h2 id="algebraic-equations-with-sympy">Algebraic Equations with SymPy</h2>
+                        <div class="docstring"><h1 id="algebraic-equations-with-sympy">Algebraic Equations with SymPy</h1>
 
 <p><a href="#introduction">Introduction</a> | <a href="#controlling-the-format-of-interactive-outputs">Output Formatting</a>
 | <a href="#setupinstallation">Installation</a> |
 <a href="#try-in-binder">Try Live</a> | <a href="#issues-or-comments">Issues or Comments</a> |
 <a href="#change-log">Change Log</a> |
-<a href="#this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses">License</a>
+<a href="#licensed-under-gnu-v3-licensehttpsgnuorglicenses">License</a>
 | <a href="https://github.com/gutow/Algebra_with_Sympy">GIT Repository</a>
 | <a href="https://pypi.org/project/Algebra-with-SymPy/">PyPi Link</a></p>
 
-<h4 id="websitedocumentation-including-apihttpsgutowgithubioalgebra_with_sympy"><a href="https://gutow.github.io/Algebra_with_Sympy/">Website/Documentation (including API)</a></h4>
+<h2 id="websitedocumentation-including-apihttpsgutowgithubioalgebra_with_sympy"><a href="https://gutow.github.io/Algebra_with_Sympy/">Website/Documentation (including API)</a></h2>
 
-<h4 id="introduction">Introduction</h4>
+<h2 id="introduction">Introduction</h2>
 
 <p>This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
@@ -126,7 +144,7 @@ and <a href="http://maxima.sourceforge.net/">Maxima</a> have similar capabilitie
 but require more knowledge of command syntax, plus they cannot easily be 
 installed in a generic python environment.</p>
 
-<h4 id="controlling-the-format-of-interactive-outputs">Controlling the Format of Interactive Outputs</h4>
+<h2 id="controlling-the-format-of-interactive-outputs">Controlling the Format of Interactive Outputs</h2>
 
 <ul>
 <li><p><strong>In graphical environments (Jupyter)</strong> you will get rendered Latex such as 
@@ -147,7 +165,7 @@ versions will be shown.</p></li>
 <code>algwsym_config.output.label = False</code>.</p></li>
 </ul>
 
-<h4 id="setupinstallation">Setup/Installation</h4>
+<h2 id="setupinstallation">Setup/Installation</h2>
 
 <ol>
 <li>Use pip to install in your python environment: 
@@ -162,11 +180,11 @@ to <code>import algebra_with_sympy as spa</code>, where
 spa.funcname()</code>.</li>
 </ol>
 
-<h4 id="try-in-binder">Try in binder</h4>
+<h2 id="try-in-binder">Try in binder</h2>
 
 <p><a href="https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?urlpath=/tree/Demonstration%20of%20equation%20class.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
 
-<h4 id="issues-or-comments">Issues or Comments</h4>
+<h2 id="issues-or-comments">Issues or Comments</h2>
 
 <ul>
 <li>Issues and bug reports should be <a href="https://github.com/gutow/Algebra_with_Sympy/issues">filed on 
@@ -175,9 +193,22 @@ github</a>.</li>
 discussions</a>.</li>
 </ul>
 
-<h4 id="change-log">Change Log</h4>
+<h2 id="change-log">Change Log</h2>
 
 <ul>
+<li>0.10.0dev
+<ul>
+<li>Significantly increased test coverage.</li>
+<li>Solving (e.g. <code>solve(Eqn,x)</code>) now supported fully. Still experimental.</li>
+<li>Bug fix: latex printing now supports custom printer.</li>
+<li>Substitution for into an Equation using Equations is now 
+supported (e.g. <code>eq1.subs(eq2, eq3, ...)</code>).</li>
+<li><code>algebra_with_sympy.__version__</code> is now available for version checking 
+within python.</li>
+<li>Bug fix: preparsing for <code>=@</code> syntax no longer blocks <code>obj?</code> syntax for 
+getting docstrings in ipython.</li>
+<li>More robust determination of equation names for labeling.</li>
+</ul></li>
 <li>0.9.4
 <ul>
 <li>Update to deal with new Sympy function <code>piecewise_exclusive</code> in v1.11.</li>
@@ -212,7 +243,7 @@ environments.</li>
 <a href="https://github.com/sympy/sympy/pull/21333">PR#21333</a>.</li>
 </ul>
 
-<h5 id="this-software-is-distributed-under-the-gnu-v3-licensehttpsgnuorglicenses"><a href="https://gnu.org/licenses">This software is distributed under the GNU V3 license</a></h5>
+<h2 id="licensed-under-gnu-v3-licensehttpsgnuorglicenses"><a href="https://gnu.org/licenses">licensed under GNU V3 license</a></h2>
 
 <p>This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -224,6 +255,134 @@ environments.</li>
     GNU General Public License for more details.</p>
 
 <p>Copyright - Jonathan Gutow 2021, 2022</p>
+
+<h1 id="development-notes">Development Notes</h1>
+
+<p><a href="#general-notes">General</a> | <a href="#constructing-the-documentation">Make Docs</a> | 
+<a href="#running-tests">Running Tests</a> | 
+<a href="#building-pypi-package">Build PyPi Package</a>|</p>
+
+<h2 id="general-notes">General Notes</h2>
+
+<p><span id = "general-notes"/></p>
+
+<ul>
+<li>Important TODOs
+<ul>
+<li>Tests of equation not as first parameter of functions.</li>
+<li>Tests of functions in <code>algebraic_equation._extended_</code></li>
+<li>Tests of function calls with &gt; 1 equation in them (raises error)</li>
+<li>Tests for algwsym_config.output</li>
+<li>Tests for _get_eqn_name</li>
+<li>Test for _binary_op NotImplemented error</li>
+<li>Test for _eval_power</li>
+<li>Test for _latex with show_code and human_text True</li>
+<li>Test for _latex with label True</li>
+<li>Test for __str__ with show_code True</li>
+<li>Test for __str__ with label True</li>
+<li>Test solve when passed an expression</li>
+<li>Test root when passed an expression</li>
+<li>Test Heaviside</li>
+<li>Test collect when there isn't an available _eval_collect</li>
+<li>Tests for <code>Equality</code> conversion to an <code>Equation</code>.</li>
+<li>examine these more carefully (top priority: real_root, cbrt, Ynm_c)</li>
+<li>Add doctest examples of <code>rewrite(Add)</code>.</li>
+</ul></li>
+<li>To consider
+<ul>
+<li>Change <code>Equation</code> constructor to accept <code>Equality</code>, <code>Set</code>, <code>List</code> or 
+<code>lhs, rhs</code>, rather than just <code>lhs, rhs</code>.</li>
+</ul></li>
+</ul>
+
+<h2 id="constructing-the-documentation">Constructing the Documentation</h2>
+
+<ol>
+<li>Make sure pdoc is installed and updated in the virtual environment <code>pip 
+install -U pdoc</code>.</li>
+<li>Update any <code>.md</code> files included in <code>_init_.py</code>.
+<ul>
+<li>Generally URLs should be absolute, not relative.</li>
+</ul></li>
+<li>At the root level run pdoc <code>pdoc 
+--logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
+--logo-link https://gutow.github.io/Algebra_with_Sympy/
+--footer-text "Algebra with Sympy vX.X.X" --math -html -o docs algebra_with_sympy</code> 
+where <code>X.X.X</code> is the version number.</li>
+</ol>
+
+<h3 id="tasks-for-documentation">Tasks for Documentation</h3>
+
+<ul>
+<li>Readme.md &amp; Development Notes.md
+<ul>
+<li>Hard code anchors so that navigation links work on pypi page.</li>
+<li>Use absolute path to github pages for more examples.</li>
+</ul></li>
+</ul>
+
+<h2 id="running-tests">Running Tests</h2>
+
+<ol>
+<li>Install updated pytest in the virtual environment:
+<pre><code>pipenv shell
+pip install -U pytest
+</code></pre></li>
+<li>Run standard tests:
+<code>pytest --ignore='Developer Testing' --ignore-glob='*test_preparser.py'</code>.</li>
+<li>Run preparser tests:
+<code>ipython -m pytest tests/test_preparser.py</code></li>
+<li>Run doctests:
+<code>pytest --ignore='tests' --ignore='Developer Testing' 
+--ignore-glob='*old*' --doctest-modules</code></li>
+</ol>
+
+<p>You can run all the test using the dotests script: <code>./dotests.sh</code>.</p>
+
+<h2 id="building-pypi-package">Building PyPi package</h2>
+
+<ol>
+<li>Make sure to update the version number in setup.py first.</li>
+<li>Install updated  setuptools and twine in the virtual environment:
+<pre><code>pipenv shell
+pip install -U setuptools wheel twine
+</code></pre></li>
+<li>Build the distribution <code>python -m setup sdist bdist_wheel</code>.</li>
+<li>Test it on <code>test.pypi.org</code>.
+<ol>
+<li>Upload it (you will need an account on test.pypi.org):
+<code>python -m twine upload --repository testpypi dist/*</code>.</li>
+<li>Create a new virtual environment and test install into it:
+<pre><code>exit # to get out of the current environment
+cd &lt;somewhere&gt;
+mkdir &lt;new virtual environment&gt;
+cd &lt;new directory&gt;
+pipenv shell #creates the new environment and enters it.
+pip install -i https://test.pypi.org/..... # copy actual link from the
+                                           # repository on test.pypi.
+</code></pre>
+There are often install issues because sometimes only older versions of
+some of the required packages are available on test.pypi.org. If this
+is the only problem change the version to end in <code>rc0</code> for release
+candidate and try it on the regular pypi.org as described below for
+releasing on PyPi.</li>
+<li>After install test by running a jupyter notebook in the virtual 
+environment.</li>
+</ol></li>
+</ol>
+
+<h3 id="releasing-on-pypi">Releasing on PyPi</h3>
+
+<p>Proceed only if testing of the build is successful.</p>
+
+<ol>
+<li>Double check the version number in version.py.</li>
+<li>Rebuild the release: <code>python -m setup sdist bdist_wheel</code>.</li>
+<li>Upload it: <code>python -m twine upload dist/*</code></li>
+<li>Make sure it works by installing it in a clean virtual environment. This
+is the same as on test.pypi.org except without <code>-i https://test.pypy...</code>. If
+it does not work, pull the release.</li>
+</ol>
 </div>
 
                         <input id="algebra_with_sympy-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -232,15 +391,18 @@ environments.</li>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../ReadMe.md</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.algebraic_equation</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.preparser</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="c1"># Set the output formatting defaults</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">human_text</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">.. include:: ../Development Notes.md</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.algebraic_equation</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.preparser</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.version</span> <span class="kn">import</span> <span class="n">__version__</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="c1"># Set the output formatting defaults</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">human_text</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="kc">True</span>
 </span></pre></div>
 
 
@@ -348,7 +510,11 @@ environments.</li>
                 let heading;
                 switch (result.doc.type) {
                     case "function":
-                        heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span><span class="signature">${doc.signature}:</span>`;
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
                         break;
                     case "class":
                         heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
