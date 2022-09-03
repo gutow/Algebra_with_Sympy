@@ -1,10 +1,12 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
-from sympy import sin, cos, log, exp, I
-from .algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
-from .algebraic_equation import algwsym_config
-from .algebraic_equation import EqnFunction, str_to_extend_sympy_func
-from .algebraic_equation import _skip_
+from sympy import sin, cos, log, exp, latex, Symbol
+from sympy.core.function import AppliedUndef
+from sympy.printing.latex import LatexPrinter
+from algebra_with_sympy.algebraic_equation import solve, collect, Equation, Eqn, sqrt, root
+from algebra_with_sympy.algebraic_equation import algwsym_config
+from algebra_with_sympy.algebraic_equation import EqnFunction, str_to_extend_sympy_func
+from algebra_with_sympy.algebraic_equation import _skip_
 
 from pytest import raises
 
@@ -29,6 +31,20 @@ for func in ('sin', 'cos', 'log', 'exp'):
                 'properly with Equations. If you use it with Equations, ' \
                 'validate its behavior. We are working to address this ' \
                 'issue.')
+
+
+class CustomLatexPrinter(LatexPrinter):
+    """Print undefined applied functions without arguments"""
+    def _print_Function(self, expr, exp=None):
+        if isinstance(expr, AppliedUndef):
+            return self._print(Symbol(expr.func.__name__))
+        return super()._print_Function(expr, exp)
+
+
+def my_latex(expr, **settings):
+    """Mimic latex()"""
+    return CustomLatexPrinter(settings).doprint(expr)
+
 
 def test_define_equation():
     a, b, c = symbols('a b c')
@@ -84,11 +100,16 @@ def test_outputs():
     algwsym_config.output.human_text = True
     assert tsteqn.__repr__() == 'a = b/c'
     assert tsteqn.__str__() == 'a = b/c'
-    assert tsteqn._latex(tsteqn) == 'a=\\frac{b}{c}'
+    assert latex(tsteqn) == 'a=\\frac{b}{c}'
+
+    f = Function("f")(a, b, c)
+    eq = Eqn(f, 2)
+    assert latex(eq) == "f{\\left(a,b,c \\right)}=2"
+    # use custom printer
+    assert my_latex(eq) == "f=2"
+
 
 def test_sympy_functions():
-    # TODO: To avoid problems if a function in sympy changes or is added this
-    #  should test all functions automatically.
     a, b, c = symbols('a b c')
     tsteqn = Equation(a, b/c)
     assert sin(tsteqn) == Equation(sin(a),sin(b/c))
@@ -98,7 +119,6 @@ def test_sympy_functions():
     tsteqn5 = Equation(a, Matrix([[1, 1], [1, 1]]))
     assert exp(tsteqn5).lhs == exp(a)
     assert exp(tsteqn5).rhs == exp(Matrix([[1, 1], [1, 1]]))
-
 
 def test_helper_functions():
     a, b, c, x= symbols('a b c x')
@@ -172,6 +192,7 @@ def test_rewrite_add():
     assert eq.rewrite(Add, eqn=False) == 2 * b
     assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
 
+
 def test_rewrite():
     x = symbols("x")
     eq = Equation(exp(I*x),cos(x) + I*sin(x))
@@ -183,3 +204,30 @@ def test_rewrite():
     from sympy import exp as sexp
     assert eq.rewrite(exp) == Equation(exp(I*x), sexp(I*x))
     assert eq.rewrite(Add) == Equation(exp(I*x) - I*sin(x) - cos(x), 0)
+
+
+def test_subs():
+    a, b, c, x = symbols('a b c x')
+    eq1 = Equation(x + a + b + c, x * a * b * c)
+    eq2 = Equation(x + a, 4)
+    assert eq1.subs(a, 2) == Equation(x + b + c + 2, 2 * x * b * c)
+    assert eq1.subs([(a, 2), (b, 3)]) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs({a: 2, b: 3}) == Equation(x + c + 5, 6 * x * c)
+    assert eq1.subs(eq2) == Equation(4 + b + c, x * a * b * c)
+
+    # verify that proper errors are raised
+    eq3 = Equation(b, 5)
+    raises(TypeError, lambda: eq1.subs([eq2, eq3]))
+    raises(ValueError, lambda: eq1.subs(eq2, {b: 5}))
+
+    # verify that substituting an Equation into an expression is not supported
+    raises(ValueError, lambda: eq1.dolhs.subs(eq2))
+    raises(ValueError, lambda: eq1.dorhs.subs(eq2))
+    raises(ValueError, lambda: (x + a + b + c).subs(eq2))
+
+    # verify the effectivness of `simultaneous`
+    eq = Equation((x + a) / a, b * c)
+    sd = {x + a: a, a: x + a}
+    assert eq.subs(sd) == Equation(1, b * c)
+    assert eq.subs(sd, simultaneous=True) == Equation(a / (x + a), b * c)
+

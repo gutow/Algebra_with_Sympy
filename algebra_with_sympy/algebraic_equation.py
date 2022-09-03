@@ -146,6 +146,10 @@ class Equation(Basic, EvalfMixin):
 
     Examples
     ========
+    NOTE: All the examples below are in vanilla python. You can get human
+    readable eqautions "lhs = rhs" in vanilla python by adjusting the settings
+    in `algwsym_config` (see it's documentation). Output is human readable by
+    default in IPython and Jupyter environments.
     >>> from algebra_with_sympy import *
     >>> a, b, c, x = var('a b c x')
     >>> Equation(a,b/c)
@@ -251,6 +255,21 @@ class Equation(Basic, EvalfMixin):
     >>> eq2.subs({R:0.08206*L*atm/mol/K,T:273*K,n:1.00*mol,V:24.0*L}).evalf(4)
     Equation(p, 0.9334*atm)
 
+    Substituting an equation into another equation:
+    >>> P, P1, P2, A1, A2, E1, E2 = symbols("P, P1, P2, A1, A2, E1, E2")
+    >>> eq1 = Eqn(P, P1 + P2)
+    >>> eq2 = Eqn(P1 / (A1 * E1), P2 / (A2 * E2))
+    >>> P1_val = (eq1 - P2).swap
+    >>> P1_val
+    Equation(P1, P - P2)
+    >>> eq2 = eq2.subs(P1_val)
+    >>> eq2
+    Equation((P - P2)/(A1*E1), P2/(A2*E2))
+    >>> P2_val = solve(eq2.subs(P1_val), P2)[0]
+    P2 = A2*E2*P/(A1*E1 + A2*E2)
+    >>> P2_val
+    Equation(P2, A2*E2*P/(A1*E1 + A2*E2))
+
     Combining equations (Math with equations: lhs with lhs and rhs with rhs)
     >>> q = Eqn(a*c, b/c**2)
     >>> q
@@ -327,15 +346,19 @@ class Equation(Basic, EvalfMixin):
     >>> q.dorhs.integrate(b).dolhs.integrate(a)
     Equation(a**2*c/2, b**2/(2*c))
 
-    SymPy's solvers do not understand these equations. They expect an
-    expression that the solver assumes = 0. Thus to use the solver the
-    equation must be rearranged so that all non-zero symbols are on one side.
-    Then just the non-zero symbolic side is passed to ``solve()``.
-    >>> t2 = t-t.rhs
-    >>> t2
-    Equation(a - b/c, 0)
-    >>> solve(t2.lhs,c)
-    [b/a]
+    Automatic solutions using sympy solvers. THIS IS EXPERIMENTAL. Please
+    report issues at https://github.com/gutow/Algebra_with_Sympy/issues.
+    >>> tosolv = Eqn(a - b, c/a)
+    >>> solve(tosolv,a)
+    a = b/2 - sqrt(b**2 + 4*c)/2
+    a = b/2 + sqrt(b**2 + 4*c)/2
+    [Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2)]
+    >>> solve(tosolv, b)
+    b = (a**2 - c)/a
+    [Equation(b, (a**2 - c)/a)]
+    >>> solve(tosolv, c)
+    c = a**2 - a*b
+    [Equation(c, a**2 - a*b)]
 
     """
 
@@ -562,6 +585,80 @@ class Equation(Basic, EvalfMixin):
                 return self.func(expr, 0)
             return expr
 
+    def subs(self, *args, **kwargs):
+        """Substitutes old for new in an equation after sympifying args.
+    
+        `args` is either:
+
+        * one ore more arguments of type `Equation(old, new)`.
+        * two arguments, e.g. foo.subs(old, new)
+        * one iterable argument, e.g. foo.subs(iterable). The iterable may be:
+
+            - an iterable container with (old, new) pairs. In this case the
+              replacements are processed in the order given with successive
+              patterns possibly affecting replacements already made.
+            - a dict or set whose key/value items correspond to old/new pairs.
+              In this case the old/new pairs will be sorted by op count and in
+              case of a tie, by number of args and the default_sort_key. The
+              resulting sorted list is then processed as an iterable container
+              (see previous).
+        
+        If the keyword ``simultaneous`` is True, the subexpressions will not be
+        evaluated until all the substitutions have been made.
+
+        Please, read ``help(Expr.subs)`` for more examples.
+
+        Examples
+        ========
+
+        >>> from sympy.abc import a, b, c, x
+        >>> from algebra_with_sympy import Equation
+        >>> eq = Equation(x + a, b * c)
+
+        Substitute a single value:
+
+        >>> eq.subs(b, 4)
+        Equation(a + x, 4*c)
+
+        Substitute a multiple values:
+
+        >>> eq.subs([(a, 2), (b, 4)])
+        Equation(x + 2, 4*c)
+        >>> eq.subs({a: 2, b: 4})
+        Equation(x + 2, 4*c)
+
+        Substitute an equation into another equation:
+
+        >>> eq2 = Equation(x + a, 4)
+        >>> eq.subs(eq2)
+        Equation(4, b*c)
+
+        Substitute multiple equations into another equation:
+
+        >>> eq1 = Equation(x + a + b + c, x * a * b * c)
+        >>> eq2 = Equation(x + a, 4)
+        >>> eq3 = Equation(b, 5)
+        >>> eq1.subs(eq2, eq3)
+        Equation(c + 9, 5*a*c*x)
+
+        """
+        new_args = args
+        if all(isinstance(a, self.func) for a in args):
+            new_args = [{a.args[0]: a.args[1] for a in args}]
+        elif (len(args) == 1) and all(isinstance(a, self.func) for a in
+                                      args[0]):
+            raise TypeError("You passed into `subs` a list of elements of "
+                "type `Equation`, but this is not supported. Please, consider "
+                "unpacking the list with `.subs(*eq_list)` or select your "
+                "equations from the list and use `.subs(eq_list[0], eq_list["
+                "2], ...)`.")
+        elif any(isinstance(a, self.func) for a in args):
+            raise ValueError("`args` contains one or more Equation and some "
+                "other data type. This mode of operation is not supported. "
+                "Please, read `subs` documentation to understand how to "
+                "use it.")
+        return super().subs(*new_args, **kwargs)
+
     #####
     # Overrides of binary math operations
     #####
@@ -687,14 +784,14 @@ class Equation(Basic, EvalfMixin):
             return self.__str__()
         return repstr
 
-    def _latex(self, obj, **kwargs):
+    def _latex(self, printer):
         tempstr = ''
         if algwsym_config.output.show_code and not \
             algwsym_config.output.human_text:
             tempstr +='\\text{code version: '+ self.__repr__()+'} \\newline '
-        tempstr += latex(self.lhs, **kwargs)
+        tempstr += printer._print(self.lhs)
         tempstr += '='
-        tempstr += latex(self.rhs, **kwargs)
+        tempstr += printer._print(self.rhs)
         namestr = self._get_eqn_name()
         if namestr !='' and algwsym_config.output.label:
             tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
@@ -794,6 +891,23 @@ from sympy.functions.elementary.miscellaneous import root as symroot
 root.__doc__+=symroot.__doc__
 del symroot
 
+def Heaviside(arg, **kwargs):
+    """
+    Overide of the Heaviside function as implemented in Sympy. Get a recursion
+    error if use the normal class extension of a function to do this.
+
+    """
+    from sympy.functions.special.delta_functions import Heaviside as symHeav
+    if isinstance(arg, Equation):
+        return Equation(symHeav((arg.lhs), **kwargs),symHeav((arg.rhs),
+                                                             **kwargs))
+    else:
+        return symHeav(arg, **kwargs)
+# Pick up the docstring for Heaviside from Sympy.
+from sympy.functions.special.delta_functions import Heaviside as symHeav
+Heaviside.__doc__ += symHeav.__doc__
+del symHeav
+
 def collect(expr, syms, func=None, evaluate=None, exact=False,
             distribute_order_term=True):
     """
@@ -876,21 +990,23 @@ def str_to_extend_sympy_func(func:str):
 # This is hacky, but I have not been able to come up with another way
 # of extending the functions programmatically, if this is separate package
 # from sympy that extends it after loading sympy.
-#  Functions listed in
-#  `skip` cannot be extended because of `mro` error or `metaclass
-#  conflict`. This reflects that some of these are not members of the
-#  Sympy Function class.
+#  Functions listed in `skip` are not applicable to equations or cannot be
+#  extended because of `mro` error or `metaclass conflict`. This reflects
+#  that some of these are not members of the Sympy Function class.
 
 # Overridden elsewhere
-_extended_ = ('sqrt', 'root')
+_extended_ = ('sqrt', 'root', 'Heaviside')
 
 # Either not applicable to equations or have not yet figured out a way
-# to systematically apply to an equation
+# to systematically apply to an equation.
+# TODO examine these more carefully (top priority: real_root, cbrt, Ynm_c).
 _not_applicable_to_equations_ = ('Min', 'Max', 'Id', 'real_root', 'cbrt',
         'unbranched_argument', 'polarify', 'unpolarify',
         'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
         'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
-        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive')
+        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive', 'Piecewise',
+        'motzkin', 'hyper','meijerg', 'chebyshevu_root', 'chebyshevt_root',
+        'betainc_regularized')
 _skip_ = _extended_ + _not_applicable_to_equations_
 
 for func in functions.__all__:

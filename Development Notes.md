@@ -1,11 +1,27 @@
 [General](#general-notes) | [Make Docs](#constructing-the-documentation) | 
+[Running Tests](#running-tests) | 
 [Build PyPi Package](#building-pypi-package)|
+
 ## General Notes
 * Important TODOs
-  * Build generic testing of all functions in `sympy.functions.__all__`. This 
-    will reveal any new functions that need special adaptations.
-  * Add tests for `Equality` conversion to an `Equation`.
-  * Add tests for the preparser
+  * Tests of equation not as first parameter of functions.
+  * Tests of functions in `algebraic_equation._extended_`
+  * Tests of function calls with > 1 equation in them (raises error)
+  * Tests for algwsym_config.output
+  * Tests for _get_eqn_name
+  * Test for _binary_op NotImplemented error
+  * Test for _eval_power
+  * Test for _latex with show_code and human_text True
+  * Test for _latex with label True
+  * Test for __str__ with show_code True
+  * Test for __str__ with label True
+  * Test solve when passed an expression
+  * Test root when passed an expression
+  * Test Heaviside
+  * Test collect when there isn't an available _eval_collect
+  * Tests for `Equality` conversion to an `Equation`.
+  * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
+  * Add doctest examples of `rewrite(Add)`.
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
@@ -34,8 +50,16 @@
    pipenv shell
    pip install -U pytest
    ```
-2. Run tests ignoring the manual tests in the `Developer Testing` directory:
-   `python -m pytest --ignore='Developer Testing'`.
+2. Run standard tests:
+   `pytest --ignore='Developer Testing' --ignore-glob='*test_preparser.py'`.
+3. Run preparser tests:
+   `ipython -m pytest tests/test_preparser.py`
+4. Run doctests:
+   `pytest --ignore='tests' --ignore='Developer Testing' 
+   --ignore-glob='*old*' --doctest-modules`
+
+You can run all the test using the dotests script: `./dotests.sh`.
+
 ## Building PyPi package
 
 1. Make sure to update the version number in setup.py first.

@@ -9,11 +9,15 @@ def algebra_with_sympy_preparser(lines):
     and `equation.rhs` is the right-hand side of the equation. Each side of the
     equation must parse into a valid Sympy expression.
 
+    **Note**: This does not support line continuation. Long equations should be
+    built by combining expressions using names short enough to do this on one
+    line. The alternative is to use `equation_name = Eqn(long ...
+    expressions ... with ... multiple ... lines)`.
+
     **Note**: If the `equation_name` is omitted the equation will be formed,
-    but it will
-    not be assigned to a name that can be used to refer to it later. You may be
-    able to access it through one of the special IPython underscore names. This
-    is not recommended.
+    but it will not be assigned to a name that can be used to refer to it
+    later. You may be able to access it through one of the special IPython
+    underscore names. This is not recommended.
 
     **THIS FUNCTION IS USED BY THE IPYTHON ENVIRONMENT TO PREPARSE THE INPUT
     BEFORE IT IS PASSED TO THE PYTHON INTERPRETER. IT IS NOT MEANT TO BE USED
@@ -32,15 +36,17 @@ def algebra_with_sympy_preparser(lines):
                                  ' the \"=@\" special input method.')
             templine =''
             if eqsplit[0]!='' and eqsplit[1]!='':
+                if eqsplit[1].endswith('\n'):
+                    eqsplit[1] = eqsplit[1][:-1]
                 if linesplit[0]!='':
-                    templine = str(linesplit[0])+'=Eqn('+str(eqsplit[0])+',' \
+                    templine = str(linesplit[0])+'= Eqn('+str(eqsplit[0])+',' \
                         ''+str(eqsplit[1])+')\n'
                 else:
                     templine = 'Eqn('+str(eqsplit[0])+','+str(eqsplit[1])+')\n'
             new_lines.append(templine)
         else:
-            new_lines.append(k+'\n')
-    return(new_lines)
+            new_lines.append(k)
+    return new_lines
 
 from IPython import get_ipython
 if get_ipython():
