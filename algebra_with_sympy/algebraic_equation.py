@@ -407,7 +407,6 @@ class Equation(Basic, EvalfMixin):
         """
         Converts the equation to an Equality.
         """
-        from sympy.core.relational import Equality
         return Equality(self.lhs, self.rhs)
 
     def check(self, **kwargs):
@@ -421,7 +420,6 @@ class Equation(Basic, EvalfMixin):
         -------
         True, False or an unevaluated `Equality` if truth cannot be determined.
         """
-        from sympy.core.relational import Equality
         return Equality(self.lhs, self.rhs, **kwargs).simplify()
 
     @property
@@ -870,7 +868,7 @@ def collect(expr, syms, func=None, evaluate=None, exact=False,
         return collect(expr, syms, func, evaluate, exact,
                        distribute_order_term)
 
-class Eq(Eq):
+class Equality(Equality):
     """
     Extension of Equality class to include the ability to convert it to an
     Equation.
@@ -888,6 +886,7 @@ class Eq(Eq):
         """
         return self.to_Equation()
 
+Eq = Equality
 #####
 # Extension of the Function class. For incorporation into SymPy this should
 # become part of the class

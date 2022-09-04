@@ -5,7 +5,6 @@
 
 ## General Notes
 * Important TODOs
-  * Tests for `Equality` conversion to an `Equation`.
   * Test collect when there isn't an available _eval_collect
   * Test for _binary_op NotImplemented error (not sure how to get there)
   * examine these more carefully (top priority: real_root, cbrt, Ynm_c)

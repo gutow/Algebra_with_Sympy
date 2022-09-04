@@ -4,6 +4,7 @@ from sympy import sin, cos, log, exp, latex, Symbol
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect, Equation
+from algebra_with_sympy.algebraic_equation import Equality, Eq
 from algebra_with_sympy.algebraic_equation import Eqn, sqrt, root, Heaviside
 from algebra_with_sympy.algebraic_equation import algwsym_config
 from algebra_with_sympy.algebraic_equation import EqnFunction
@@ -195,6 +196,12 @@ def test_Heaviside():
     assert (Heaviside(tsteqn) ==
             Equation(Heaviside(tsteqn.lhs), Heaviside(tsteqn.rhs)))
     assert Heaviside(0) == S(1)/S(2)
+
+def test_equality_extension():
+    a, b, c, x = symbols('a b c x')
+    tstequal = Equality(a, b / c)
+    assert(tstequal.to_Equation() == Equation(a, b / c))
+    assert(tstequal.to_Eqn()== Equation(a, b / c))
 
 def test_apply_syntax():
     a, b, c, x = symbols('a b c x')
