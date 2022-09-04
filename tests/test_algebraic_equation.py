@@ -4,7 +4,7 @@ from sympy import sin, cos, log, exp, latex, Symbol
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect, Equation
-from algebra_with_sympy.algebraic_equation import Eqn, sqrt, root
+from algebra_with_sympy.algebraic_equation import Eqn, sqrt, root, Heaviside
 from algebra_with_sympy.algebraic_equation import algwsym_config
 from algebra_with_sympy.algebraic_equation import EqnFunction
 from algebra_with_sympy.algebraic_equation import _skip_
@@ -88,6 +88,9 @@ def test_binary_op():
     assert tsteqn/tsteqn == Equation(1, 1)
     assert tsteqn % tsteqn == Equation(0, 0)
     assert tsteqn**tsteqn == Equation(a**a, (b/c)**(b/c))
+    assert tsteqn**a == Equation(a**a, (b/c)**a)
+    assert tsteqn._eval_power(tsteqn) == Equation(a**a, (b/c)**(b/c))
+    assert tsteqn._eval_power(a) == Equation(a**a, (b/c)**a)
 
 
 def test_outputs():
@@ -168,14 +171,30 @@ def test_helper_functions():
         a + 1, c)
     assert simplify(Equation((a + 1)**2/(a + 1), exp(log(c)))) == Equation(
         a + 1, c)
+    assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
+    assert root(b/c,3) == (b/c)**(S(1)/S(3))
+    assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
+
+def test_solve():
+    a, b, c, x = symbols('a b c x')
     assert Equation(x, ((b - sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
         Equation(a*x**2,b*x+c),x)
     assert Equation(x, ((b + sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
         Equation(a*x**2,b*x+c),x)
     assert len(solve(Equation(a*x**2,b*x+c), x)) == 2
-    assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
-    assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
+    result = solve(a*x**2-b*x-c,x)
+    solns = []
+    for k in result:
+        for key in k.keys():
+            solns.append(k[key])
+    assert ((b - sqrt(4*a*c + b**2))/(2*a)).expand() in solns
 
+def test_Heaviside():
+    a, b, c, x = symbols('a b c x')
+    tsteqn = Equation(a, b / c)
+    assert (Heaviside(tsteqn) ==
+            Equation(Heaviside(tsteqn.lhs), Heaviside(tsteqn.rhs)))
+    assert Heaviside(0) == S(1)/S(2)
 
 def test_apply_syntax():
     a, b, c, x = symbols('a b c x')

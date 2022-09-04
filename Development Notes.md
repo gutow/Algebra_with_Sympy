@@ -5,12 +5,8 @@
 
 ## General Notes
 * Important TODOs
-  * Test for _eval_power
-  * Test solve when passed an expression
-  * Test root when passed an expression
-  * Test Heaviside
-  * Test collect when there isn't an available _eval_collect
   * Tests for `Equality` conversion to an `Equation`.
+  * Test collect when there isn't an available _eval_collect
   * Test for _binary_op NotImplemented error (not sure how to get there)
   * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
   * Add doctest examples of `rewrite(Add)`.
@@ -34,6 +30,9 @@
 * Readme.md & Development Notes.md
   * Hard code anchors so that navigation links work on pypi page.
   * Use absolute path to github pages for more examples.
+  * Examples for solve and rewrite(add) in the capabilities ipynb.
+  * Make sure the shorthand notation is early on in example ipynb.
+  * Show easy way to generate equation with zero on one side in example ipynb.
 
 ## Running Tests
 
