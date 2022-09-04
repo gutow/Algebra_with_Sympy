@@ -183,6 +183,29 @@ def test_do_syntax():
     assert poly.do.collect(x) == Eqn(poly.lhs.collect(x), poly.rhs.collect(x))
 
 
+def test_rewrite_add():
+    b, x = symbols("x, b")
+    eq = Equation(x + b, x - b)
+    assert eq.rewrite(Add) == Equation(2 * b, 0)
+    assert set(eq.rewrite(Add, evaluate=None).lhs.args) == set((b, x, b, -x))
+    assert set(eq.rewrite(Add, evaluate=False).lhs.args) == set((b, x, b, -x))
+    assert eq.rewrite(Add, eqn=False) == 2 * b
+    assert set(eq.rewrite(Add, eqn=False, evaluate=False).args) == set((b, x, b, -x))
+
+
+def test_rewrite():
+    x = symbols("x")
+    eq = Equation(exp(I*x),cos(x) + I*sin(x))
+
+    # NOTE: right now I must use `sexp` otherwise the test is going to fail.
+    # I absolutely have no idea what's going on. Interesting to note that this
+    # only happens with pytest. On real life (inside Jupyter notebook),
+    # everything works as expected
+    from sympy import exp as sexp
+    assert eq.rewrite(exp) == Equation(exp(I*x), sexp(I*x))
+    assert eq.rewrite(Add) == Equation(exp(I*x) - I*sin(x) - cos(x), 0)
+
+
 def test_subs():
     a, b, c, x = symbols('a b c x')
     eq1 = Equation(x + a + b + c, x * a * b * c)
@@ -207,3 +230,4 @@ def test_subs():
     sd = {x + a: a, a: x + a}
     assert eq.subs(sd) == Equation(1, b * c)
     assert eq.subs(sd, simultaneous=True) == Equation(a / (x + a), b * c)
+
