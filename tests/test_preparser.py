@@ -1,6 +1,7 @@
 #!ipython
 from algebra_with_sympy.preparser import algebra_with_sympy_preparser as parser
 from IPython import get_ipython
+from pytest import raises
 
 if not(get_ipython()):
     raise EnvironmentError('This test module file must be run in an ipython '
@@ -38,3 +39,12 @@ def test_parsing():
     lines.append('\n')
     expected_out.append('\n')
     assert parser(lines) == expected_out
+
+def test_parsing_errors():
+    lines = []
+    expected_out = []
+    lines.append('# A comment.\n')
+    expected_out.append('# A comment.\n')
+    assert parser(lines) == expected_out
+    lines.append('eq1 =@ a + b > c/d\n')
+    raises(ValueError, lambda: parser(lines))
