@@ -70,7 +70,7 @@
         </ul>
 
 
-            <footer>Algebra with Sympy v0.10.0dev</footer>
+            <footer>Algebra with Sympy vX.10.0</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -120,21 +120,22 @@ notebook is shown immediately below:</p>
 
 <p><img src="https://gutow.github.io/Algebra_with_Sympy/resources/simple_example.png" alt="screenshot of simple example" /></p>
 
-<p>Once the algebra is complete it is possible to substitute numbers with 
+<p>The last cell illustrates how it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
 proper units.</p>
 
 <p>In IPython environments (IPython and Jupyter) there is also a shorthand 
 syntax for entering equations provided through the IPython preparser. An 
-equation can be specified as <code>eq1 =@ a/b = c/d</code>. If no Python name is 
-specified for the equation (<code>eq1</code> left out in the previous example), the 
-equation will still 
-be defined, but will not be easily accessible for further computation. The 
-<code>=@</code> symbol combination was chosen to avoid conflicts with reserved python 
-symbols while minimizing impacts on syntax highlighting and autoformatting. A 
-screenshot of an example in Jupyter is shown immediately below:</p>
+equation can be specified as <code>eq1 =@ a/b = c/d</code>.</p>
 
 <p><img src="https://gutow.github.io/Algebra_with_Sympy/resources/short_syntax.png" alt="screenshot of short syntax" /></p>
+
+<p>If no Python name is 
+specified for the equation (no <code>eq_name</code> to the left of <code>=@</code>), the equation 
+will still be defined, but will not be easily accessible for further 
+computation. The <code>=@</code> symbol combination was chosen to avoid conflicts with 
+reserved python  symbols while minimizing impacts on syntax highlighting 
+and autoformatting.</p>
 
 <p><a href="https://gutow.github.io/Algebra_with_Sympy/Demonstration%20of%20equation%20class.html">More examples of the capabilities of Algebra with Sympy are 
 here</a>.</p>
@@ -196,9 +197,11 @@ discussions</a>.</li>
 <h2 id="change-log">Change Log</h2>
 
 <ul>
-<li>0.10.0dev
+<li>0.10.0
 <ul>
-<li>Significantly increased test coverage.</li>
+<li>Documentation updates and fixes.</li>
+<li>Significantly increased test coverage (~98%).</li>
+<li>Support for <code>Eqn.rewrite(Add)</code></li>
 <li>Solving (e.g. <code>solve(Eqn,x)</code>) now supported fully. Still experimental.</li>
 <li>Bug fix: latex printing now supports custom printer.</li>
 <li>Substitution for into an Equation using Equations is now 
@@ -264,34 +267,19 @@ environments.</li>
 
 <h2 id="general-notes">General Notes</h2>
 
-<p><span id = "general-notes"/></p>
-
 <ul>
 <li>Important TODOs
 <ul>
-<li>Tests of equation not as first parameter of functions.</li>
-<li>Tests of functions in <code>algebraic_equation._extended_</code></li>
-<li>Tests of function calls with &gt; 1 equation in them (raises error)</li>
-<li>Tests for algwsym_config.output</li>
-<li>Tests for _get_eqn_name</li>
-<li>Test for _binary_op NotImplemented error</li>
-<li>Test for _eval_power</li>
-<li>Test for _latex with show_code and human_text True</li>
-<li>Test for _latex with label True</li>
-<li>Test for __str__ with show_code True</li>
-<li>Test for __str__ with label True</li>
-<li>Test solve when passed an expression</li>
-<li>Test root when passed an expression</li>
-<li>Test Heaviside</li>
-<li>Test collect when there isn't an available _eval_collect</li>
-<li>Tests for <code>Equality</code> conversion to an <code>Equation</code>.</li>
-<li>examine these more carefully (top priority: real_root, cbrt, Ynm_c)</li>
-<li>Add doctest examples of <code>rewrite(Add)</code>.</li>
+<li>Test collect when there isn't an available _eval_collect (not sure how 
+to get there).</li>
+<li>Test for _binary_op NotImplemented error (not sure how to get there).</li>
+<li>examine these more carefully (top priority: real_root, cbrt, Ynm_c).</li>
 </ul></li>
 <li>To consider
 <ul>
 <li>Change <code>Equation</code> constructor to accept <code>Equality</code>, <code>Set</code>, <code>List</code> or 
 <code>lhs, rhs</code>, rather than just <code>lhs, rhs</code>.</li>
+<li>Extend <code>.subs</code> to accept <code>.subs(a=2*c, b = sin(q), ...)</code>.</li>
 </ul></li>
 </ul>
 

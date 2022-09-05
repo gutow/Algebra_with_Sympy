@@ -786,7 +786,7 @@ class Equation(Basic, EvalfMixin):
         tempstr = ''
         if algwsym_config.output.show_code and not \
             algwsym_config.output.human_text:
-            tempstr +='\\text{code version: '+ self.__repr__()+'} \\newline '
+            print('code version: '+ self.__repr__())
         tempstr += printer._print(self.lhs)
         tempstr += '='
         tempstr += printer._print(self.rhs)
@@ -992,7 +992,7 @@ class EqnFunction(Function):
 
 def str_to_extend_sympy_func(func:str):
     """
-    Generates the string command to execute necessary for a sympy function to
+    Generates the string command to execute for a sympy function to
     gain the properties of the extended EqnFunction class.
     """
     execstr = 'class ' + str(func) + '(' + str(
@@ -1034,3 +1034,6 @@ for func in functions.__all__:
                 'properly with Equations. If you use it with Equations, ' \
                 'validate its behavior. We are working to address this ' \
                 'issue.')
+
+# Redirect python abs() to Abs()
+abs = Abs

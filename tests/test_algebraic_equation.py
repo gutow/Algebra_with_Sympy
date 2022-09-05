@@ -104,8 +104,7 @@ def test_outputs():
     algwsym_config.output.show_code = True
     assert (tsteqn.__str__() ==
             'code version: Equation(a, b/c)\na = b/c')
-    assert (latex(tsteqn) ==
-            '\\text{code version: Equation(a, b/c)} \\newline a=\\frac{b}{c}')
+    assert (latex(tsteqn) == 'a=\\frac{b}{c}')
     algwsym_config.output.show_code = False
     algwsym_config.output.human_text = False
     assert tsteqn.__repr__() == 'Equation(a, b/c)'
