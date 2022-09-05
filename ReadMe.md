@@ -34,21 +34,23 @@ notebook is shown immediately below:
 
 ![screenshot of simple example](https://gutow.github.io/Algebra_with_Sympy/resources/simple_example.png)
 
-Once the algebra is complete it is possible to substitute numbers with 
+The last cell illustrates how it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
 proper units.
 
 In IPython environments (IPython and Jupyter) there is also a shorthand 
 syntax for entering equations provided through the IPython preparser. An 
-equation can be specified as `eq1 =@ a/b = c/d`. If no Python name is 
-specified for the equation (`eq1` left out in the previous example), the 
-equation will still 
-be defined, but will not be easily accessible for further computation. The 
-`=@` symbol combination was chosen to avoid conflicts with reserved python 
-symbols while minimizing impacts on syntax highlighting and autoformatting. A 
-screenshot of an example in Jupyter is shown immediately below:
+equation can be specified as `eq1 =@ a/b = c/d`.
+
 
 ![screenshot of short syntax](https://gutow.github.io/Algebra_with_Sympy/resources/short_syntax.png)
+
+If no Python name is 
+specified for the equation (no `eq_name` to the left of `=@`), the equation 
+will still be defined, but will not be easily accessible for further 
+computation. The `=@` symbol combination was chosen to avoid conflicts with 
+reserved python  symbols while minimizing impacts on syntax highlighting 
+and autoformatting.
 
 [More examples of the capabilities of Algebra with Sympy are 
 here](https://gutow.github.io/Algebra_with_Sympy/Demonstration%20of%20equation%20class.html).

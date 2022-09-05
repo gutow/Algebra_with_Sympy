@@ -533,7 +533,7 @@ class Equation(Basic, EvalfMixin):
     
         `args` is either:
 
-        * one ore more arguments of type `Equation(old, new)`.
+        * one or more arguments of type `Equation(old, new)`.
         * two arguments, e.g. foo.subs(old, new)
         * one iterable argument, e.g. foo.subs(iterable). The iterable may be:
 
