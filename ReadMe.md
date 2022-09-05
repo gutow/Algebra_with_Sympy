@@ -107,8 +107,10 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.10.0dev
-  * Significantly increased test coverage.
+* 0.10.0
+  * Documentation updates and fixes.
+  * Significantly increased test coverage (~98%).
+  * Support for `Eqn.rewrite(Add)`
   * Solving (e.g. `solve(Eqn,x)`) now supported fully. Still experimental.
   * Bug fix: latex printing now supports custom printer.
   * Substitution for into an Equation using Equations is now 

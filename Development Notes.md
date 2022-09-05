@@ -5,14 +5,15 @@
 
 ## General Notes
 * Important TODOs
-  * Test solve of system of equations
-  * Test getting output values
-  * Test collect when there isn't an available _eval_collect
-  * Test for _binary_op NotImplemented error (not sure how to get there)
-  * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
+  * Extend `Abs()` to recognize equations.
+  * Test collect when there isn't an available _eval_collect (not sure how 
+    to get there).
+  * Test for _binary_op NotImplemented error (not sure how to get there).
+  * examine these more carefully (top priority: real_root, cbrt, Ynm_c).
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
+  * Extend `.subs` to accept `.subs(a=2*c, b = sin(q), ...)`.
 
 ## Constructing the Documentation
 
@@ -30,9 +31,6 @@
 * Readme.md & Development Notes.md
   * Hard code anchors so that navigation links work on pypi page.
   * Use absolute path to github pages for more examples.
-  * Examples for solve and rewrite(add) in the capabilities ipynb.
-  * Make sure the shorthand notation is early on in example ipynb.
-  * Show easy way to generate equation with zero on one side in example ipynb.
 
 ## Running Tests
 

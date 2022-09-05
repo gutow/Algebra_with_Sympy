@@ -554,7 +554,7 @@ class Equation(Basic, EvalfMixin):
         >>> eq.rewrite(Add)
         Equation(2*b, 0)
         >>> eq.rewrite(Add, evaluate=None).lhs.args
-        (b, x, b, -x)
+        (b, b, x, -x)
         >>> eq.rewrite(Add, evaluate=False).lhs.args
         (b, x, b, -x)
         >>> eq.rewrite(Add, eqn=False)
@@ -840,12 +840,24 @@ def solve(f, *symbols, **flags):
     flags['dict'] = True
     result = solve(newf, *symbols, **flags)
     if contains_eqn:
-        for k in result:
-            for key in k.keys():
-                val = k[key]
-                tempeqn = Eqn(key, val)
-                display(tempeqn)
-                solns.append(tempeqn)
+        if len(result[0]) == 1:
+            for k in result:
+                for key in k.keys():
+                    val = k[key]
+                    tempeqn = Eqn(key, val)
+                    display(tempeqn)
+                    solns.append(tempeqn)
+        else:
+            for k in result:
+                solnset = []
+                for key in k.keys():
+                    val = k[key]
+                    tempeqn = Eqn(key, val)
+                    display(tempeqn)
+                    solnset.append(tempeqn)
+                print('-----')
+                solns.append(solnset)
+
     else:
         solns = result
     return solns

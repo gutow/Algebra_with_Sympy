@@ -1,6 +1,6 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
-from sympy import sin, cos, log, exp, latex, Symbol
+from sympy import sin, cos, log, exp, latex, Symbol, I
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect, Equation
@@ -95,6 +95,10 @@ def test_binary_op():
 
 
 def test_outputs():
+    # defaults
+    assert algwsym_config.output.show_code == False
+    assert algwsym_config.output.human_text == False
+    assert algwsym_config.output.label == True
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
     algwsym_config.output.show_code = True
@@ -190,6 +194,14 @@ def test_solve():
             solns.append(k[key])
     assert ((b - sqrt(4*a*c + b**2))/(2*a)).expand() in solns
 
+    x, y = symbols('x y', real = True)
+    eq1 = Eqn(abs(2*x + y), 3)
+    eq2 = Eqn(abs(x + 2*y), 3)
+    assert (solve([eq1,eq2], x, y) == [[Equation(x, -3), Equation(y, 3)],
+                                        [Equation(x, -1), Equation(y, -1)],
+                                        [Equation(x, 1), Equation(y, 1)],
+                                        [Equation(x, 3), Equation(y, -3)]])
+
 def test_Heaviside():
     a, b, c, x = symbols('a b c x')
     tsteqn = Equation(a, b / c)
@@ -237,10 +249,10 @@ def test_rewrite():
     x = symbols("x")
     eq = Equation(exp(I*x),cos(x) + I*sin(x))
 
-    # NOTE: right now I must use `sexp` otherwise the test is going to fail.
-    # I absolutely have no idea what's going on. Interesting to note that this
-    # only happens with pytest. On real life (inside Jupyter notebook),
-    # everything works as expected
+    # NOTE: Must use `sexp` otherwise the test is going to fail.
+    # This reflects the fact that rewrite pulls the fuction exp internally
+    # from the definitions of functions in sympy and not from the globally
+    # redefined functions that are Equation aware.
     from sympy import exp as sexp
     assert eq.rewrite(exp) == Equation(exp(I*x), sexp(I*x))
     assert eq.rewrite(Add) == Equation(exp(I*x) - I*sin(x) - cos(x), 0)
@@ -265,7 +277,7 @@ def test_subs():
     raises(ValueError, lambda: eq1.dorhs.subs(eq2))
     raises(ValueError, lambda: (x + a + b + c).subs(eq2))
 
-    # verify the effectivness of `simultaneous`
+    # verify the effectiveness of `simultaneous`
     eq = Equation((x + a) / a, b * c)
     sd = {x + a: a, a: x + a}
     assert eq.subs(sd) == Equation(1, b * c)
