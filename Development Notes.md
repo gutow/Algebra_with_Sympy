@@ -8,7 +8,6 @@
   * Test collect when there isn't an available _eval_collect
   * Test for _binary_op NotImplemented error (not sure how to get there)
   * examine these more carefully (top priority: real_root, cbrt, Ynm_c)
-  * Add doctest examples of `rewrite(Add)`.
 * To consider
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
