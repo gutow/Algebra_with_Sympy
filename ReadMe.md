@@ -96,7 +96,7 @@ spa.funcname()`.
 
 ## Try in binder
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?urlpath=/tree/Demonstration%20of%20equation%20class.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?filepath=Demonstration%20of%20equation%20class.ipynb)
 
 ## Issues or Comments
 
