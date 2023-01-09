@@ -110,13 +110,16 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 * 0.10.1dev
   * Added jupyter to requirements.txt so that virtual environment builds
     will include jupyter.
+  * The way `__version__` was handled could break pip install. Changed to
+    generating the internal version during setup. This means the version
+    is now available as `algwsym_version`.
 * 0.10.0
   * Documentation updates and fixes.
   * Significantly increased test coverage (~98%).
   * Support for `Eqn.rewrite(Add)`
   * Solving (e.g. `solve(Eqn,x)`) now supported fully. Still experimental.
   * Bug fix: latex printing now supports custom printer.
-  * Substitution for into an Equation using Equations is now 
+  * Substitution into an Equation using Equations is now 
     supported (e.g. `eq1.subs(eq2, eq3, ...)`).
   * `algebra_with_sympy.__version__` is now available for version checking 
     within python.

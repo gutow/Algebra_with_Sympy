@@ -3,7 +3,10 @@ import setuptools
 with open("ReadMe.md", "r") as f:
     long_description = f.read()
 try:
-    from algebra_with_sympy.version import __version__
+    from version import __version__
+    f = open('algebra_with_sympy/version.py','w')
+    f.write("__version__ = \"" + str(__version__) + "\"")
+    f.close()
 except Exception as e:
     raise RuntimeError('Unable to find __version__') from e
 
