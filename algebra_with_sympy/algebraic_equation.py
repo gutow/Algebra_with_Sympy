@@ -61,6 +61,7 @@ class algwsym_config():
         * `algwsym_config.output.show_code` default is `False`.
         * `algwsym_config.output.human_text` default is `False`.
         * `algwsym_config.output.label` default is `True`.
+        * `algwsym_config.output.show_solve_output` default is `True`.
 
         In interactive environments you can get both types of output by setting
         the `algwsym_config.output.show_code` flag. If this flag is true
@@ -83,6 +84,11 @@ class algwsym_config():
         The third flag `algwsym_config.output.label` has a default value of
         `True`. Setting this to `False` suppresses the labeling of an equation
         with its python name off to the right of the equation.
+
+        `algwsym_config.output.show_solve_output` has a default value of
+        `True`. Setting this to `False` won't show the output of the `solve`
+        command in interactive environment.
+
         """
         pass
 
@@ -116,6 +122,14 @@ class algwsym_config():
             python name it is assigned to. Default = `True`.
             """
             return self.label
+        
+        @property
+        def show_solve_output(self):
+            """
+            If `True` shows the output of `solve` in interactive environments.
+            Default = `True`.
+            """
+            return self.show_solve_output
 
 
 class Equation(Basic, EvalfMixin):
@@ -845,7 +859,8 @@ def solve(f, *symbols, **flags):
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
-                    display(tempeqn)
+                    if algwsym_config.output.show_solve_output:
+                        display(tempeqn)
                     solns.append(tempeqn)
         else:
             for k in result:
@@ -853,7 +868,8 @@ def solve(f, *symbols, **flags):
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
-                    display(tempeqn)
+                    if algwsym_config.output.show_solve_output:
+                        display(tempeqn)
                     solnset.append(tempeqn)
                 print('-----')
                 solns.append(solnset)
