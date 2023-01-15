@@ -868,10 +868,10 @@ def solve(f, *symbols, **flags):
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
+                    solnset.append(tempeqn)
                     if algwsym_config.output.show_solve_output:
                         display(tempeqn)
-                    solnset.append(tempeqn)
-                print('-----')
+                        print('-----')
                 solns.append(solnset)
 
     else:
