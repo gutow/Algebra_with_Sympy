@@ -871,7 +871,8 @@ def solve(f, *symbols, **flags):
                     solnset.append(tempeqn)
                     if algwsym_config.output.show_solve_output:
                         display(tempeqn)
-                        print('-----')
+                if algwsym_config.output.show_solve_output:
+                    print('-----')    
                 solns.append(solnset)
 
     else:
