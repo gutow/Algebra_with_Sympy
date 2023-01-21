@@ -24,7 +24,7 @@ missed details such as a negative sign. This mimics the capabilities available
 in [SageMath](https://www.sagemath.org/) and
 [Maxima](http://maxima.sourceforge.net/).
 """
-
+import sympy
 from sympy.core.add import _unevaluated_Add
 from sympy.core.expr import Expr
 from sympy.core.basic import Basic
@@ -364,8 +364,7 @@ class Equation(Basic, EvalfMixin):
     report issues at https://github.com/gutow/Algebra_with_Sympy/issues.
     >>> tosolv = Eqn(a - b, c/a)
     >>> solve(tosolv,a)
-    a = b/2 - sqrt(b**2 + 4*c)/2
-    a = b/2 + sqrt(b**2 + 4*c)/2
+    a = b/2 - sqrt(b**2 + 4*c)/2 a = b/2 + sqrt(b**2 + 4*c)/2
     [Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2)]
     >>> solve(tosolv, b)
     b = (a**2 - c)/a
@@ -373,6 +372,25 @@ class Equation(Basic, EvalfMixin):
     >>> solve(tosolv, c)
     c = a**2 - a*b
     [Equation(c, a**2 - a*b)]
+
+    Solve output control
+    >>> x, y = symbols('x y', real=True)
+    >>> eq1 = Eqn(abs(2*x + y),3)
+    >>> eq2 = Eqn(abs(x + 2*y),3)
+    >>> solve([eq1,eq2],x,y)
+    x = -3 y = 3 ----- x = -1 y = -1 ----- x = 1 y = 1 ----- x = 3 y = -3 -----
+    [[Equation(x, -3), Equation(y, 3)], [Equation(x, -1), Equation(y, -1)], [Equation(x, 1), Equation(y, 1)], [Equation(x, 3), Equation(y, -3)]]
+    >>> algwsym_config.output.show_solve_output = False
+    >>> solve([eq1,eq2],x,y)
+    [[Equation(x, -3), Equation(y, 3)], [Equation(x, -1), Equation(y, -1)], [Equation(x, 1), Equation(y, 1)], [Equation(x, 3), Equation(y, -3)]]
+    >>> algwsym_config.output.human_text = True
+    >>> solve([eq1,eq2],x,y)
+    [[x = -3, y = 3], [x = -1, y = -1], [x = 1, y = 1], [x = 3, y = -3]]
+
+    Resets to defaults to avoid problems with later tests
+    >>> algwsym_config.output.show_solve_output = True
+    >>> algwsym_config.output.human_text = False
+
 
     """
 
@@ -832,11 +850,16 @@ def solve(f, *symbols, **flags):
     output the solutions as typeset equations and return
     the answer as a list of equations that can be accessed for additional
     manipulations.
+
+    NOTE/TODO: This should be replaced with `sympy.solveset` once the API and
+    outputs are better stabilized. This will also allow easier use of default
+    pretty printing behavior.
     """
     from sympy.solvers.solvers import solve
     from IPython.display import display
     newf =[]
     solns = []
+    displaysolns = []
     contains_eqn = False
     if hasattr(f,'__iter__'):
         for k in f:
@@ -859,27 +882,85 @@ def solve(f, *symbols, **flags):
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
-                    if algwsym_config.output.show_solve_output:
-                        display(tempeqn)
                     solns.append(tempeqn)
+            display(*solns)
         else:
             for k in result:
                 solnset = []
+                displayset = []
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solnset.append(tempeqn)
                     if algwsym_config.output.show_solve_output:
-                        display(tempeqn)
+                        displayset.append(tempeqn)
                 if algwsym_config.output.show_solve_output:
-                    print('-----')    
+                    displayset.append('-----')
                 solns.append(solnset)
-
+                if algwsym_config.output.show_solve_output:
+                    for k in displayset:
+                        displaysolns.append(k)
+            if algwsym_config.output.show_solve_output:
+                display(*displaysolns)
     else:
         solns = result
     return solns
+
+def solveset(f, symbols, domain=sympy.Complexes):
+    """
+    Very experimental override of sympy solveset, which we hope will replace
+    solve. Much is not working. It is not clear how to input a system of
+    equations unless you directly select `linsolve`, etc...
+    """
+    from sympy.solvers import solveset as solve
+    from IPython.display import display
+    newf = []
+    solns = []
+    displaysolns = []
+    contains_eqn = False
+    if hasattr(f, '__iter__'):
+        for k in f:
+            if isinstance(k, Equation):
+                newf.append(k.lhs - k.rhs)
+                contains_eqn = True
+            else:
+                newf.append(k)
+    else:
+        if isinstance(f, Equation):
+            newf.append(f.lhs - f.rhs)
+            contains_eqn = True
+        else:
+            newf.append(f)
+    result = solve(*newf, symbols, domain=domain)
+    # if contains_eqn:
+    #     if len(result[0]) == 1:
+    #         for k in result:
+    #             for key in k.keys():
+    #                 val = k[key]
+    #                 tempeqn = Eqn(key, val)
+    #                 solns.append(tempeqn)
+    #         display(*solns)
+    #     else:
+    #         for k in result:
+    #             solnset = []
+    #             displayset = []
+    #             for key in k.keys():
+    #                 val = k[key]
+    #                 tempeqn = Eqn(key, val)
+    #                 solnset.append(tempeqn)
+    #                 if algwsym_config.output.show_solve_output:
+    #                     displayset.append(tempeqn)
+    #             if algwsym_config.output.show_solve_output:
+    #                 displayset.append('-----')
+    #             solns.append(solnset)
+    #             if algwsym_config.output.show_solve_output:
+    #                 for k in displayset:
+    #                     displaysolns.append(k)
+    #         if algwsym_config.output.show_solve_output:
+    #             display(*displaysolns)
     # else:
-    #     return solve(f, *symbols, **flags)
+    solns = result
+    return solns
 
 def sqrt(arg, evaluate = None):
     """

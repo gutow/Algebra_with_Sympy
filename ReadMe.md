@@ -107,7 +107,9 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.10.1dev
+* 0.11.0dev
+  * Added ability to hide human friendly output from solve with 
+    `algwsym_config.output.show_solve_output=False`.
   * Added jupyter to requirements.txt so that virtual environment builds
     will include jupyter.
   * The way `__version__` was handled could break pip install. Changed to

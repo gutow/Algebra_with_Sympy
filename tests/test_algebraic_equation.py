@@ -99,6 +99,8 @@ def test_outputs():
     assert algwsym_config.output.show_code == False
     assert algwsym_config.output.human_text == False
     assert algwsym_config.output.label == True
+    assert algwsym_config.output.show_solve_output == True
+
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
     algwsym_config.output.show_code = True
@@ -129,6 +131,27 @@ def test_outputs():
     # use custom printer
     assert my_latex(eq) == "f=2"
 
+    x, y = symbols('x y', real=True)
+    eq1 = Eqn(abs(2*x + y),3)
+    eq2 = Eqn(abs(x + 2*y),3)
+
+    algwsym_config.output.show_solve_output = False
+    assert solve([eq1,eq2],x,y).__repr__() == '[[x = -3, y = 3], [x = -1, ' \
+                                         'y = -1], [x = 1, y = 1], [x = 3, y = -3]]'
+    assert solve([eq1,eq2],x,y).__str__() == '[[x = -3, y = 3], [x = -1, ' \
+                                         'y = -1], [x = 1, y = 1], [x = 3, y = -3]]'
+    algwsym_config.output.human_text = False
+    assert solve([eq1,eq2],x,y) == [[Equation(x, -3), Equation(y, 3)],
+                                    [Equation(x, -1), Equation(y, -1)],
+                                    [Equation(x, 1), Equation(y, 1)],
+                                    [Equation(x, 3), Equation(y, -3)]]
+    algwsym_config.output.show_solve_output = True
+    # Cannot check that the display operation happens (doctest?), but make
+    #  sure that the result is still good.
+    assert solve([eq1,eq2],x,y) == [[Equation(x, -3), Equation(y, 3)],
+                                    [Equation(x, -1), Equation(y, -1)],
+                                    [Equation(x, 1), Equation(y, 1)],
+                                    [Equation(x, 3), Equation(y, -3)]]
 
 def test_sympy_functions():
     a, b, c = symbols('a b c')

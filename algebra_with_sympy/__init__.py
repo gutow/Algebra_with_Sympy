@@ -11,6 +11,7 @@ from algebra_with_sympy.preparser import *
 algwsym_config.output.show_code = False
 algwsym_config.output.human_text = False
 algwsym_config.output.label = True
+algwsym_config.output.show_solve_output = True
 
 # Set version number for internal access
 algwsym_version = 'unknown'
