@@ -109,13 +109,14 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 * 0.11.0dev
   * Added ability to hide human friendly output from solve with 
-    `algwsym_config.output.show_solve_output=False`.
+    `algwsym_config.output.show_solve_output=False`. Tests of this 
+    functionality also added.
   * Added jupyter to requirements.txt so that virtual environment builds
     will include jupyter.
   * The way `__version__` was handled could break pip install. Changed to
     generating the internal version during setup. This means the version
     is now available as `algwsym_version`.
-* 0.10.0
+* 0.10.0 (Sep. 5, 2022)
   * Documentation updates and fixes.
   * Significantly increased test coverage (~98%).
   * Support for `Eqn.rewrite(Add)`
@@ -128,21 +129,21 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
   * Bug fix: preparsing for `=@` syntax no longer blocks `obj?` syntax for 
     getting docstrings in ipython.
   * More robust determination of equation names for labeling.
-* 0.9.4
+* 0.9.4 (Aug. 11, 2022)
   * Update to deal with new Sympy function `piecewise_exclusive` in v1.11.
   * Added user warning if a function does not extend for use with `Equations` 
     as expected. This also allows the package to be used even when a function 
     extension does fail.
   * Simplification of documentation preparation.
   * Typo fixes in preparser error messages.
-* 0.9.3
+* 0.9.3 (Aug. 9, 2022)
   * Added check for new enough version of IPython to use the preparser.
   * If IPython version too old, issue warning and do not accept `=@` shorthand.
-* 0.9.2
+* 0.9.2 (Jun. 5, 2022)
   * `=@` shorthand syntax for defining equations in IPython compatible 
     environments.
   * Fixed bug where `root()` override called `sqrt()` on bare expressions.
-* 0.9.1
+* 0.9.1 (Mar. 24, 2022)
   * Equations labeled with their python name, if they have one.
   * Added flags to adjust human readable output and equation labeling.
   * Accept equation as function argument in any position.
