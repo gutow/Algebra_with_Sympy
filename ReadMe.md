@@ -70,13 +70,15 @@ $\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can
   well. This code version can be accessed directly by calling `repr()` on the 
   equation.
 
-* **In interactive text environments (ipython and command line)** the 
-  representation (code version) is returned by default. Calling `print()` 
-  or `str()` on an equation will return the human readable version with an 
-  equals sign. To have the human readable version returned by default set 
-`algwsym_config.output.human_text = True`. If combined with 
-`algwsym_config.output.show_code = True`, both code and human readable 
-versions will be shown.
+* **In interactive text environments (ipython and command line)** The human 
+  readable string version of Sympy expressions are returned (for `Equations` a 
+  = b rather than Equation(a,b)). This is equivalent to Calling `print()` 
+  or `str()` on an expression. 
+  * To have the code version (copy and pastable as a 
+    Python statement) returned, set `algwsym_config.output.human_text = False`.
+  * Setting both `algwsym_config.output.human_text = True`
+    and `algwsym_config.output.show_code = True`, will return both  the 
+    code and human readable versions.
 
 * **The equation label** can be turned off by setting
   `algwsym_config.output.label = False`.
@@ -108,9 +110,14 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 ## Change Log
 
 * 0.11.0dev
-  * Added ability to hide human friendly output from solve with 
-    `algwsym_config.output.show_solve_output=False`. Tests of this 
-    functionality also added.
+  * Formatting of `FiniteSets` overridden so that the contents always
+    pretty_print. This removes the necessity of special flags to get 
+    pretty output from `solve`.
+  * `algwsym_config.output.show_code` and 
+    `algwsym_config.output.human_text` now work for all sympy objects, not 
+    just `Equation` objects. This works
+    in terminal, IPython terminal and Jupyter. This is achieved by hooking 
+    into the python `display_hook` and IPython `display_formatter`.
   * Added jupyter to requirements.txt so that virtual environment builds
     will include jupyter.
   * The way `__version__` was handled could break pip install. Changed to

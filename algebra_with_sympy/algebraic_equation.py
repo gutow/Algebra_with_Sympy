@@ -24,6 +24,8 @@ missed details such as a negative sign. This mimics the capabilities available
 in [SageMath](https://www.sagemath.org/) and
 [Maxima](http://maxima.sourceforge.net/).
 """
+import sys
+
 import sympy
 from sympy.core.add import _unevaluated_Add
 from sympy.core.expr import Expr
@@ -59,9 +61,8 @@ class algwsym_config():
 
         You can adjust this behvior using some flags that impact output:
         * `algwsym_config.output.show_code` default is `False`.
-        * `algwsym_config.output.human_text` default is `False`.
+        * `algwsym_config.output.human_text` default is `True`.
         * `algwsym_config.output.label` default is `True`.
-        * `algwsym_config.output.show_solve_output` default is `True`.
 
         In interactive environments you can get both types of output by setting
         the `algwsym_config.output.show_code` flag. If this flag is true
@@ -75,7 +76,7 @@ class algwsym_config():
         ipython. If this flag is true `repr` will return `str`. Thus the human
         readable text will be printed as the output of a line that is an
         expression containing an equation.
-        Default is `False`.
+        Default is `True`.
 
         Setting both of these flags to true in a command line or ipython
         environment will show both the code version and the human readable text.
@@ -84,11 +85,6 @@ class algwsym_config():
         The third flag `algwsym_config.output.label` has a default value of
         `True`. Setting this to `False` suppresses the labeling of an equation
         with its python name off to the right of the equation.
-
-        `algwsym_config.output.show_solve_output` has a default value of
-        `True`. Setting this to `False` won't show the output of the `solve`
-        command in interactive environment.
-
         """
         pass
 
@@ -122,19 +118,62 @@ class algwsym_config():
             python name it is assigned to. Default = `True`.
             """
             return self.label
-        
-        @property
-        def show_solve_output(self):
-            """
-            If `True` shows the output of `solve` in interactive environments.
-            Default = `True`.
-            """
-            return self.show_solve_output
 
+def __latex_override__(expr, *arg):
+    from IPython import get_ipython
+    show_code = False
+    algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+    if algwsym_config:
+        show_code = algwsym_config.output.show_code
+    if show_code:
+        print("Code version: " + repr(expr))
+    return '$'+latex(expr) + '$'
+
+def __command_line_printing__(expr, *arg):
+    print('Entering __command_line_printing__')
+    human_text = True
+    show_code = False
+    if algwsym_config:
+        human_text = algwsym_config.output.human_text
+        show_code = algwsym_config.output.show_code
+    if show_code:
+        print("Code version: " + repr(expr))
+    if not human_text:
+        return print(repr(expr))
+    else:
+        return print(str(expr))
+
+# Now we inject the formatting override(s)
+from IPython import get_ipython
+ip = get_ipython()
+formatter = None
+if ip:
+    # In an environment that can display typeset latex
+    formatter = ip.display_formatter
+    old = formatter.formatters['text/latex'].for_type(Basic,
+                                                      __latex_override__)
+    # print("For type Basic overriding latex formatter = " + str(old))
+
+    # For the terminal based IPython
+    if "text/latex" not in formatter.active_types:
+        old = formatter.formatters['text/plain'].for_type(tuple,
+                                                    __command_line_printing__)
+        # print("For type tuple overriding plain text formatter = " + str(old))
+        for k in sympy.__all__:
+            if k in globals() and not "Printer" in k:
+                if isinstance(globals()[k], type):
+                    old = formatter.formatters['text/plain'].\
+                        for_type(globals()[k], __command_line_printing__)
+                    # print("For type "+str(k)+
+                    # " overriding plain text formatter = " + str(old))
+else:
+    # command line
+    print("Overiding command line printing of python.")
+    sys.displayhook = __command_line_printing__
 
 class Equation(Basic, EvalfMixin):
     """
-    This class defines an equation with a left-hand-side (lhs) and a right-
+    This class defines an equation with a left-hand-side (tlhs) and a right-
     hand-side (rhs) connected by the "=" operator (e.g. `p*V = n*R*T`).
 
     Explanation
@@ -810,15 +849,17 @@ class Equation(Basic, EvalfMixin):
     #####
     def __repr__(self):
         repstr = 'Equation(%s, %s)' %(self.lhs.__repr__(), self.rhs.__repr__())
-        if algwsym_config.output.human_text:
-            return self.__str__()
+        # if algwsym_config.output.human_text:
+        #     return self.__str__()
         return repstr
 
     def _latex(self, printer):
         tempstr = ''
+        """
         if algwsym_config.output.show_code and not \
             algwsym_config.output.human_text:
             print('code version: '+ self.__repr__())
+        """
         tempstr += printer._print(self.lhs)
         tempstr += '='
         tempstr += printer._print(self.rhs)
@@ -830,11 +871,11 @@ class Equation(Basic, EvalfMixin):
 
     def __str__(self):
         tempstr = ''
-        if algwsym_config.output.show_code:
-            human_text = algwsym_config.output.human_text
-            algwsym_config.output.human_text=False
-            tempstr += 'code version: '+self.__repr__() +'\n'
-            algwsym_config.output.human_text=human_text
+        # if algwsym_config.output.show_code:
+        #     human_text = algwsym_config.output.human_text
+        #     algwsym_config.output.human_text=False
+        #     tempstr += '\ncode version: '+self.__repr__() +'\n'
+        #     algwsym_config.output.human_text=human_text
         tempstr += str(self.lhs) + ' = ' + str(self.rhs)
         namestr = self._get_eqn_name()
         if namestr != '' and algwsym_config.output.label:
@@ -843,19 +884,66 @@ class Equation(Basic, EvalfMixin):
 
 
 Eqn = Equation
+if ip and "text/latex" not in formatter.active_types:
+    old = formatter.formatters['text/plain'].for_type(Eqn,
+                                                __command_line_printing__)
+    # print("For type Equation overriding plain text formatter = " + str(old))
 
 def solve(f, *symbols, **flags):
     """
-    Override of sympy `solve()`. If it is passed an equation it will
-    output the solutions as typeset equations and return
-    the answer as a list of equations that can be accessed for additional
-    manipulations.
+    Override of sympy `solve()`.
 
-    NOTE/TODO: This should be replaced with `sympy.solveset` once the API and
-    outputs are better stabilized. This will also allow easier use of default
-    pretty printing behavior.
+    If passed an expression and variable(s) to solve for it behaves
+    almost the same as normal solve with `dict = True`, except that solutions
+    are wrapped in a FiniteSet() to guarantee that the output will be pretty
+    printed in Jupyter like environments.
+
+    If passed an equation or equations it returns solutions as a FiniteSet() of
+    solutions, where each solution is represented by an equation.
+
+    Examples
+    --------
+    >>> a, b, c, x, y = symbols('a b c x y', real = True)
+    (a, b, c, x, y)
+    >>> eq1 = Eqn(abs(2*x+y),3)
+    >>> eq2 = Eqn(abs(x + 2*y),3)
+    >>> B = solve((eq1,eq2))
+
+    Raw output
+    >>> B
+    FiniteSet(FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3)))
+
+    Human readable output on command line (`human_text = True`)
+    >>> algwsym_config.output.human_text=True
+    >>> B
+    FiniteSet(FiniteSet(x = -3, y = 3), FiniteSet(x = -1, y = -1), FiniteSet(x = 1, y = 1), FiniteSet(x = 3, y = -3))
+
+    `human_text = True` with `show_code=True` (not particularly useful on command line).
+    In Jupyter-like environments `show_code=True` yields the Raw output and
+    a pretty-printed version. If `show_code=False` (the default) only the
+    pretty-printed version is shown in Jupyter.
+    >>> algwsym_config.output.show_code=True
+    >>> B
+    FiniteSet(FiniteSet(
+    code version: Equation(x, -3)
+    x = -3,
+    code version: Equation(y, 3)
+    y = 3), FiniteSet(
+    code version: Equation(x, -1)
+    x = -1,
+    code version: Equation(y, -1)
+    y = -1), FiniteSet(
+    code version: Equation(x, 1)
+    x = 1,
+    code version: Equation(y, 1)
+    y = 1), FiniteSet(
+    code version: Equation(x, 3)
+    x = 3,
+    code version: Equation(y, -3)
+    y = -3))
     """
     from sympy.solvers.solvers import solve
+    from sympy.sets.sets import FiniteSet
     from IPython.display import display
     newf =[]
     solns = []
@@ -883,7 +971,6 @@ def solve(f, *symbols, **flags):
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solns.append(tempeqn)
-            display(*solns)
         else:
             for k in result:
                 solnset = []
@@ -892,19 +979,20 @@ def solve(f, *symbols, **flags):
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solnset.append(tempeqn)
-                    if algwsym_config.output.show_solve_output:
-                        displayset.append(tempeqn)
-                if algwsym_config.output.show_solve_output:
-                    displayset.append('-----')
+                     #if algwsym_config.output.show_solve_output:
+                     #   displayset.append(tempeqn)
+                #if algwsym_config.output.show_solve_output:
+                #    displayset.append('-----')
+                solnset = FiniteSet(*solnset)
                 solns.append(solnset)
-                if algwsym_config.output.show_solve_output:
-                    for k in displayset:
-                        displaysolns.append(k)
-            if algwsym_config.output.show_solve_output:
-                display(*displaysolns)
+               # if algwsym_config.output.show_solve_output:
+                #    for k in displayset:
+                #        displaysolns.append(k)
+           # if algwsym_config.output.show_solve_output:
+            #    display(*displaysolns)
     else:
         solns = result
-    return solns
+    return FiniteSet(*solns)
 
 def solveset(f, symbols, domain=sympy.Complexes):
     """
@@ -1052,6 +1140,35 @@ class Equality(Equality):
         return self.to_Equation()
 
 Eq = Equality
+
+def __FiniteSet__repr__override__(self):
+    """Override of the `FiniteSet.__repr__(self)` to overcome sympy's
+    inconsistent wrapping of Finite Sets which prevents reliable use of
+    copy and paste of the code representation.
+    """
+    insidestr = ""
+    for k in self.args:
+        insidestr += k.__repr__() +', '
+    insidestr = insidestr[:-2]
+    reprstr = "FiniteSet("+ insidestr + ")"
+    return reprstr
+
+sympy.sets.FiniteSet.__repr__ = __FiniteSet__repr__override__
+
+def __FiniteSet__str__override__(self):
+    """Override of the `FiniteSet.__str__(self)` to overcome sympy's
+    inconsistent wrapping of Finite Sets which prevents reliable use of
+    copy and paste of the code representation.
+    """
+    insidestr = ""
+    for k in self.args:
+        insidestr += str(k) + ', '
+    insidestr = insidestr[:-2]
+    strrep = "{"+ insidestr + "}"
+    return strrep
+
+sympy.sets.FiniteSet.__str__ = __FiniteSet__str__override__
+
 #####
 # Extension of the Function class. For incorporation into SymPy this should
 # become part of the class
