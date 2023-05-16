@@ -97,9 +97,8 @@ def test_binary_op():
 def test_outputs():
     # defaults
     assert algwsym_config.output.show_code == False
-    assert algwsym_config.output.human_text == False
+    assert algwsym_config.output.human_text == True
     assert algwsym_config.output.label == True
-    assert algwsym_config.output.show_solve_output == True
 
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)

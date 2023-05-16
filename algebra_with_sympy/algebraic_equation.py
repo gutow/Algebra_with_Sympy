@@ -130,7 +130,7 @@ def __latex_override__(expr, *arg):
     return '$'+latex(expr) + '$'
 
 def __command_line_printing__(expr, *arg):
-    print('Entering __command_line_printing__')
+    # print('Entering __command_line_printing__')
     human_text = True
     show_code = False
     if algwsym_config:
@@ -168,7 +168,7 @@ if ip:
                     # " overriding plain text formatter = " + str(old))
 else:
     # command line
-    print("Overiding command line printing of python.")
+    # print("Overiding command line printing of python.")
     sys.displayhook = __command_line_printing__
 
 class Equation(Basic, EvalfMixin):
