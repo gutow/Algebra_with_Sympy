@@ -322,8 +322,7 @@ class Equation(Basic, EvalfMixin):
     >>> eq2 = eq2.subs(P1_val)
     >>> eq2
     Equation((P - P2)/(A1*E1), P2/(A2*E2))
-    >>> P2_val = solve(eq2.subs(P1_val), P2)[0]
-    P2 = A2*E2*P/(A1*E1 + A2*E2)
+    >>> P2_val = solve(eq2.subs(P1_val), P2).args[0]
     >>> P2_val
     Equation(P2, A2*E2*P/(A1*E1 + A2*E2))
 
@@ -407,34 +406,11 @@ class Equation(Basic, EvalfMixin):
     report issues at https://github.com/gutow/Algebra_with_Sympy/issues.
     >>> tosolv = Eqn(a - b, c/a)
     >>> solve(tosolv,a)
-    a = b/2 - sqrt(b**2 + 4*c)/2 a = b/2 + sqrt(b**2 + 4*c)/2
-    [Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2)]
+    FiniteSet(Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2))
     >>> solve(tosolv, b)
-    b = (a**2 - c)/a
-    [Equation(b, (a**2 - c)/a)]
+    FiniteSet(Equation(b, (a**2 - c)/a))
     >>> solve(tosolv, c)
-    c = a**2 - a*b
-    [Equation(c, a**2 - a*b)]
-
-    Solve output control
-    >>> x, y = symbols('x y', real=True)
-    >>> eq1 = Eqn(abs(2*x + y),3)
-    >>> eq2 = Eqn(abs(x + 2*y),3)
-    >>> solve([eq1,eq2],x,y)
-    x = -3 y = 3 ----- x = -1 y = -1 ----- x = 1 y = 1 ----- x = 3 y = -3 -----
-    [[Equation(x, -3), Equation(y, 3)], [Equation(x, -1), Equation(y, -1)], [Equation(x, 1), Equation(y, 1)], [Equation(x, 3), Equation(y, -3)]]
-    >>> algwsym_config.output.show_solve_output = False
-    >>> solve([eq1,eq2],x,y)
-    [[Equation(x, -3), Equation(y, 3)], [Equation(x, -1), Equation(y, -1)], [Equation(x, 1), Equation(y, 1)], [Equation(x, 3), Equation(y, -3)]]
-    >>> algwsym_config.output.human_text = True
-    >>> solve([eq1,eq2],x,y)
-    [[x = -3, y = 3], [x = -1, y = -1], [x = 1, y = 1], [x = 3, y = -3]]
-
-    Resets to defaults to avoid problems with later tests
-    >>> algwsym_config.output.show_solve_output = True
-    >>> algwsym_config.output.human_text = False
-
-
+    FiniteSet(Equation(c, a**2 - a*b))
     """
 
     def __new__(cls, lhs, rhs, **kwargs):
@@ -908,43 +884,31 @@ def solve(f, *symbols, **flags):
     Examples
     --------
     >>> a, b, c, x, y = symbols('a b c x y', real = True)
-    (a, b, c, x, y)
+    >>> import sys
+    >>> sys.displayhook = __command_line_printing__ # set by default on normal initialization.
     >>> eq1 = Eqn(abs(2*x+y),3)
     >>> eq2 = Eqn(abs(x + 2*y),3)
     >>> B = solve((eq1,eq2))
 
-    Raw output
+    Default human readable output on command line
+    >>> B
+    {{x = -3, y = 3}, {x = -1, y = -1}, {x = 1, y = 1}, {x = 3, y = -3}}
+
+    To get raw output turn off by setting
+    >>> algwsym_config.output.human_text=False
     >>> B
     FiniteSet(FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3)))
 
-    Human readable output on command line (`human_text = True`)
+    `algwsym_config.output.human_text = True` with
+    `algwsym_config.output.how_code=True` shows both.
+    In Jupyter-like environments `show_code=True` yields the Raw output and
+    a typeset version. If `show_code=False` (the default) only the
+    typeset version is shown in Jupyter.
+    >>> algwsym_config.output.show_code=True
     >>> algwsym_config.output.human_text=True
     >>> B
-    FiniteSet(FiniteSet(x = -3, y = 3), FiniteSet(x = -1, y = -1), FiniteSet(x = 1, y = 1), FiniteSet(x = 3, y = -3))
-
-    `human_text = True` with `show_code=True` (not particularly useful on command line).
-    In Jupyter-like environments `show_code=True` yields the Raw output and
-    a pretty-printed version. If `show_code=False` (the default) only the
-    pretty-printed version is shown in Jupyter.
-    >>> algwsym_config.output.show_code=True
-    >>> B
-    FiniteSet(FiniteSet(
-    code version: Equation(x, -3)
-    x = -3,
-    code version: Equation(y, 3)
-    y = 3), FiniteSet(
-    code version: Equation(x, -1)
-    x = -1,
-    code version: Equation(y, -1)
-    y = -1), FiniteSet(
-    code version: Equation(x, 1)
-    x = 1,
-    code version: Equation(y, 1)
-    y = 1), FiniteSet(
-    code version: Equation(x, 3)
-    x = 3,
-    code version: Equation(y, -3)
-    y = -3))
+    Code version: FiniteSet(FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3)))
+    {{x = -3, y = 3}, {x = -1, y = -1}, {x = 1, y = 1}, {x = 3, y = -3}}
     """
     from sympy.solvers.solvers import solve
     from sympy.sets.sets import FiniteSet
