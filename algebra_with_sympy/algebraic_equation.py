@@ -122,7 +122,10 @@ class algwsym_config():
 def __latex_override__(expr, *arg):
     from IPython import get_ipython
     show_code = False
-    algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+    if get_ipython():
+        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+    else:
+        algwsym_config = globals()['algwsym_config']
     if algwsym_config:
         show_code = algwsym_config.output.show_code
     if show_code:
@@ -136,12 +139,13 @@ def __command_line_printing__(expr, *arg):
     if algwsym_config:
         human_text = algwsym_config.output.human_text
         show_code = algwsym_config.output.show_code
+    tempstr = ''
     if show_code:
-        print("Code version: " + repr(expr))
+        tempstr += "Code version: " + repr(expr) + '\n'
     if not human_text:
-        return print(repr(expr))
+        return print(tempstr + repr(expr))
     else:
-        return print(str(expr))
+        return print(tempstr + str(expr))
 
 # Now we inject the formatting override(s)
 from IPython import get_ipython

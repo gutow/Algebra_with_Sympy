@@ -94,23 +94,22 @@ def test_binary_op():
     assert tsteqn._eval_power(a) == Equation(a**a, (b/c)**a)
 
 
-def test_outputs():
-    # defaults
+def test_outputs(capsys):
+    from algebra_with_sympy import algwsym_config
+    from algebra_with_sympy.algebraic_equation import __latex_override__, \
+        __command_line_printing__
+
+    # check defaults
     assert algwsym_config.output.show_code == False
     assert algwsym_config.output.human_text == True
     assert algwsym_config.output.label == True
 
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
-    algwsym_config.output.show_code = True
-    assert (tsteqn.__str__() ==
-            'code version: Equation(a, b/c)\na = b/c')
-    assert (latex(tsteqn) == 'a=\\frac{b}{c}')
-    algwsym_config.output.show_code = False
-    algwsym_config.output.human_text = False
+    assert tsteqn.__str__() == 'a = b/c'
+    assert latex(tsteqn) == 'a=\\frac{b}{c}'
     assert tsteqn.__repr__() == 'Equation(a, b/c)'
-    algwsym_config.output.human_text = True
-    assert tsteqn.__repr__() == 'a = b/c'
+    assert tsteqn.__repr__() == 'Equation(a, b/c)'
     assert tsteqn.__str__() == 'a = b/c'
     assert latex(tsteqn) == 'a=\\frac{b}{c}'
 
@@ -133,24 +132,55 @@ def test_outputs():
     x, y = symbols('x y', real=True)
     eq1 = Eqn(abs(2*x + y),3)
     eq2 = Eqn(abs(x + 2*y),3)
+    B = solve([eq1,eq2],x,y)
+    assert B.__repr__() == 'FiniteSet(FiniteSet(Equation(' \
+                                              'x, -3), ' \
+                                   'Equation(y, 3)), FiniteSet(Equation(x, ' \
+                                              '-1), ' \
+                                   'Equation(y, -1)), FiniteSet(Equation(x, ' \
+                                              '1), ' \
+                                   'Equation(y, 1)), FiniteSet(Equation(x, 3),' \
+                                   ' Equation(y, -3)))'
+    assert B.__str__() == '{{x = -3, y = 3}, {x = -1, y = -1}, ' \
+                                   '{x = 1, y = 1}, {x = 3, y = -3}}'
+    __command_line_printing__(B)
+    captured = capsys.readouterr()
+    assert captured.out == \
+           '{{x = -3, y = 3}, {x = -1, y = -1}, ' \
+                                   '{x = 1, y = 1}, {x = 3, y = -3}}\n'
 
-    algwsym_config.output.show_solve_output = False
-    assert solve([eq1,eq2],x,y).__repr__() == '[[x = -3, y = 3], [x = -1, ' \
-                                         'y = -1], [x = 1, y = 1], [x = 3, y = -3]]'
-    assert solve([eq1,eq2],x,y).__str__() == '[[x = -3, y = 3], [x = -1, ' \
-                                         'y = -1], [x = 1, y = 1], [x = 3, y = -3]]'
+    algwsym_config.output.show_code = True
+    __command_line_printing__(B)
+    captured = capsys.readouterr()
+    assert captured.out== \
+           'Code version: FiniteSet(FiniteSet(' \
+        'Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), ' \
+        'Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), ' \
+        'FiniteSet(Equation(x, 3), Equation(y, -3)))' \
+    '\n{{x = -3, y = 3}, {x = -1, y = -1}, {x = 1, y = 1}, {x = 3, y = -3}}\n'
+    # make sure sys.displayhook does not point to __command_line_printing__()
+    import sys
+    sys.displayhook = sys.__displayhook__
+    assert __latex_override__(B) == \
+    '$\\left\\{\\left\\{x=-3, y=3\\right\\}, \\left\\{x=-1, ' \
+           'y=-1\\right\\}, \\left\\{x=1, y=1\\right\\}, ' \
+            '\\left\\{x=3, y=-3\\right\\}\\right\\}$'
+    captured = capsys.readouterr()
+    assert captured.out == \
+           'Code version: FiniteSet(FiniteSet(' \
+           'Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), ' \
+           'Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), ' \
+           'FiniteSet(Equation(x, 3), Equation(y, -3)))\n'
+
+    algwsym_config.output.show_code = False
     algwsym_config.output.human_text = False
-    assert solve([eq1,eq2],x,y) == [[Equation(x, -3), Equation(y, 3)],
-                                    [Equation(x, -1), Equation(y, -1)],
-                                    [Equation(x, 1), Equation(y, 1)],
-                                    [Equation(x, 3), Equation(y, -3)]]
-    algwsym_config.output.show_solve_output = True
-    # Cannot check that the display operation happens (doctest?), but make
-    #  sure that the result is still good.
-    assert solve([eq1,eq2],x,y) == [[Equation(x, -3), Equation(y, 3)],
-                                    [Equation(x, -1), Equation(y, -1)],
-                                    [Equation(x, 1), Equation(y, 1)],
-                                    [Equation(x, 3), Equation(y, -3)]]
+    __command_line_printing__(B)
+    captured = capsys.readouterr()
+    assert captured.out == 'FiniteSet(FiniteSet(Equation(x, -3), ' \
+                            'Equation(y, 3)), FiniteSet(Equation(x, -1), ' \
+                            'Equation(y, -1)), FiniteSet(Equation(x, 1), ' \
+                            'Equation(y, 1)), FiniteSet(Equation(x, 3), ' \
+                            'Equation(y, -3)))\n'
 
 def test_sympy_functions():
     a, b, c = symbols('a b c')
@@ -218,10 +248,11 @@ def test_solve():
     x, y = symbols('x y', real = True)
     eq1 = Eqn(abs(2*x + y), 3)
     eq2 = Eqn(abs(x + 2*y), 3)
-    assert (solve([eq1,eq2], x, y) == [[Equation(x, -3), Equation(y, 3)],
-                                        [Equation(x, -1), Equation(y, -1)],
-                                        [Equation(x, 1), Equation(y, 1)],
-                                        [Equation(x, 3), Equation(y, -3)]])
+    assert solve([eq1,eq2], x, y) == FiniteSet(FiniteSet(Equation(x, -3),
+                                   Equation(y, 3)), FiniteSet(Equation(x, -1),
+                                   Equation(y, -1)), FiniteSet(Equation(x, 1),
+                                   Equation(y, 1)), FiniteSet(Equation(x, 3),
+                                   Equation(y, -3)))
 
 def test_Heaviside():
     a, b, c, x = symbols('a b c x')
