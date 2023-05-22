@@ -61,23 +61,24 @@ but require more knowledge of command syntax, plus they cannot easily be
 installed in a generic python environment.
 
 ## Controlling the Format of Interactive Outputs
-
+* These controls impact all Sympy objects and the `Equation` class.
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
-$\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
-  be copied and pasted for 
+$\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the 
+  code representation (what can be copied and pasted for 
   additional computation) set `algwsym_config.output.show_code = True`. 
-  This will print the code version (e.g. `Equation(a,b/c)`) of the equation as 
-  well. This code version can be accessed directly by calling `repr()` on the 
-  equation.
+  This will print the code version (e.g. `Equation(a,b/c)`) of equations 
+  and sympy expression in addition to the human readable version. This code 
+  version can be accessed directly by calling `repr()` on the 
+  equation or expression.
 
-* **In interactive text environments (ipython and command line)** The human 
+* **In interactive text environments (IPython and command line)** The human 
   readable string version of Sympy expressions are returned (for `Equations` a 
   = b rather than Equation(a,b)). This is equivalent to Calling `print()` 
   or `str()` on an expression. 
-  * To have the code version (copy and pastable as a 
+  * To have the code version (can be copied and pasted as a 
     Python statement) returned, set `algwsym_config.output.human_text = False`.
   * Setting both `algwsym_config.output.human_text = True`
-    and `algwsym_config.output.show_code = True`, will return both  the 
+    and `algwsym_config.output.show_code = True`, will return both the 
     code and human readable versions.
 
 * **The equation label** can be turned off by setting
@@ -172,4 +173,4 @@ This program is free software: you can redistribute it and/or modify
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-Copyright - Jonathan Gutow 2021, 2022
+Copyright - Algebra with Sympy Contributors 2021, 2022, 2023
