@@ -112,12 +112,17 @@ class algwsym_config():
             return self.human_text
 
         @property
-        def label(self):
+        def solve_to_list(self):
             """
-            If `True` the human readable equation will be followed by the
-            python name it is assigned to. Default = `True`.
+            If `True` the results of a call to `solve(...)` will return a
+            Python `list` rather than a Sympy `FiniteSet`. This recovers
+            behavior for versions before 0.11.0.
+
+            Note: setting this `True` means that expressions within the
+            returned solutions will not be pretty-printed in Jupyter and
+            IPython.
             """
-            return self.label
+            return self.solve_to_list
 
 def __latex_override__(expr, *arg):
     from IPython import get_ipython
@@ -878,8 +883,13 @@ def solve(f, *symbols, **flags):
     are wrapped in a FiniteSet() to guarantee that the output will be pretty
     printed in Jupyter like environments.
 
-    If passed an equation or equations it returns solutions as a FiniteSet() of
-    solutions, where each solution is represented by an equation.
+    If passed an equation or equations it returns solutions as a
+    `FiniteSet()` of solutions, where each solution is represented by an
+    equation or set of equations.
+
+    To get a Python `list` of solutions (pre-0.11.0 behavior) rather than a
+    `FiniteSet` issue the command `algwsym_config.output.solve_to_list = True`.
+    This also prevents pretty-printing in IPython and Jupyter.
 
     Examples
     --------
@@ -898,6 +908,12 @@ def solve(f, *symbols, **flags):
     >>> algwsym_config.output.human_text=False
     >>> B
     FiniteSet(FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3)))
+
+    Pre-0.11.0 behavior where a python list of solutions is returned
+    >>> algwsym_config.output.solve_to_list = True
+    >>> solve((eq1,eq2))
+    [FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3))]
+    >>> algwsym_config.output.solve_to_list = False # reset to default
 
     `algwsym_config.output.human_text = True` with
     `algwsym_config.output.how_code=True` shows both.
@@ -942,25 +958,18 @@ def solve(f, *symbols, **flags):
         else:
             for k in result:
                 solnset = []
-                displayset = []
                 for key in k.keys():
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solnset.append(tempeqn)
-                     #if algwsym_config.output.show_solve_output:
-                     #   displayset.append(tempeqn)
-                #if algwsym_config.output.show_solve_output:
-                #    displayset.append('-----')
                 solnset = FiniteSet(*solnset)
                 solns.append(solnset)
-               # if algwsym_config.output.show_solve_output:
-                #    for k in displayset:
-                #        displaysolns.append(k)
-           # if algwsym_config.output.show_solve_output:
-            #    display(*displaysolns)
     else:
         solns = result
-    return FiniteSet(*solns)
+    if algwsym_config.output.solve_to_list:
+        return list(solns)
+    else:
+        return FiniteSet(*solns)
 
 def solveset(f, symbols, domain=sympy.Complexes):
     """

@@ -103,6 +103,7 @@ def test_outputs(capsys):
     assert algwsym_config.output.show_code == False
     assert algwsym_config.output.human_text == True
     assert algwsym_config.output.label == True
+    assert algwsym_config.output.solve_to_list == False
 
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
@@ -253,6 +254,12 @@ def test_solve():
                                    Equation(y, -1)), FiniteSet(Equation(x, 1),
                                    Equation(y, 1)), FiniteSet(Equation(x, 3),
                                    Equation(y, -3)))
+    algwsym_config.output.solve_to_list = True
+    assert solve([eq1,eq2], x, y) == [FiniteSet(Equation(x, -3),
+                                   Equation(y, 3)), FiniteSet(Equation(x, -1),
+                                   Equation(y, -1)), FiniteSet(Equation(x, 1),
+                                   Equation(y, 1)), FiniteSet(Equation(x, 3),
+                                   Equation(y, -3))]
 
 def test_Heaviside():
     a, b, c, x = symbols('a b c x')
