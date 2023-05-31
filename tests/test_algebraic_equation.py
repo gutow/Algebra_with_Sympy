@@ -255,11 +255,10 @@ def test_solve():
                                    Equation(y, 1)), FiniteSet(Equation(x, 3),
                                    Equation(y, -3)))
     algwsym_config.output.solve_to_list = True
-    assert solve([eq1,eq2], x, y) == [FiniteSet(Equation(x, -3),
-                                   Equation(y, 3)), FiniteSet(Equation(x, -1),
-                                   Equation(y, -1)), FiniteSet(Equation(x, 1),
-                                   Equation(y, 1)), FiniteSet(Equation(x, 3),
-                                   Equation(y, -3))]
+    assert solve([eq1,eq2], x, y) == [[Equation(x, -3), Equation(y, 3)],
+                                      [Equation(x, -1), Equation(y, -1)],
+                                      [Equation(x, 1), Equation(y, 1)],
+                                      [Equation(x, 3), Equation(y, -3)]]
 
 def test_Heaviside():
     a, b, c, x = symbols('a b c x')

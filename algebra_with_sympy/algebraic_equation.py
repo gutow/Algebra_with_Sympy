@@ -912,7 +912,7 @@ def solve(f, *symbols, **flags):
     Pre-0.11.0 behavior where a python list of solutions is returned
     >>> algwsym_config.output.solve_to_list = True
     >>> solve((eq1,eq2))
-    [FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3))]
+    [[Equation(x, -3), Equation(y, 3)], [Equation(x, -1), Equation(y, -1)], [Equation(x, 1), Equation(y, 1)], [Equation(x, 3), Equation(y, -3)]]
     >>> algwsym_config.output.solve_to_list = False # reset to default
 
     `algwsym_config.output.human_text = True` with
@@ -962,7 +962,8 @@ def solve(f, *symbols, **flags):
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solnset.append(tempeqn)
-                solnset = FiniteSet(*solnset)
+                if not algwsym_config.output.solve_to_list:
+                    solnset = FiniteSet(*solnset)
                 solns.append(solnset)
     else:
         solns = result
