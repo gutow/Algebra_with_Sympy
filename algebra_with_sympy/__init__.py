@@ -9,9 +9,9 @@ from algebra_with_sympy.preparser import *
 
 # Set the output formatting defaults
 algwsym_config.output.show_code = False
-algwsym_config.output.human_text = False
+algwsym_config.output.human_text = True
 algwsym_config.output.label = True
-algwsym_config.output.show_solve_output = True
+algwsym_config.output.solve_to_list = False
 
 # Set version number for internal access
 algwsym_version = 'unknown'

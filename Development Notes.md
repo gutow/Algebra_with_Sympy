@@ -13,6 +13,8 @@
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
   * Extend `.subs` to accept `.subs(a=2*c, b = sin(q), ...)`.
+  * [MathLive](https://cortexjs.io/mathlive/) on another web page as possible
+    input engine.
 
 ## Constructing the Documentation
 

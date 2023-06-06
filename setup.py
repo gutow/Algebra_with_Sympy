@@ -24,10 +24,8 @@ setuptools.setup(
     license="GPL-3.0+",
     packages=setuptools.find_packages(),
     install_requires=[
-        # 'python>=3.6',
-        #RPi.GPIO is required by pi-plates, not sure why not included in the
-        # pi-plates setup.py.
         'jupyter>=1.0.0',
+        'jupyterlab>=3.6',
         'sympy>=1.10'
     ],
     classifiers=[

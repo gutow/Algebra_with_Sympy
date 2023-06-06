@@ -61,25 +61,34 @@ but require more knowledge of command syntax, plus they cannot easily be
 installed in a generic python environment.
 
 ## Controlling the Format of Interactive Outputs
-
+* These controls impact all Sympy objects and the `Equation` class.
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
-$\frac{a}{b} = \frac{c}{d}$. To also see the code representation (what can 
-  be copied and pasted for 
+$\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the 
+  code representation (what can be copied and pasted for 
   additional computation) set `algwsym_config.output.show_code = True`. 
-  This will print the code version (e.g. `Equation(a,b/c)`) of the equation as 
-  well. This code version can be accessed directly by calling `repr()` on the 
-  equation.
+  This will print the code version (e.g. `Equation(a,b/c)`) of equations 
+  and sympy expression in addition to the human readable version. This code 
+  version can be accessed directly by calling `repr()` on the 
+  equation or expression.
 
-* **In interactive text environments (ipython and command line)** the 
-  representation (code version) is returned by default. Calling `print()` 
-  or `str()` on an equation will return the human readable version with an 
-  equals sign. To have the human readable version returned by default set 
-`algwsym_config.output.human_text = True`. If combined with 
-`algwsym_config.output.show_code = True`, both code and human readable 
-versions will be shown.
+* **In interactive text environments (IPython and command line)** The human 
+  readable string version of Sympy expressions are returned (for `Equations` a 
+  = b rather than Equation(a,b)). This is equivalent to Calling `print()` 
+  or `str()` on an expression. 
+  * To have the code version (can be copied and pasted as a 
+    Python statement) returned, set `algwsym_config.output.human_text = False`.
+  * Setting both `algwsym_config.output.human_text = True`
+    and `algwsym_config.output.show_code = True`, will return both the 
+    code and human readable versions.
 
 * **The equation label** can be turned off by setting
   `algwsym_config.output.label = False`.
+
+* By default **solutions output by `solve()`** are returned as a SymPy 
+  `FiniteSet()` to force typesetting of the included solutions. To get Python 
+  lists instead you can override this for the whole session by setting
+  `algwsym_config.output.solve_to_list = True`. For a one-off, simply 
+  wrap the output of a solve in `list()` (e.g. `list(solve(...))`).
 
 ## Setup/Installation
 
@@ -107,10 +116,20 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.11.0dev
-  * Added ability to hide human friendly output from solve with 
-    `algwsym_config.output.show_solve_output=False`. Tests of this 
-    functionality also added.
+* 0.11.0dev (June 5, 2023)
+  * Formatting of `FiniteSets` overridden so that the contents always
+    pretty-print. This removes the necessity of special flags to get 
+    pretty output from `solve`.
+  * Sympy `solve()` now works reliably with equations and outputs 
+    pretty-printed solutions.
+  * Added option `algwsym_config.output.solve_to_list = True` which causes 
+    `solve()` to return solutions sets as Python lists. Using this option 
+    prevents pretty-printing of the solutions produced by `solve()`.
+  * `algwsym_config.output.show_code` and 
+    `algwsym_config.output.human_text` now work for all sympy objects, not 
+    just `Equation` objects. This works
+    in terminal, IPython terminal and Jupyter. This is achieved by hooking 
+    into the python `display_hook` and IPython `display_formatter`.
   * Added jupyter to requirements.txt so that virtual environment builds
     will include jupyter.
   * The way `__version__` was handled could break pip install. Changed to
@@ -165,4 +184,4 @@ This program is free software: you can redistribute it and/or modify
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-Copyright - Jonathan Gutow 2021, 2022
+Copyright - Algebra with Sympy Contributors 2021, 2022, 2023
