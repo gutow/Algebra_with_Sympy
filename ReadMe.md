@@ -116,7 +116,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.11.0dev (June 5, 2023)
+* 0.11.0 (June 5, 2023)
   * Formatting of `FiniteSets` overridden so that the contents always
     pretty-print. This removes the necessity of special flags to get 
     pretty output from `solve`.
