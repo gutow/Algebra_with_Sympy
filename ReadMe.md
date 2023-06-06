@@ -84,6 +84,12 @@ $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the
 * **The equation label** can be turned off by setting
   `algwsym_config.output.label = False`.
 
+* By default **solutions output by `solve()`** are returned as a SymPy 
+  `FiniteSet()` to force typesetting of the included solutions. To get Python 
+  lists instead you can override this for the whole session by setting
+  `algwsym_config.output.solve_to_list = True`. For a one-off, simply 
+  wrap the output of a solve in `list()` (e.g. `list(solve(...))`).
+
 ## Setup/Installation
 
 1. Use pip to install in your python environment: 
@@ -110,10 +116,15 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.11.0dev
+* 0.11.0dev (June 5, 2023)
   * Formatting of `FiniteSets` overridden so that the contents always
-    pretty_print. This removes the necessity of special flags to get 
+    pretty-print. This removes the necessity of special flags to get 
     pretty output from `solve`.
+  * Sympy `solve()` now works reliably with equations and outputs 
+    pretty-printed solutions.
+  * Added option `algwsym_config.output.solve_to_list = True` which causes 
+    `solve()` to return solutions sets as Python lists. Using this option 
+    prevents pretty-printing of the solutions produced by `solve()`.
   * `algwsym_config.output.show_code` and 
     `algwsym_config.output.human_text` now work for all sympy objects, not 
     just `Equation` objects. This works
