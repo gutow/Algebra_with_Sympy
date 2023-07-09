@@ -1,5 +1,6 @@
 #!ipython
 from algebra_with_sympy.preparser import algebra_with_sympy_preparser as parser
+from algebra_with_sympy.preparser import integers_as_exact
 from IPython import get_ipython
 from pytest import raises
 
@@ -48,3 +49,14 @@ def test_parsing_errors():
     assert parser(lines) == expected_out
     lines.append('eq1 =@ a + b > c/d\n')
     raises(ValueError, lambda: parser(lines))
+
+def test_integers_as_exact():
+    lines = []
+    lines.append('1/2*x + 0.333*x')
+    lines.append('2/3*z + 2.0*y + ln(3*x)')
+    result = integers_as_exact(lines)
+    splitlines = result.split('\n')
+    expectedlines = ['Integer (1 )/Integer (2 )*x +0.333 *x ',
+            'Integer (2 )/Integer (3 )*z +2.0 *y +ln (Integer (3 )*x )']
+    for k in range(len(splitlines)):
+        assert splitlines[k] == expectedlines[k]

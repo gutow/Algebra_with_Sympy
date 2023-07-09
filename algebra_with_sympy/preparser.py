@@ -48,6 +48,25 @@ def algebra_with_sympy_preparser(lines):
             new_lines.append(k)
     return new_lines
 
+
+def integers_as_exact(lines):
+    """This preparser uses `sympy.interactive.session.int_to_Integer` to
+    convert numbers without decimal points into sympy integers so that math
+    on them will be exact rather than defaulting to floating point. This
+    should not be called directly by the user. It is plugged into the
+    IPython preparsing sequence when the feature is requested. The default for
+    Algebra_with_sympy is to use this preparser. This can be turned on and
+    off with:
+    * `set_integers_as_exact()`
+    * `unset_integers_as_exact()`
+    """
+    from sympy.interactive.session import int_to_Integer
+    string = ''
+    for k in lines:
+        string += k + '\n'
+    string = string[:-1] # remove the last '\n'
+    return int_to_Integer(string)
+
 from IPython import get_ipython
 if get_ipython():
     if hasattr(get_ipython(),'input_transformers_cleanup'):

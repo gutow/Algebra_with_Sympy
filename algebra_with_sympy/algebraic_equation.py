@@ -32,6 +32,7 @@ from sympy.core.expr import Expr
 from sympy.core.basic import Basic
 from sympy.core.evalf import EvalfMixin
 from sympy.core.sympify import _sympify
+from algebra_with_sympy.preparser import integers_as_exact
 import functools
 from sympy import *
 
@@ -124,6 +125,32 @@ class algwsym_config():
             """
             return self.solve_to_list
 
+    class numerics():
+
+        def __init__(self):
+            """This class holds settings for how numerical computation and
+            inputs are handled.
+            """
+            pass
+
+        def integers_as_exact(self):
+            """**This is a flag for informational purposes and interface
+            consistency. Changing the value will not change the behavior.**
+
+            To change the behavior call:
+            * `unset_integers_as_exact()` to turn this feature off.
+            * `set_integers_as_exact()` to turn this feature on (on by
+            default).
+
+            If set to `True` (the default) and if running in an
+            IPython/Jupyter environment any number input without a decimal
+            will be interpreted as a sympy integer. Thus, fractions and
+            related expressions will not evalute to floating point numbers,
+            but be maintained as exact expressions (e.g. 2/3 -> 2/3 not the
+            float 0.6666...).
+            """
+            return self.integers_as_exact
+
 def __latex_override__(expr, *arg):
     from IPython import get_ipython
     show_code = False
@@ -177,8 +204,49 @@ if ip:
                     # " overriding plain text formatter = " + str(old))
 else:
     # command line
-    # print("Overiding command line printing of python.")
+    # print("Overriding command line printing of python.")
     sys.displayhook = __command_line_printing__
+
+# Numerics controls
+def set_integers_as_exact():
+    """This operation uses `sympy.interactive.session,int_to_Integer` which
+    causes any number input without a decimal to be interpreted as a sympy
+    integer to pre-parse input cells. It also sets the flag
+    `algwsym_config.numerics.integers_as_exact = True` This is the default
+    mode of algebra_with_sympy. To turn this off call
+    `unset_integers_as_exact()`.
+    """
+    from IPython import get_ipython
+    if get_ipython():
+        get_ipython().input_transformers_post.append(integers_as_exact)
+        algwsym_config.numerics.integers_as_exact = True
+    return
+
+def unset_integers_as_exact():
+    """This operation disables forcing of numbers input without
+    decimals being interpreted as sympy integers. Numbers input without a
+    decimal may be interpreted as floating point if they are part of an
+    expression that undergoes python evaluation (e.g. 2/3 -> 0.6666...). It
+    also sets the flag `algwsym_config.numerics.integers_as_exact = False`
+    Call `set_integers_as_exact()` to avoid this conversion of rational
+    fractions and related expressions to floating point. Algebra_with_sympy
+    starts with `set_integers_as_exact()` enabled (
+    `algwsym_config.numerics.integers_as_exact = True`)
+    """
+    from IPython import get_ipython
+    if get_ipython():
+        pre = get_ipython().input_transformers_post
+        # The below looks excessively complicated, but more reliably finds the
+        # transformer to remove across varying IPython environments.
+        for k in pre:
+            if "integers_as_exact" in k.__name__:
+                pre.remove(k)
+        algwsym_config.numerics.integers_as_exact = False
+    return
+
+# Set up numerics behaviors
+if ip:
+    set_integers_as_exact()
 
 class Equation(Basic, EvalfMixin):
     """

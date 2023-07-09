@@ -5,6 +5,9 @@
 __docformat__ = "numpy"
 
 from algebra_with_sympy.algebraic_equation import *
+
+# Set config value for numerics before adjusting with the preparser
+algwsym_config.numerics.integers_as_exact = False # adjusted in preparser.
 from algebra_with_sympy.preparser import *
 
 # Set the output formatting defaults
