@@ -12,6 +12,8 @@ if not(get_ipython()):
                            ' To avoid running this file in a general test '
                            'use `pytest --ignore-glob="*test_numerics.py"`')
 
+# Set up the global config object
+get_ipython().user_ns['algwsym_config'] = algwsym_config
 def test_set_integers_as_exact():
     set_integers_as_exact()
     assert integers_as_exact in get_ipython().input_transformers_post

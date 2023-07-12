@@ -3,11 +3,14 @@
 .. include:: ../Development Notes.md
 """
 __docformat__ = "numpy"
-
 from algebra_with_sympy.algebraic_equation import *
 
-# Set config value for numerics before adjusting with the preparser
-algwsym_config.numerics.integers_as_exact = False # adjusted in preparser.
+# Set up numerics behaviors
+from IPython import get_ipython
+if get_ipython():
+    get_ipython().input_transformers_post.append(integers_as_exact)
+    algwsym_config.numerics.integers_as_exact = True
+
 from algebra_with_sympy.preparser import *
 
 # Set the output formatting defaults

@@ -36,7 +36,6 @@ from algebra_with_sympy.preparser import integers_as_exact
 import functools
 from sympy import *
 
-
 class algwsym_config():
 
     def __init__(self):
@@ -209,9 +208,9 @@ else:
 
 # Numerics controls
 def set_integers_as_exact():
-    """This operation uses `sympy.interactive.session,int_to_Integer` which
+    """This operation uses `sympy.interactive.session.int_to_Integer`, which
     causes any number input without a decimal to be interpreted as a sympy
-    integer to pre-parse input cells. It also sets the flag
+    integer, to pre-parse input cells. It also sets the flag
     `algwsym_config.numerics.integers_as_exact = True` This is the default
     mode of algebra_with_sympy. To turn this off call
     `unset_integers_as_exact()`.
@@ -219,7 +218,11 @@ def set_integers_as_exact():
     from IPython import get_ipython
     if get_ipython():
         get_ipython().input_transformers_post.append(integers_as_exact)
-        algwsym_config.numerics.integers_as_exact = True
+        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+        if algwsym_config:
+            algwsym_config.numerics.integers_as_exact = True
+        else:
+            raise ValueError("The algwsym_config object does not exist.")
     return
 
 def unset_integers_as_exact():
@@ -227,11 +230,11 @@ def unset_integers_as_exact():
     decimals being interpreted as sympy integers. Numbers input without a
     decimal may be interpreted as floating point if they are part of an
     expression that undergoes python evaluation (e.g. 2/3 -> 0.6666...). It
-    also sets the flag `algwsym_config.numerics.integers_as_exact = False`
+    also sets the flag `algwsym_config.numerics.integers_as_exact = False`.
     Call `set_integers_as_exact()` to avoid this conversion of rational
     fractions and related expressions to floating point. Algebra_with_sympy
     starts with `set_integers_as_exact()` enabled (
-    `algwsym_config.numerics.integers_as_exact = True`)
+    `algwsym_config.numerics.integers_as_exact = True`).
     """
     from IPython import get_ipython
     if get_ipython():
@@ -241,12 +244,13 @@ def unset_integers_as_exact():
         for k in pre:
             if "integers_as_exact" in k.__name__:
                 pre.remove(k)
-        algwsym_config.numerics.integers_as_exact = False
-    return
+        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+        if algwsym_config:
+            algwsym_config.numerics.integers_as_exact = False
+        else:
+            raise ValueError("The algwsym_config object does not exist.")
 
-# Set up numerics behaviors
-if ip:
-    set_integers_as_exact()
+    return
 
 class Equation(Basic, EvalfMixin):
     """

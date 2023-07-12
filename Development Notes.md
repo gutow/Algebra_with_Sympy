@@ -10,6 +10,8 @@
   * Test for _binary_op NotImplemented error (not sure how to get there).
   * examine these more carefully (top priority: real_root, cbrt, Ynm_c).
 * To consider
+  * Include [Sympy Plot Backends](https://sympy-plot-backends.readthedocs.io/en/latest/)
+    in the default setup.
   * Change `Equation` constructor to accept `Equality`, `Set`, `List` or 
     `lhs, rhs`, rather than just `lhs, rhs`.
   * Extend `.subs` to accept `.subs(a=2*c, b = sin(q), ...)`.

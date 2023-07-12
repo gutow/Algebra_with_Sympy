@@ -15,7 +15,10 @@
 This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
 They consist of a left hand side (lhs) and a right hand side (rhs) connected by
-the relation operator "=".
+the relation operator "=". In addition, it sets some convenient defaults and 
+provides some useful controls of output formatting that may be useful even if
+you do not use the `Equation` class (see [Conveniences for
+SymPy](#convenience-tools-and-defaults-for-interactive-use-of-sympy)).
 
 This tool applies operations to both sides of the equation simultaneously, just
 as students are taught to do when 
@@ -59,6 +62,24 @@ Many math packages such as [SageMath](https://www.sagemath.org/)
 and [Maxima](http://maxima.sourceforge.net/) have similar capabilities, 
 but require more knowledge of command syntax, plus they cannot easily be 
 installed in a generic python environment.
+
+## Convenience Tools and Defaults for Interactive Use of SymPy
+
+Even if you do not use the `Equation` class, there are some convenience 
+tools and defaults that will probably make interactive use of SymPy in 
+Jupyter/IPython environments easier:
+
+* By default all numbers without decimal points are interpreted as integers. 
+  One implication of this is that base ten fractions are exact (e.g. 2/3 -> 
+  2/3 not 0.6666...). This can be turned off with `unset_integers_as_exact()`
+  and on with `set_integers_as_exact()`. When on the flag
+  `algwsym_config.numerics.integers_as_exact = True`.
+* Results of `solve()` are wrapped in `FiniteSet()` to force pretty-printing 
+  of all of a solution set. See [Controlling the Format of Interactive 
+  Outputs](#controlling-the-format-of-interactive-outputs).
+* It is possible to set the default display to show both the pretty-printed 
+  result and the code version simultaneously. See [Controlling the Format of Interactive 
+  Outputs](#controlling-the-format-of-interactive-outputs).  
 
 ## Controlling the Format of Interactive Outputs
 * These controls impact all Sympy objects and the `Equation` class.
@@ -116,6 +137,11 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
+* 0.12.0 (July X, 2023)
+  * Now defaults to interpreting numbers without decimal points as integers. 
+    This can be turned off with `unset_integers_as_exact()` and on with
+    `set_integers_as_exact()`. When on the flag
+    `algwsym_config.numerics.integers_as_exact = True`.
 * 0.11.0 (June 5, 2023)
   * Formatting of `FiniteSets` overridden so that the contents always
     pretty-print. This removes the necessity of special flags to get 

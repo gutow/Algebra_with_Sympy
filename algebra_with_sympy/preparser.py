@@ -52,11 +52,11 @@ def algebra_with_sympy_preparser(lines):
 def integers_as_exact(lines):
     """This preparser uses `sympy.interactive.session.int_to_Integer` to
     convert numbers without decimal points into sympy integers so that math
-    on them will be exact rather than defaulting to floating point. This
+    on them will be exact rather than defaulting to floating point. **This
     should not be called directly by the user. It is plugged into the
-    IPython preparsing sequence when the feature is requested. The default for
+    IPython preparsing sequence when the feature is requested.** The default for
     Algebra_with_sympy is to use this preparser. This can be turned on and
-    off with:
+    off using the Algebra_with_sympy functions:
     * `set_integers_as_exact()`
     * `unset_integers_as_exact()`
     """
