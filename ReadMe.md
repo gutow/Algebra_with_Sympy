@@ -137,7 +137,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.12.0 (July X, 2023)
+* 0.12.0 (July 12, 2023)
   * Now defaults to interpreting numbers without decimal points as integers. 
     This can be turned off with `unset_integers_as_exact()` and on with
     `set_integers_as_exact()`. When on the flag
