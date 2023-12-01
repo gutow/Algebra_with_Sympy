@@ -59,10 +59,11 @@ class algwsym_config():
         `print(Eqn)` or `repr(Eqn)` instead of `str(Eqn)` to get a code
         compatible version of the equation.
 
-        You can adjust this behvior using some flags that impact output:
+        You can adjust this behavior using some flags that impact output:
         * `algwsym_config.output.show_code` default is `False`.
         * `algwsym_config.output.human_text` default is `True`.
         * `algwsym_config.output.label` default is `True`.
+        * `algwsym_config.output.latex_as_equations` default is `False`
 
         In interactive environments you can get both types of output by setting
         the `algwsym_config.output.show_code` flag. If this flag is true
@@ -85,6 +86,11 @@ class algwsym_config():
         The third flag `algwsym_config.output.label` has a default value of
         `True`. Setting this to `False` suppresses the labeling of an equation
         with its python name off to the right of the equation.
+
+        The fourth flag `algwsym_config.output.latex_as_equations` has
+        a default value of `False`. Setting this to `True` wraps formats
+        output as LaTex equations wrapping them in `\begin{equation}...\end{
+        equation}`.
         """
         pass
 
@@ -124,6 +130,24 @@ class algwsym_config():
             """
             return self.solve_to_list
 
+        @property
+        def latex_as_equations(self):
+            """
+            If `True` any output that is returned as LaTex for
+            pretty-printing will be wrapped in the formal Latex for an
+            equation. For example rather than
+            ```
+            $\\frac{a}{b}=c$
+            ```
+            the output will be
+            ```
+            $$
+            \\begin{equation}\\frac{a}{b}=c\end{equation}
+            $$
+            ```
+            """
+            return self.latex_as_equation
+
     class numerics():
 
         def __init__(self):
@@ -153,15 +177,20 @@ class algwsym_config():
 def __latex_override__(expr, *arg):
     from IPython import get_ipython
     show_code = False
+    latex_as_equations = False
     if get_ipython():
         algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
     else:
         algwsym_config = globals()['algwsym_config']
     if algwsym_config:
         show_code = algwsym_config.output.show_code
+        latex_as_equations = algwsym_config.output.latex_as_equations
     if show_code:
         print("Code version: " + repr(expr))
-    return '$'+latex(expr) + '$'
+    if latex_as_equations:
+        return '$$\\begin{equation}'+latex(expr)+'\\end{equation}$$'
+    else:
+        return '$'+latex(expr) + '$'
 
 def __command_line_printing__(expr, *arg):
     # print('Entering __command_line_printing__')
