@@ -137,6 +137,10 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
+* 0.13.0.dev
+  * `algwsym_config.output.latex_as_equations` has a default value of `False`.
+     Setting this to `True` wraps output as LaTex equations wrapping them 
+    in `\begin{equation}...\end{equation}`.
 * 0.12.0 (July 12, 2023)
   * Now defaults to interpreting numbers without decimal points as integers. 
     This can be turned off with `unset_integers_as_exact()` and on with

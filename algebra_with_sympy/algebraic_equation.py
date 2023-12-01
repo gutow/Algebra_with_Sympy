@@ -88,7 +88,7 @@ class algwsym_config():
         with its python name off to the right of the equation.
 
         The fourth flag `algwsym_config.output.latex_as_equations` has
-        a default value of `False`. Setting this to `True` wraps formats
+        a default value of `False`. Setting this to `True` wraps
         output as LaTex equations wrapping them in `\begin{equation}...\end{
         equation}`.
         """
