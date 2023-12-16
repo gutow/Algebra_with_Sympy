@@ -1,0 +1,3 @@
+[submodule "algebra_with_sympy/sympy"]
+	path = algebra_with_sympy/sympy
+	url = https://github.com/sympy/sympy.git
