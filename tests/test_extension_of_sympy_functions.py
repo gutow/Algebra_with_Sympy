@@ -1,31 +1,35 @@
 from pytest import raises
-
-from algebra_with_sympy.algebraic_equation import str_to_extend_sympy_func
-from algebra_with_sympy.algebraic_equation import Equation, EqnFunction
-from algebra_with_sympy.algebraic_equation import _extended_, _skip_
-from sympy import functions, FunctionClass, symbols
+from sympy import functions, FunctionClass, symbols, Equation
 import importlib
-temp = importlib.import_module('sympy', package=functions.__all__)
+
+#####
+# Testing that sympy functions work with Equations
+#####
+
+# Overridden elsewhere
+_extended_ = ('sqrt', 'cbrt', 'root')
+
+# Either not applicable to Equations or have not yet figured out a way
+# to systematically apply to an Equation.
+# TODO examine these more carefully (top priority: real_root, Ynm_c).
+_not_applicable_to_equations_ = ('Min', 'Max', 'Id', 'real_root',
+        'unbranched_argument', 'polarify', 'unpolarify',
+        'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
+        'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
+        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive', 'Piecewise',
+        'motzkin', 'hyper','meijerg', 'chebyshevu_root', 'chebyshevt_root',
+        'betainc_regularized')
+_skip_ = _extended_ + _not_applicable_to_equations_
+
+temp = importlib.import_module('sympy', package=functions)
 for func in functions.__all__:
     globals()[func] = getattr(temp, func)
-temp = importlib.import_module('algebra_with_sympy.algebraic_equation',
-                               package=_extended_)
+
 # Needed for some tests so that extended functions are in the correct
 # namespace.
 for func in _extended_:
     globals()[func] = getattr(temp, func)
 
-for func in functions.__all__:
-    if func not in _skip_:
-        try:
-            # The string that is executed has a test function below.
-            exec(str_to_extend_sympy_func(func), globals(), locals())
-        except TypeError:
-            from warnings import warn
-            warn('SymPy function/operation ' + str(func) + ' may not work ' \
-                'properly with Equations. If you use it with Equations, ' \
-                'validate its behavior. We are working to address this ' \
-                'issue.')
 
 def test_sympy_import():
     for func in functions.__all__:
@@ -34,12 +38,6 @@ def test_sympy_import():
             assert(isinstance(globals()[func],FunctionClass))
     pass
 
-def test_str_to_extend_sympy_func():
-    teststr = 'testname'
-    execstr = 'class %S(%S,EqnFunction):\n    pass\n'
-    execstr = execstr.replace('%S',str(teststr))
-    assert str_to_extend_sympy_func(teststr)==execstr
-    pass
 
 def test_functions_extensions():
     from inspect import signature
