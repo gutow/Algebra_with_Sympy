@@ -105,6 +105,13 @@ $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the
 * **The equation label** can be turned off by setting
   `algwsym_config.output.label = False`.
 
+* **Automatic wrapping of `Equations` as Latex equations** can be activated 
+  by  setting `algwsym_config.output.latex_as_equations` to `True`. The 
+  default is `False`. Setting this to `True` wraps output as LaTex equations,
+  wrapping them in \begin{equation}...\end{equation}. Equations formatted 
+  this way will **not** be labeled with the internal name for the equation, 
+  independent of the setting of `algwsym_config.output.label`.
+
 * By default **solutions output by `solve()`** are returned as a SymPy 
   `FiniteSet()` to force typesetting of the included solutions. To get Python 
   lists instead you can override this for the whole session by setting
@@ -137,10 +144,16 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 0.13.0.dev
+* 1.0.0rc0
+  * Fixed issue #23 where `cos()` multiplied by a factor was not the same 
+    type of object after `simplify()` acted on an expression. Required 
+    embedding the `Equation` type in the sympy library. Until `Equation` is 
+    incorporated into the primary Sympy repository a customized version of 
+    the latest stable release will be used.
   * `algwsym_config.output.latex_as_equations` has a default value of `False`.
      Setting this to `True` wraps output as LaTex equations wrapping them 
-    in `\begin{equation}...\end{equation}`.
+    in `\begin{equation}...\end{equation}`. Equations formatted this way 
+    will not be labeled with the internal name for the equation.
 * 0.12.0 (July 12, 2023)
   * Now defaults to interpreting numbers without decimal points as integers. 
     This can be turned off with `unset_integers_as_exact()` and on with

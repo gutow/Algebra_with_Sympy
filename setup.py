@@ -26,7 +26,7 @@ setuptools.setup(
     install_requires=[
         'jupyter>=1.0.0',
         'jupyterlab>=3.6',
-        'sympy>=1.10'
+        'sympy-for-algebra>=1.12'
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
