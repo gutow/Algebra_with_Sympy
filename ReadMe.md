@@ -39,7 +39,7 @@ notebook is shown immediately below:
 
 The last cell illustrates how it is possible to substitute numbers with 
 units into the solved equation to calculate a numerical solution with 
-proper units.
+proper units. The `units(...)` operation is part this package, not Sympy.
 
 In IPython environments (IPython and Jupyter) there is also a shorthand 
 syntax for entering equations provided through the IPython preparser. An 
@@ -108,7 +108,7 @@ $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the
 * **Automatic wrapping of `Equations` as Latex equations** can be activated 
   by  setting `algwsym_config.output.latex_as_equations` to `True`. The 
   default is `False`. Setting this to `True` wraps output as LaTex equations,
-  wrapping them in \begin{equation}...\end{equation}. Equations formatted 
+  wrapping them in `\begin{equation}...\end{equation}`. Equations formatted 
   this way will **not** be labeled with the internal name for the equation, 
   independent of the setting of `algwsym_config.output.label`.
 
@@ -145,11 +145,20 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 ## Change Log
 
 * 1.0.0rc0
+  * Added convenience operation `units(...)` which takes a string of space 
+    separated symbols to use as units. This simply declares the symbols 
+    to be positive, making them behave as units. This does not create units 
+    that know about conversions, prefixes or systems of units. This lack 
+    is on purpose to provide units that require the user to worry about 
+    conversions (ideal in a teaching situation). To get units with built-in 
+    conversions see `sympy.physics.units`.
   * Fixed issue #23 where `cos()` multiplied by a factor was not the same 
     type of object after `simplify()` acted on an expression. Required 
     embedding the `Equation` type in the sympy library. Until `Equation` is 
     incorporated into the primary Sympy repository a customized version of 
     the latest stable release will be used.
+  * Fixed issue where trailing comments (ie. `# a comment` at the end of a 
+    line) lead to input errors using compact `=@` notation.
   * `algwsym_config.output.latex_as_equations` has a default value of `False`.
      Setting this to `True` wraps output as LaTex equations wrapping them 
     in `\begin{equation}...\end{equation}`. Equations formatted this way 

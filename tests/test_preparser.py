@@ -40,6 +40,9 @@ def test_parsing():
     lines.append('\n')
     expected_out.append('\n')
     assert parser(lines) == expected_out
+    lines.append('eq1 =@ a + b = c/d # A trailing comment\n')
+    expected_out.append('eq1 = Eqn( a + b , c/d )\n')
+    assert parser(lines) == expected_out
 
 def test_parsing_errors():
     lines = []

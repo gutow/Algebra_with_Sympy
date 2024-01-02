@@ -28,7 +28,14 @@ def algebra_with_sympy_preparser(lines):
         lines = [lines]
     for k in lines:
         if '=@' in k:
-            linesplit = k.split('=@')
+            drop_comments = k.split('#')
+            to_rephrase = ''
+            if len(drop_comments) > 2:
+                for i in range(len(drop_comments)-1):
+                    to_rephrase += drop_comments[i]
+            else:
+                to_rephrase = drop_comments[0]
+            linesplit = to_rephrase.split('=@')
             eqsplit = linesplit[1].split('=')
             if len(eqsplit)!=2:
                 raise ValueError('The two sides of the equation must be' \

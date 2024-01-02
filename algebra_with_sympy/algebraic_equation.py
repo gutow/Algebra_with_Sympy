@@ -305,7 +305,7 @@ class algwsym_config():
 
         The fourth flag `algwsym_config.output.latex_as_equations` has
         a default value of `False`. Setting this to `True` wraps
-        output as LaTex equations wrapping them in `\begin{equation}...\end{
+        output as LaTex equations wrapping them in `\\begin{equation}...\\end{
         equation}`.
         """
         pass
@@ -358,7 +358,7 @@ class algwsym_config():
             the output will be
             ```
             $$
-            \\begin{equation}\\frac{a}{b}=c\end{equation}
+            \\begin{equation}\\frac{a}{b}=c\\end{equation}
             $$
             ```
             """
@@ -515,6 +515,40 @@ if ip and "text/latex" not in formatter.active_types:
     old = formatter.formatters['text/plain'].for_type(Eqn,
                                                 __command_line_printing__)
     # print("For type Equation overriding plain text formatter = " + str(old))
+
+def units(names):
+    """
+    This operation declares the symbols to be positive values, so that sympy will handle them properly
+    when simplifying expressions containing units.
+
+    :param string names: a string containing a space separated list of symbols to be treated as units.
+
+    :return string list of defined units: calls `name = symbols(name,
+    positive=True)` in the interactive namespace for each symbol name.
+    """
+    from sympy.core.symbol import symbols
+    #import __main__ as shell
+    from IPython import get_ipython
+    syms = names.split(' ')
+    user_namespace = None
+    retstr = ''
+    if get_ipython():
+        user_namespace = get_ipython().user_ns
+    else:
+        import sys
+        frame_num = 0
+        frame_name = None
+        while frame_name != '__main__' and frame_num < 50:
+            user_namespace = sys._getframe(frame_num).f_globals
+            frame_num +=1
+            frame_name = user_namespace['__name__']
+    retstr +='('
+    for k in syms:
+        user_namespace[k] = symbols(k, positive = True)
+        retstr += k + ','
+    retstr = retstr[:-1] + ')'
+    return retstr
+
 
 def solve(f, *symbols, **flags):
     """

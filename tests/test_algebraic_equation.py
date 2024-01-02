@@ -4,7 +4,7 @@ from sympy import sin, cos, log, exp, latex, Symbol, I
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect
-from algebra_with_sympy.algebraic_equation import Equality
+from algebra_with_sympy.algebraic_equation import Equality, units
 from sympy import Eqn, sqrt, root, Heaviside
 from algebra_with_sympy.algebraic_equation import algwsym_config
 
@@ -230,6 +230,24 @@ def test_helper_functions():
     assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
     assert root(b/c,3) == (b/c)**(S(1)/S(3))
     assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
+
+def test_units():
+    units('J mol K')
+    user_namespace = None
+    import sys
+    frame_num = 0
+    frame_name = None
+    while frame_name != '__main__' and frame_num < 50:
+        user_namespace = sys._getframe(frame_num).f_globals
+        frame_num += 1
+        frame_name = user_namespace['__name__']
+    J = user_namespace['J']
+    mol = user_namespace['mol']
+    K = user_namespace['K']
+    assert sqrt((123.2*J/mol/K)**2) == 123.2*J/mol/K
+    assert 1.0*J + 5.0*J == 6.0*J
+    assert 1.0*J + 5.0*mol == 1.0*J + 5.0*mol
+    assert J > 0 and mol > 0 and K > 0
 
 def test_solve():
     a, b, c, x = symbols('a b c x')
