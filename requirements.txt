@@ -1,2 +1,2 @@
-sympy>=1.10
+sympy-for-algebra>=1.12
 jupyter>=1.0.0
