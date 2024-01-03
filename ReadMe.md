@@ -144,7 +144,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 1.0.0rc0
+* 1.0.0 (January 2, 2024)
   * Added convenience operation `units(...)` which takes a string of space 
     separated symbols to use as units. This simply declares the symbols 
     to be positive, making them behave as units. This does not create units 
