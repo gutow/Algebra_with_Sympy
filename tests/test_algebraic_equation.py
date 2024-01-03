@@ -1,40 +1,34 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
-from sympy import diff, FiniteSet, Equality, Function, functions, Matrix, S
+from sympy import diff, FiniteSet, Equation, Function, Matrix, S, Eq
 from sympy import sin, cos, log, exp, latex, Symbol, I
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
-from algebra_with_sympy.algebraic_equation import solve, collect, Equation
-from algebra_with_sympy.algebraic_equation import Equality, Eq
-from algebra_with_sympy.algebraic_equation import Eqn, sqrt, root, Heaviside
+from algebra_with_sympy.algebraic_equation import solve, collect
+from algebra_with_sympy.algebraic_equation import Equality, units
+from sympy import Eqn, sqrt, root, Heaviside
 from algebra_with_sympy.algebraic_equation import algwsym_config
-from algebra_with_sympy.algebraic_equation import EqnFunction
-from algebra_with_sympy.algebraic_equation import _skip_
-from algebra_with_sympy.algebraic_equation import str_to_extend_sympy_func
+
 
 from pytest import raises
 
-def test_str_to_extend_sympy_func():
-    teststr = 'testname'
-    execstr = 'class %S(%S,EqnFunction):\n    pass\n'
-    execstr = execstr.replace('%S',str(teststr))
-    assert str_to_extend_sympy_func(teststr)==execstr
-    pass
-
 #####
-# Extension of just the functions used for testing
+# Testing that sympy functions work with Equations
 #####
 
-for func in ('sin', 'cos', 'log', 'exp'):
-    if func not in _skip_:
-        try:
-            exec(str_to_extend_sympy_func(func), globals(), locals())
-        except TypeError:
-            from warnings import warn
-            warn('SymPy function/operation ' + str(func) + ' may not work ' \
-                'properly with Equations. If you use it with Equations, ' \
-                'validate its behavior. We are working to address this ' \
-                'issue.')
+# Overridden elsewhere
+_extended_ = ('sqrt', 'cbrt', 'root')
 
+# Either not applicable to Equations or have not yet figured out a way
+# to systematically apply to an Equation.
+# TODO examine these more carefully (top priority: real_root, Ynm_c).
+_not_applicable_to_equations_ = ('Min', 'Max', 'Id', 'real_root',
+        'unbranched_argument', 'polarify', 'unpolarify',
+        'piecewise_fold', 'E1', 'Eijk', 'bspline_basis',
+        'bspline_basis_set', 'interpolating_spline', 'jn_zeros',
+        'jacobi_normalized', 'Ynm_c', 'piecewise_exclusive', 'Piecewise',
+        'motzkin', 'hyper','meijerg', 'chebyshevu_root', 'chebyshevt_root',
+        'betainc_regularized')
+_skip_ = _extended_ + _not_applicable_to_equations_
 
 class CustomLatexPrinter(LatexPrinter):
     """Print undefined applied functions without arguments"""
@@ -63,7 +57,7 @@ def test_define_equation():
 def test_convert_equation():
     a, b, c = symbols('a b c')
     tsteqn = Equation(a, b/c)
-    assert tsteqn.as_Boolean() == Equality(a, b/c)
+    assert tsteqn.as_Boolean() == Eq(a, b/c)
     assert tsteqn.reversed == Equation(b/c, a)
     assert tsteqn.swap == Equation(b/c, a)
 
@@ -117,12 +111,20 @@ def test_outputs(capsys):
     import __main__ as gs
     vars(gs)['tsteqn'] = tsteqn
     assert tsteqn._get_eqn_name() == 'tsteqn'
-    assert tsteqn.__str__() == 'a = b/c          (tsteqn)'
-    assert (latex(tsteqn) ==
-            'a=\\frac{b}{c}\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,(\\text{tsteqn})')
+    __command_line_printing__(tsteqn)
+    captured = capsys.readouterr()
+    assert captured.out == 'a = b/c          (tsteqn)\n'
+    # make sure sys.displayhook does not point to __command_line_printing__()
+    import sys
+    sys.displayhook = sys.__displayhook__
+    assert __latex_override__(tsteqn) == ('$a=\\frac{b}{c}\\,\\,\\,\\,\\,\\,'
+                                          '\\,\\,\\,\\,(\\text{tsteqn})$')
     algwsym_config.output.label = False
-    assert tsteqn.__str__() == 'a = b/c'
-    assert latex(tsteqn) == 'a=\\frac{b}{c}'
+    __command_line_printing__(tsteqn)
+    captured = capsys.readouterr()
+    assert captured.out == 'a = b/c\n'
+    assert __latex_override__(tsteqn) == '$a=\\frac{b}{c}$'
+    algwsym_config.output.label = True
 
     f = Function("f")(a, b, c)
     eq = Eqn(f, 2)
@@ -159,9 +161,6 @@ def test_outputs(capsys):
         'Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), ' \
         'FiniteSet(Equation(x, 3), Equation(y, -3)))' \
     '\n{{x = -3, y = 3}, {x = -1, y = -1}, {x = 1, y = 1}, {x = 3, y = -3}}\n'
-    # make sure sys.displayhook does not point to __command_line_printing__()
-    import sys
-    sys.displayhook = sys.__displayhook__
     assert __latex_override__(B) == \
     '$\\left\\{\\left\\{x=-3, y=3\\right\\}, \\left\\{x=-1, ' \
            'y=-1\\right\\}, \\left\\{x=1, y=1\\right\\}, ' \
@@ -231,6 +230,24 @@ def test_helper_functions():
     assert root(Eqn(a,b/c),3) == Equation(a**(S(1)/S(3)), (b/c)**(S(1)/S(3)))
     assert root(b/c,3) == (b/c)**(S(1)/S(3))
     assert sqrt(Eqn(a,b/c)) == Equation(sqrt(a), sqrt(b/c))
+
+def test_units():
+    units('J mol K')
+    user_namespace = None
+    import sys
+    frame_num = 0
+    frame_name = None
+    while frame_name != '__main__' and frame_num < 50:
+        user_namespace = sys._getframe(frame_num).f_globals
+        frame_num += 1
+        frame_name = user_namespace['__name__']
+    J = user_namespace['J']
+    mol = user_namespace['mol']
+    K = user_namespace['K']
+    assert sqrt((123.2*J/mol/K)**2) == 123.2*J/mol/K
+    assert 1.0*J + 5.0*J == 6.0*J
+    assert 1.0*J + 5.0*mol == 1.0*J + 5.0*mol
+    assert J > 0 and mol > 0 and K > 0
 
 def test_solve():
     a, b, c, x = symbols('a b c x')
@@ -341,3 +358,7 @@ def test_subs():
     assert eq.subs(sd) == Equation(1, b * c)
     assert eq.subs(sd, simultaneous=True) == Equation(a / (x + a), b * c)
 
+def test_issue_23():
+    # This gave a key error
+    a, t = symbols('a t')
+    assert simplify(a * cos(t) + sin(t)) == a * cos(t) + sin(t)

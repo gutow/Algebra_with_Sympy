@@ -4,11 +4,10 @@
 [Build PyPi Package](#building-pypi-package)|
 
 ## General Notes
-* Important TODOs
+* TODOs
   * Test collect when there isn't an available _eval_collect (not sure how 
     to get there).
   * Test for _binary_op NotImplemented error (not sure how to get there).
-  * examine these more carefully (top priority: real_root, cbrt, Ynm_c).
 * To consider
   * Include [Sympy Plot Backends](https://sympy-plot-backends.readthedocs.io/en/latest/)
     in the default setup.
@@ -50,7 +49,7 @@
    `pytest --ignore='tests' --ignore='Developer Testing' 
    --ignore-glob='*old*' --doctest-modules`
 
-You can run all the test using the dotests script: `./dotests.sh`.
+You can run all the tests using the dotests script: `./dotests.sh`.
 
 ## Building PyPi package
 
