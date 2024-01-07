@@ -144,6 +144,12 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
+* 1.0.1.dev0 ()
+  * BUG FIX: wrapping equations formatted as LaTex equation (ie. surrounded 
+    by `\begin{equation}...\end{equation}`) in the `$..$` code used to 
+    indicate markdown for MathJax was causing output errors in Quarto when 
+    outputing to .tex or .pdf. This is now fixed without negatively 
+    impacting MathJax rendering.
 * 1.0.0 (January 2, 2024)
   * Added convenience operation `units(...)` which takes a string of space 
     separated symbols to use as units. This simply declares the symbols 
