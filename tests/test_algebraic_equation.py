@@ -1,6 +1,6 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
 from sympy import diff, FiniteSet, Equation, Function, Matrix, S, Eq
-from sympy import sin, cos, log, exp, latex, Symbol, I
+from sympy import sin, cos, log, exp, latex, Symbol, I, pi
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect
@@ -276,6 +276,25 @@ def test_solve():
                                       [Equation(x, -1), Equation(y, -1)],
                                       [Equation(x, 1), Equation(y, 1)],
                                       [Equation(x, 3), Equation(y, -3)]]
+    
+    xi, wn = symbols("xi omega_n", real=True, positive=True)
+    Tp, Ts = symbols("T_p, T_s", real=True, positive=True)
+    e1 = Eqn(Tp, pi / (wn*sqrt(1 - xi**2)))
+    e2 = Eqn(Ts, 4 / (wn*xi))
+    algwsym_config.output.solve_to_list = False
+    assert solve([e1, e2], [xi, wn]) == FiniteSet(FiniteSet(
+        Eqn(xi, 4*Tp/sqrt(16*Tp**2 + pi**2*Ts**2)),
+        Eqn(wn, sqrt(16*Tp**2 + pi**2*Ts**2)/(Tp*Ts))))
+    algwsym_config.output.solve_to_list = True
+    assert solve([e1, e2], [xi, wn]) == [
+        Eqn(xi, 4*Tp/sqrt(16*Tp**2 + pi**2*Ts**2)),
+        Eqn(wn, sqrt(16*Tp**2 + pi**2*Ts**2)/(Tp*Ts))
+    ]
+    # order of symbols are swapped -> results are swapped as well
+    assert solve([e1, e2], [wn, xi]) == [
+        Eqn(wn, sqrt(16*Tp**2 + pi**2*Ts**2)/(Tp*Ts)),
+        Eqn(xi, 4*Tp/sqrt(16*Tp**2 + pi**2*Ts**2))
+    ]
 
 def test_Heaviside():
     a, b, c, x = symbols('a b c x')

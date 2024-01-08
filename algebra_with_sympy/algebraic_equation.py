@@ -624,6 +624,8 @@ def solve(f, *symbols, **flags):
             newf.append(f)
     flags['dict'] = True
     result = solve(newf, *symbols, **flags)
+    if len(symbols) == 1 and hasattr(symbols[0], "__iter__"):
+        symbols = symbols[0]
     if contains_eqn:
         if len(result[0]) == 1:
             for k in result:
@@ -631,6 +633,9 @@ def solve(f, *symbols, **flags):
                     val = k[key]
                     tempeqn = Eqn(key, val)
                     solns.append(tempeqn)
+            if len(solns) == len(symbols):
+                # sort according to the user-provided symbols
+                solns = sorted(solns, key=lambda x: symbols.index(x.lhs))
         else:
             for k in result:
                 solnset = []
@@ -640,11 +645,18 @@ def solve(f, *symbols, **flags):
                     solnset.append(tempeqn)
                 if not algwsym_config.output.solve_to_list:
                     solnset = FiniteSet(*solnset)
+                else:
+                    if len(solnset) == len(symbols):
+                        # sort according to the user-provided symbols
+                        solnset = sorted(solnset, key=lambda x: symbols.index(x.lhs))
                 solns.append(solnset)
     else:
         solns = result
     if algwsym_config.output.solve_to_list:
-        return list(solns)
+        if len(solns) == 1 and hasattr(solns[0], "__iter__"):
+            # no need to wrap a list of a single element inside another list
+            return solns[0]
+        return solns
     else:
         return FiniteSet(*solns)
 
