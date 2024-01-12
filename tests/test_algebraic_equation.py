@@ -282,9 +282,9 @@ def test_solve():
     e1 = Eqn(Tp, pi / (wn*sqrt(1 - xi**2)))
     e2 = Eqn(Ts, 4 / (wn*xi))
     algwsym_config.output.solve_to_list = False
-    assert solve([e1, e2], [xi, wn]) == FiniteSet(FiniteSet(
+    assert solve([e1, e2], [xi, wn]) == FiniteSet(
         Eqn(xi, 4*Tp/sqrt(16*Tp**2 + pi**2*Ts**2)),
-        Eqn(wn, sqrt(16*Tp**2 + pi**2*Ts**2)/(Tp*Ts))))
+        Eqn(wn, sqrt(16*Tp**2 + pi**2*Ts**2)/(Tp*Ts)))
     algwsym_config.output.solve_to_list = True
     assert solve([e1, e2], [xi, wn]) == [
         Eqn(xi, 4*Tp/sqrt(16*Tp**2 + pi**2*Ts**2)),
