@@ -658,6 +658,11 @@ def solve(f, *symbols, **flags):
             return solns[0]
         return solns
     else:
+        if len(solns) == 1:
+            # do not wrap a singleton in FiniteSet if it already is
+            for k in solns:
+                if isinstance(k, FiniteSet):
+                    return k
         return FiniteSet(*solns)
 
 def solveset(f, symbols, domain=sympy.Complexes):
