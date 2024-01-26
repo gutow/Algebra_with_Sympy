@@ -404,16 +404,16 @@ def __latex_override__(expr, *arg):
     if show_code:
         print("Code version: " + repr(expr))
     if latex_as_equations:
-        return '$$\\begin{equation}'+latex(expr)+'\\end{equation}$$'
+        return r'\begin{equation}'+latex(expr)+'\end{equation}'
     else:
         tempstr = ''
         namestr = ''
         if isinstance(expr, Equation):
             namestr = expr._get_eqn_name()
         if namestr != '' and algwsym_config.output.label:
-            tempstr += '\\,\\,\\,\\,\\,\\,\\,\\,\\,\\,'
-            tempstr += '(\\text{' + namestr + '})'
-        return '$'+latex(expr) + tempstr + '$'
+            tempstr += r'\,\,\,\,\,\,\,\,\,\,'
+            tempstr += r'(\text{' + namestr + '})'
+        return r'$'+latex(expr) + tempstr + '$'
 
 def __command_line_printing__(expr, *arg):
     # print('Entering __command_line_printing__')
