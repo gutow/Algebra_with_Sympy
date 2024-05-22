@@ -132,7 +132,14 @@ This will also import the SymPy tools.
    working with change the import statement 
 to `import algebra_with_sympy as spa`, where 
 `spa` stands for "SymPy Algebra". Then all calls would be made to `
-spa.funcname()`.
+spa.funcname()`. WARNING: Doing this makes shorthand equation input and 
+   control of interactive output formats unavailable. To recover this 
+   functionality the following code must be run in the interactive session.
+```
+Equation = spa.Equation
+Eqn = Equation
+algwsym_config = spa.algwsym_config
+```
 
 ## Try in binder
 
@@ -164,6 +171,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
   * BUG FIX: Equation labels are now copyable even with the newer MathJax 
     commonHTML rendering.
   * Updates to requirements.txt.
+  * Documentation updates.
 * 1.0.0 (January 2, 2024)
   * Added convenience operation `units(...)` which takes a string of space 
     separated symbols to use as units. This simply declares the symbols 
