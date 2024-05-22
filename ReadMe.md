@@ -158,6 +158,11 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
   * BUG FIX: Singleton results of solve unnecessarily wrapped by extra list 
     or finiteset. No longer double nested.
   * BUG FIX: When returning lists make solve respect user order of solutions.
+  * BUG FIX: Equation output threw error when Algebra_with_Sympy was 
+    imported as a submodule. Equation labeling turned off for this type of 
+    import to avoid error.
+  * BUG FIX: Equation labels are now copyable even with the newer MathJax 
+    commonHTML rendering.
   * Updates to requirements.txt.
 * 1.0.0 (January 2, 2024)
   * Added convenience operation `units(...)` which takes a string of space 

@@ -408,7 +408,7 @@ def __latex_override__(expr, *arg):
         namestr = ''
         if isinstance(expr, Equation):
             namestr = expr._get_eqn_name()
-        if namestr != '' and algwsym_config.output.label:
+        if namestr != '' and algwsym_config and algwsym_config.output.label:
             tempstr += r'$'+latex(expr)
             tempstr += r'\,\,\,\,\,\,\,\,\,\,$(' + namestr + ')'
             return tempstr
