@@ -118,7 +118,7 @@ def test_outputs(capsys):
     import sys
     sys.displayhook = sys.__displayhook__
     assert __latex_override__(tsteqn) == ('$a=\\frac{b}{c}\\,\\,\\,\\,\\,\\,'
-                                          '\\,\\,\\,\\,(\\text{tsteqn})$')
+                                          '\\,\\,\\,\\,$(tsteqn)')
     algwsym_config.output.label = False
     __command_line_printing__(tsteqn)
     captured = capsys.readouterr()

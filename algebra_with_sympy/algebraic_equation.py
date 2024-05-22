@@ -357,9 +357,7 @@ class algwsym_config():
             ```
             the output will be
             ```
-            $$
             \\begin{equation}\\frac{a}{b}=c\\end{equation}
-            $$
             ```
             """
             return self.latex_as_equation
@@ -411,9 +409,11 @@ def __latex_override__(expr, *arg):
         if isinstance(expr, Equation):
             namestr = expr._get_eqn_name()
         if namestr != '' and algwsym_config.output.label:
-            tempstr += r'\,\,\,\,\,\,\,\,\,\,'
-            tempstr += r'(\text{' + namestr + '})'
-        return r'$'+latex(expr) + tempstr + '$'
+            tempstr += r'$'+latex(expr)
+            tempstr += r'\,\,\,\,\,\,\,\,\,\,$(' + namestr + ')'
+            return tempstr
+        else:
+            return '$'+latex(expr) + '$'
 
 def __command_line_printing__(expr, *arg):
     # print('Entering __command_line_printing__')
