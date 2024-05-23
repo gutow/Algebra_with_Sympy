@@ -518,10 +518,14 @@ if ip and "text/latex" not in formatter.active_types:
 
 def units(names):
     """
-    This operation declares the symbols to be positive values, so that sympy will handle them properly
-    when simplifying expressions containing units.
+    This operation declares the symbols to be positive values, so that sympy
+    will handle them properly when simplifying expressions containing units.
+    Units defined this way are just unit symbols. If you want units that are
+    aware of conversions see sympy.physics.units.
 
-    :param string names: a string containing a space separated list of symbols to be treated as units.
+
+    :param string names: a string containing a space separated list of
+    symbols to be treated as units.
 
     :return string list of defined units: calls `name = symbols(name,
     positive=True)` in the interactive namespace for each symbol name.

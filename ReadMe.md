@@ -154,7 +154,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 1.0.1.dev2 ()
+* 1.0.1 (May 22, 2024)
   * BUG FIX: equation labels that include underscore characters "_" are now 
     accepted.
   * BUG FIX: wrapping equations formatted as LaTex equation (ie. surrounded 
