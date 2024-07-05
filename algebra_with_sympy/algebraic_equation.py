@@ -390,6 +390,12 @@ class algwsym_config():
 
 def __latex_override__(expr, *arg):
     from IPython import get_ipython
+    colab = False
+    try:
+        from google.colab import output
+        colab = True
+    except ModuleNotFoundError:
+        pass
     show_code = False
     latex_as_equations = False
     if get_ipython():
@@ -410,7 +416,13 @@ def __latex_override__(expr, *arg):
             namestr = expr._get_eqn_name()
         if namestr != '' and algwsym_config and algwsym_config.output.label:
             tempstr += r'$'+latex(expr)
-            tempstr += r'\,\,\,\,\,\,\,\,\,\,$(' + namestr + ')'
+            # work around for colab's inconsistent handling of mixed latex and
+            # plain strings.
+            if colab:
+                colabname = namestr.replace('_', '\_')
+                tempstr += r'\,\,\,\,\,\,\,\,\,\,(' + colabname + ')$'
+            else:
+                tempstr += r'\,\,\,\,\,\,\,\,\,\,$(' + namestr + ')'
             return tempstr
         else:
             return '$'+latex(expr) + '$'
