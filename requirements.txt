@@ -1,2 +1,5 @@
+# For binder
 sympy-for-algebra>=1.12
 jupyter>=1.0.0
+jupyterlab>=4.0.0,<5
+notebook>=7.0.0,<8
