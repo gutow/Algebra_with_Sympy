@@ -143,7 +143,7 @@ algwsym_config = spa.algwsym_config
 
 ## Try in binder
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master/?filepath=Demonstration%20of%20equation%20class.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/v1.0.2?labpath=Demonstration+of+equation+class.ipynb)
 
 ## Issues or Comments
 
