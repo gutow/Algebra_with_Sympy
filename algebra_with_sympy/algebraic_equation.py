@@ -389,7 +389,10 @@ class algwsym_config():
             return self.integers_as_exact
 
 def __latex_override__(expr, *arg):
-    from IPython import get_ipython
+    try:
+        from IPython import get_ipython
+    except ModuleNotFoundError:
+        pass
     colab = False
     try:
         from google.colab import output
@@ -449,8 +452,12 @@ def __command_line_printing__(expr, *arg):
         return print(tempstr + str(expr) + labelstr)
 
 # Now we inject the formatting override(s)
-from IPython import get_ipython
-ip = get_ipython()
+ip = None
+try:
+    from IPython import get_ipython
+    ip = get_ipython()
+except ModuleNotFoundError:
+    ip = false
 formatter = None
 if ip:
     # In an environment that can display typeset latex
@@ -485,7 +492,10 @@ def set_integers_as_exact():
     mode of algebra_with_sympy. To turn this off call
     `unset_integers_as_exact()`.
     """
-    from IPython import get_ipython
+    try:
+        from IPython import get_ipython
+    except ModuleNotFoundError:
+        pass
     if get_ipython():
         get_ipython().input_transformers_post.append(integers_as_exact)
         algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
@@ -506,7 +516,10 @@ def unset_integers_as_exact():
     starts with `set_integers_as_exact()` enabled (
     `algwsym_config.numerics.integers_as_exact = True`).
     """
-    from IPython import get_ipython
+    try:
+        from IPython import get_ipython
+    except ModuleNotFoundError:
+        pass
     if get_ipython():
         pre = get_ipython().input_transformers_post
         # The below looks excessively complicated, but more reliably finds the
@@ -544,7 +557,10 @@ def units(names):
     """
     from sympy.core.symbol import symbols
     #import __main__ as shell
-    from IPython import get_ipython
+    try:
+        from IPython import get_ipython
+    except ModuleNotFoundError:
+        pass
     syms = names.split(' ')
     user_namespace = None
     retstr = ''
@@ -620,7 +636,6 @@ def solve(f, *symbols, **flags):
     """
     from sympy.solvers.solvers import solve
     from sympy.sets.sets import FiniteSet
-    from IPython.display import display
     newf =[]
     solns = []
     displaysolns = []

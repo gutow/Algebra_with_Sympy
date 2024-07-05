@@ -159,6 +159,8 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
     vanilla python or Google Colab.
   * Workaround for Google Colab's inconsistent handling of mixed Latex and 
     plain text strings. This impacted display of equation labels in Colab.
+  * BUG FIX: catch IPython not installed so that can run in plain vanilla 
+    python.
 * 1.0.1 (May 22, 2024)
   * BUG FIX: equation labels that include underscore characters "_" are now 
     accepted.
