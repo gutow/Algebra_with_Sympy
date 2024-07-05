@@ -23,10 +23,13 @@
    install -U pdoc`.
 2. Update any `.md` files included in `_init_.py`.
    * Generally URLs should be absolute, not relative.
-3. At the root level run pdoc `pdoc 
---logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
+3. At the root level run pdoc 
+`
+pdoc --logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg 
 --logo-link https://gutow.github.io/Algebra_with_Sympy/
---footer-text "Algebra with Sympy vX.X.X" --math -html -o docs algebra_with_sympy` 
+--footer-text "Algebra with Sympy vX.X.X" --math -html -o docs 
+   ./algebra_with_sympy
+`
    where `X.X.X` is the version number.
 
 ### Tasks for Documentation
@@ -50,6 +53,9 @@
    --ignore-glob='*old*' --doctest-modules`
 
 You can run all the tests using the dotests script: `./dotests.sh`.
+
+**NOTE**: Some warnings about invalid escape characters are expected because 
+raw strings are being passed with specialized LaTex escaped characters.
 
 ## Building PyPi package
 
