@@ -389,8 +389,12 @@ class algwsym_config():
             return self.integers_as_exact
 
 def __latex_override__(expr, *arg):
+    algwsym_config = False
+    ip = False
     try:
         from IPython import get_ipython
+        if get_ipython():
+            ip = True
     except ModuleNotFoundError:
         pass
     colab = False
@@ -401,7 +405,7 @@ def __latex_override__(expr, *arg):
         pass
     show_code = False
     latex_as_equations = False
-    if get_ipython():
+    if ip:
         algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
     else:
         algwsym_config = globals()['algwsym_config']
@@ -492,17 +496,20 @@ def set_integers_as_exact():
     mode of algebra_with_sympy. To turn this off call
     `unset_integers_as_exact()`.
     """
+    ip = False
     try:
         from IPython import get_ipython
+        ip = True
     except ModuleNotFoundError:
-        pass
-    if get_ipython():
-        get_ipython().input_transformers_post.append(integers_as_exact)
-        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
-        if algwsym_config:
-            algwsym_config.numerics.integers_as_exact = True
-        else:
-            raise ValueError("The algwsym_config object does not exist.")
+        ip = False
+    if ip:
+        if get_ipython():
+            get_ipython().input_transformers_post.append(integers_as_exact)
+            algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+            if algwsym_config:
+                algwsym_config.numerics.integers_as_exact = True
+            else:
+                raise ValueError("The algwsym_config object does not exist.")
     return
 
 def unset_integers_as_exact():
@@ -516,22 +523,25 @@ def unset_integers_as_exact():
     starts with `set_integers_as_exact()` enabled (
     `algwsym_config.numerics.integers_as_exact = True`).
     """
+    ip = False
     try:
         from IPython import get_ipython
+        ip = True
     except ModuleNotFoundError:
-        pass
-    if get_ipython():
-        pre = get_ipython().input_transformers_post
-        # The below looks excessively complicated, but more reliably finds the
-        # transformer to remove across varying IPython environments.
-        for k in pre:
-            if "integers_as_exact" in k.__name__:
-                pre.remove(k)
-        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
-        if algwsym_config:
-            algwsym_config.numerics.integers_as_exact = False
-        else:
-            raise ValueError("The algwsym_config object does not exist.")
+        ip = False
+    if ip:
+        if get_ipython():
+            pre = get_ipython().input_transformers_post
+            # The below looks excessively complicated, but more reliably finds the
+            # transformer to remove across varying IPython environments.
+            for k in pre:
+                if "integers_as_exact" in k.__name__:
+                    pre.remove(k)
+            algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
+            if algwsym_config:
+                algwsym_config.numerics.integers_as_exact = False
+            else:
+                raise ValueError("The algwsym_config object does not exist.")
 
     return
 
@@ -557,16 +567,17 @@ def units(names):
     """
     from sympy.core.symbol import symbols
     #import __main__ as shell
+    user_namespace = None
     try:
         from IPython import get_ipython
+        if get_ipython():
+            user_namespace = get_ipython().user_ns
     except ModuleNotFoundError:
         pass
     syms = names.split(' ')
-    user_namespace = None
     retstr = ''
-    if get_ipython():
-        user_namespace = get_ipython().user_ns
-    else:
+
+    if user_namespace==None:
         import sys
         frame_num = 0
         frame_name = None
@@ -703,7 +714,6 @@ def solveset(f, symbols, domain=sympy.Complexes):
     equations unless you directly select `linsolve`, etc...
     """
     from sympy.solvers import solveset as solve
-    from IPython.display import display
     newf = []
     solns = []
     displaysolns = []

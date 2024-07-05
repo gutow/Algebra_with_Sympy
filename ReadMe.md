@@ -16,7 +16,7 @@ This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
 They consist of a left hand side (lhs) and a right hand side (rhs) connected by
 the relation operator "=". In addition, it sets some convenient defaults and 
-provides some useful controls of output formatting that may be useful even if
+provides some controls of output formatting that may be useful even if
 you do not use the `Equation` class (see [Conveniences for
 SymPy](#convenience-tools-and-defaults-for-interactive-use-of-sympy)).
 
@@ -41,9 +41,9 @@ The last cell illustrates how it is possible to substitute numbers with
 units into the solved equation to calculate a numerical solution with 
 proper units. The `units(...)` operation is part this package, not Sympy.
 
-In IPython environments (IPython and Jupyter) there is also a shorthand 
-syntax for entering equations provided through the IPython preparser. An 
-equation can be specified as `eq1 =@ a/b = c/d`.
+In IPython environments (IPython, Jupyter, Google  Colab, etc...) there is 
+also a shorthand syntax for entering equations provided through the IPython 
+preparser. An equation can be specified as `eq1 =@ a/b = c/d`.
 
 
 ![screenshot of short syntax](https://gutow.github.io/Algebra_with_Sympy/resources/short_syntax.png)
@@ -154,7 +154,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 1.0.2 (July 4, 2024)
+* 1.0.2 (July 5, 2024)
   * Removed requirements for Jupyter and Jupyterlab as code will work in 
     vanilla python or Google Colab.
   * Workaround for Google Colab's inconsistent handling of mixed Latex and 

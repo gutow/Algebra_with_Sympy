@@ -6,10 +6,14 @@ __docformat__ = "numpy"
 from algebra_with_sympy.algebraic_equation import *
 
 # Set up numerics behaviors
-from IPython import get_ipython
-if get_ipython():
-    get_ipython().input_transformers_post.append(integers_as_exact)
-    algwsym_config.numerics.integers_as_exact = True
+try:
+    from IPython import get_ipython
+
+    if get_ipython():
+        get_ipython().input_transformers_post.append(integers_as_exact)
+        algwsym_config.numerics.integers_as_exact = True
+except ModuleNotFoundError:
+        pass
 
 from algebra_with_sympy.preparser import *
 
