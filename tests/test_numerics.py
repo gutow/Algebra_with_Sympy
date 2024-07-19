@@ -20,6 +20,11 @@ def test_set_integers_as_exact():
     assert algwsym_config.numerics.integers_as_exact == True
 
 def test_integers_as_exact():
+    from sympy.core.symbol import symbols
+    import __main__ as userns
+    setattr(userns, 'x', symbols('x'))
+    setattr(userns, 'y', symbols('y'))
+    setattr(userns, 'z', symbols('z'))
     lines = []
     lines.append('1/2*x + 0.333*x')
     lines.append('2/3*z + 2.0*y + ln(3*x)')
@@ -29,6 +34,9 @@ def test_integers_as_exact():
             'Integer (2 )/Integer (3 )*z +2.0 *y +ln (Integer (3 )*x )']
     for k in range(len(splitlines)):
         assert splitlines[k] == expectedlines[k]
+    delattr(userns, 'x')
+    delattr(userns, 'y')
+    delattr(userns, 'z')
 
 def test_unset_integers_as_exact():
     unset_integers_as_exact()
