@@ -56,6 +56,111 @@ def algebra_with_sympy_preparser(lines):
     return new_lines
 
 
+def toIntegerInSympyExpr(string):
+    """ This function takes a string of valid Python and wraps integers within Sympy expressions
+        in `sympy.Integer()` to make them Sympy integers rather than Python `Int()`. The
+        advantage of this is that calculations with `Integer()` types can be exact. This function
+        is careful not to wrap `Int()` types that are not part of Sympy expressions, making it
+        possible for this functionality to exist with operations (e.g. array and numpy indexing)
+        that are not compatible with the `Integer()` type.
+    """
+    from tokenize import generate_tokens, NEWLINE, OP, untokenize
+    from io import StringIO
+    ###
+    # Internally used functions
+    ###
+    def isSympy(tokens, newSymObj):
+        """ Checks list of tokens to see if it contains a Sympy Object
+
+        Parameters
+        ==========
+        tokens:list of tokens.
+        newSymObj:list of string names of Sympy objects that have been declared
+          in the current script/string being parsed.
+        """
+        from sympy import Basic
+        from tokenize import NAME
+        import __main__ as user_ns
+        # print(dir(user_ns))
+        sympy_obj = False
+        for kind, string, start, end, line in tokens:
+            if kind == NAME:
+                # print('Checking: '+str(string))
+                if hasattr(user_ns, string):
+                    if isinstance(getattr(user_ns, string), Basic):
+                        sympy_obj = True
+                if string in newSymObj:
+                    sympy_obj = True
+        return sympy_obj
+
+    def toSympInteger(tokens):
+        from tokenize import NUMBER, OP, NAME
+        result = []
+        for k in tokens:
+            if k[0] != NUMBER:
+                result.append((k[0], k[1]))
+            else:
+                if '.' in k[1] or 'j' in k[1].lower() or 'e' in k[1].lower():
+                    result.append((k[0], k[1]))
+                else:
+                    result.extend([
+                        (NAME, 'Integer'),
+                        (OP, '('),
+                        (NUMBER, k[1]),
+                        (OP, ')')
+                    ])
+        return result
+
+    def checkforSymObjDecl(token):
+        import re
+        from tokenize import NAME
+        syms = []
+        for kind, string, start, end, line in token:
+            if kind == NAME:
+                if string == 'var':
+                    match = re.search(r'\".*?\"|\'.*?\'', line)
+                    syms = match.group().replace('\"', '').replace('\'',
+                                                                   '').split(
+                        ' ')
+                if string == 'units':
+                    match = re.search(r'\".*?\"|\'.*?\'', line)
+                    syms = match.group().replace('\"', '').replace('\'',
+                                                                   '').split(
+                        ' ')
+                if string == 'symbols':
+                    parts = line.split('=')
+                    syms = parts[0].replace(' ', '').split(',')
+                if string == 'Symbol':
+                    parts = line.split('=')
+                    syms = parts[0].replace(' ', '').split(',')
+        return syms
+
+    ###
+    # The parsing and substitution.
+    ###
+    g = generate_tokens(StringIO(tststr).readline)
+    declaredSymObj = []
+    result = []
+    temptokens = []
+    openleft = 0
+    for k in g:
+        declaredSymObj.extend(checkforSymObjDecl([k]))
+        temptokens.append(k)
+        if k[0] == OP and k[1] == '(':
+            openleft += 1
+        if k[0] == OP and k[1] == ')':
+            openleft -= 1
+        if k[0] == NEWLINE and openleft == 0:
+            # This is where we check for sympy objects and replace int() with Integer()
+            hasSympyObj = isSympy(temptokens, declaredSymObj)
+            if hasSympyObj:
+                converted = toSympInteger(temptokens)
+                result.extend(converted)
+            else:
+                result.extend(temptokens)
+            temptokens = []
+    return untokenize(result)
+
 def integers_as_exact(lines):
     """This preparser uses `sympy.interactive.session.int_to_Integer` to
     convert numbers without decimal points into sympy integers so that math
@@ -70,12 +175,12 @@ def integers_as_exact(lines):
     must be running in an IPython environment (Jupyter, Notebook, Colab,
     etc...).
     """
-    from sympy.interactive.session import int_to_Integer
+    #from sympy.interactive.session import int_to_Integer
     string = ''
     for k in lines:
         string += k + '\n'
     string = string[:-1] # remove the last '\n'
-    return int_to_Integer(string)
+    return toIntegerInSympyExpr(string)
 try:
     from IPython import get_ipython
     if get_ipython():

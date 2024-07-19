@@ -154,6 +154,14 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
+* 1.1.0 (July 19, 2024)
+  * Setting integers as exact (`set_integers_as_exact()`, the default) now 
+    only sets integers as exact within Sympy and Algebra_with_Sympy 
+    expressions. This increases compatibility with other packages that 
+    depend on integers being Python integers.
+  * Refuse to import Algebra_with_Sympy if an incompatible 
+    version of Sympy is installed in the environment.
+  * Added warning explaining how to install a compatible version of Sympy.
 * 1.0.2 (July 5, 2024)
   * Removed requirements for Jupyter and Jupyterlab as code will work in 
     vanilla python or Google Colab.
