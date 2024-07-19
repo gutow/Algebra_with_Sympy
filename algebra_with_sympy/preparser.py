@@ -138,7 +138,7 @@ def toIntegerInSympyExpr(string):
     ###
     # The parsing and substitution.
     ###
-    g = generate_tokens(StringIO(tststr).readline)
+    g = generate_tokens(StringIO(string).readline)
     declaredSymObj = []
     result = []
     temptokens = []
