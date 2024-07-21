@@ -157,7 +157,8 @@ def toIntegerInSympyExpr(string):
                 converted = toSympInteger(temptokens)
                 result.extend(converted)
             else:
-                result.extend(temptokens)
+                for j in temptokens:
+                    result.append((j[0],j[1]))
             temptokens = []
     return untokenize(result)
 

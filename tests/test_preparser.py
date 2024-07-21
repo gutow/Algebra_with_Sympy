@@ -89,6 +89,21 @@ def test_toIntegerInSympyExpr():
     resultstr += 'y =[1 ,2.0 ,4 ,5.6 ]\n'
     resultstr += 'f =DG *Integer (5 )/Integer (2 )+s \n'
     assert toIntegerInSympyExpr(tststr) == resultstr
+    # Something with no sympy in it and indentation.
+    tststr = '# Arbitrary functions can operate on both sides of an equation '
+    tststr += 'using\n'
+    tststr += '#  .apply(funcname, *args, **kwargs))\n\n'
+    tststr += 'def addsquare(expr):\n'
+    tststr += '    return expr+expr**2\n\n'
+    tststr += 'f2.apply(addsquare)'
+    resultstr = '# Arbitrary functions can operate on both sides of an '
+    resultstr +='equation using\n'
+    resultstr += '#  .apply(funcname, *args, **kwargs))\n\n'
+    resultstr += 'def addsquare (expr ):\n'
+    resultstr += '    return expr +expr **2 \n\n'
+    resultstr += 'f2 .apply (addsquare )'
+    print(toIntegerInSympyExpr(tststr))
+    assert toIntegerInSympyExpr(tststr) == resultstr
     #cleanup
     delattr(userns,'a')
     delattr(userns, 'b')

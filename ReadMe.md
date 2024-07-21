@@ -69,10 +69,12 @@ Even if you do not use the `Equation` class, there are some convenience
 tools and defaults that will probably make interactive use of SymPy in 
 Jupyter/IPython environments easier:
 
-* By default all numbers without decimal points are interpreted as integers. 
-  One implication of this is that base ten fractions are exact (e.g. 2/3 -> 
-  2/3 not 0.6666...). This can be turned off with `unset_integers_as_exact()`
-  and on with `set_integers_as_exact()`. When on the flag
+* By default, all numbers _in Sympy expressions_ without decimal points are 
+  interpreted as integers (e.g. `2/3*x`, where x is a sympy symbol, -> 
+  `2*x/3` not `x*0.6666...`, but if x is just a plain Python object then `2/3*x` 
+  -> `x*0.66666...`). This can be turned off with `unset_integers_as_exact()`, 
+  which leads to standard Python behavior (`2/3*x` -> `x*0.6666...`) even for 
+  Sympy expressions. Turn on with `set_integers_as_exact()`. When on the flag
   `algwsym_config.numerics.integers_as_exact = True`.
 * Results of `solve()` are wrapped in `FiniteSet()` to force pretty-printing 
   of all of a solution set. See [Controlling the Format of Interactive 
@@ -154,7 +156,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 
-* 1.1.0 (July 19, 2024)
+* 1.1.0 (July 21, 2024)
   * Setting integers as exact (`set_integers_as_exact()`, the default) now 
     only sets integers as exact within Sympy and Algebra_with_Sympy 
     expressions. This increases compatibility with other packages that 

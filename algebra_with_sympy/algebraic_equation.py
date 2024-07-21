@@ -489,12 +489,17 @@ else:
 
 # Numerics controls
 def set_integers_as_exact():
-    """This operation uses `sympy.interactive.session.int_to_Integer`, which
-    causes any number input without a decimal to be interpreted as a sympy
-    integer, to pre-parse input cells. It also sets the flag
+    """This operation causes any number input without a decimal that is
+    part of a Sympy expression to be interpreted as a sympy
+    integer, by using a custom preparser to cast integers within Sympy
+    expressions as Sympy integers (`Integer()`). It also sets the flag
     `algwsym_config.numerics.integers_as_exact = True` This is the default
     mode of algebra_with_sympy. To turn this off call
     `unset_integers_as_exact()`.
+
+    NOTE: `2/3` --> `0.6666...` even when this is set, but  `2*x/3` -->
+    `Integer(2)/Integer(3)*x` if x is a sympy object. If `x` is just a Python
+    object `2*x/3` --> `x*0.6666666666...`.
     """
     ip = False
     try:
