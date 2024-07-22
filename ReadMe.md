@@ -158,7 +158,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 <a class="anchor" href="#change-log"></a>
-* 1.1.0 (July 21, 2024)
+* 1.1.0 (July 22, 2024)
   * Setting integers as exact (`set_integers_as_exact()`, the default) now 
     only sets integers as exact within Sympy and Algebra_with_Sympy 
     expressions. This increases compatibility with other packages that 
