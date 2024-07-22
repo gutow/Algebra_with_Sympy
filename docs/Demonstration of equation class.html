@@ -7573,7 +7573,7 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>This notebook is running Algebra_with_Sympy version 1.0.2.
+<pre>This notebook is running Algebra_with_Sympy version 1.1.0.
 </pre>
 </div>
 </div>
@@ -10920,7 +10920,7 @@ $V p_{1}=R T_{1} n\,\,\,\,\,\,\,\,\,\,$(IdG1)
 <div class="jp-InputPrompt jp-InputArea-prompt">In [121]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Default behavior</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Default behavior. NOTICE THAT IT DOES NOTHING TO INTEGERS THAT ARE NOT PART OF A SYMPY EXPRESSION.</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Integers as exact flag: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integers_as_exact</span><span class="p">))</span>
 <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
 </pre></div>
@@ -10941,8 +10941,8 @@ $V p_{1}=R T_{1} n\,\,\,\,\,\,\,\,\,\,$(IdG1)
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[121]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\frac{2}{3}$
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>0.6666666666666666</pre>
 </div>
 </div>
 </div>
@@ -10955,7 +10955,8 @@ $\frac{2}{3}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [122]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">var</span><span class="p">(</span><span class="s1">'x'</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># HOWEVER, IN SYMPY EXPRESSIONS INTEGERS ARE SPECIAL.</span>
+<span class="n">var</span><span class="p">(</span><span class="s1">'x'</span><span class="p">)</span>
 <span class="n">quad</span> <span class="o">=@</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">quad</span>
 </pre></div>
@@ -11024,7 +11025,8 @@ $\left\{x=- \frac{3}{4} - \frac{\sqrt{7} i}{4}, x=- \frac{3}{4} + \frac{\sqrt{7}
 <div class="jp-InputPrompt jp-InputArea-prompt">In [125]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Integers as exact flag: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integers_as_exact</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># AGAIN THIS SETTING HAS NO IMPACT ON INTEGERS OUTSIDE OF SYMPY EXPRESSIONS</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Integers as exact flag: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integers_as_exact</span><span class="p">))</span>
 <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
 </pre></div>
 </div>
@@ -11058,7 +11060,8 @@ $\left\{x=- \frac{3}{4} - \frac{\sqrt{7} i}{4}, x=- \frac{3}{4} + \frac{\sqrt{7}
 <div class="jp-InputPrompt jp-InputArea-prompt">In [126]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">quad</span> <span class="o">=@</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># INTEGERS ARE NOT EXACT EVEN IN SYMPY EXPRESSIONS WHEN `unset_integers_as_exact()` has been called.</span>
+<span class="n">quad</span> <span class="o">=@</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">quad</span>
 </pre></div>
 </div>
@@ -11146,8 +11149,35 @@ $\left\{x=-0.75 - 0.661437827766148 i, x=-0.75 + 0.661437827766148 i\right\}$
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[129]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>0.6666666666666666</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [130]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">quad</span> <span class="o">=@</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">3</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">quad</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[130]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\frac{2}{3}$
+$x^{2} + \frac{3 x}{2} + 1=0\,\,\,\,\,\,\,\,\,\,$(quad)
 </div>
 </div>
 </div>
@@ -11168,7 +11198,7 @@ $\frac{2}{3}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [130]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [131]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span>
@@ -11182,35 +11212,9 @@ $\frac{2}{3}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[130]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$a=\frac{b}{c}\,\,\,\,\,\,\,\,\,\,$(t)
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [131]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">reversed</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[131]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\frac{b}{c}=a$
+$a=\frac{b}{c}\,\,\,\,\,\,\,\,\,\,$(t)
 </div>
 </div>
 </div>
@@ -11223,7 +11227,7 @@ $\frac{b}{c}=a$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [132]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">swap</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">reversed</span>
 </pre></div>
 </div>
 </div>
@@ -11249,7 +11253,7 @@ $\frac{b}{c}=a$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [133]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">lhs</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">swap</span>
 </pre></div>
 </div>
 </div>
@@ -11262,7 +11266,7 @@ $\frac{b}{c}=a$
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[133]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$a$
+$\frac{b}{c}=a$
 </div>
 </div>
 </div>
@@ -11273,6 +11277,32 @@ $a$
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In [134]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">lhs</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[134]:</div>
+<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
+$a$
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [135]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">rhs</span>
@@ -11286,7 +11316,7 @@ $a$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[134]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[135]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\frac{b}{c}$
 </div>
@@ -11298,7 +11328,7 @@ $\frac{b}{c}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [135]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [136]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
@@ -11312,7 +11342,7 @@ $\frac{b}{c}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[135]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[136]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a = \frac{b}{c}$
 </div>
@@ -11324,7 +11354,7 @@ $a = \frac{b}{c}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [136]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [137]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">a</span><span class="p">:</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">c</span><span class="p">:</span><span class="mi">2</span><span class="p">})</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
@@ -11338,7 +11368,7 @@ $a = \frac{b}{c}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[136]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[137]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{True}$
 </div>
@@ -11350,7 +11380,7 @@ $\text{True}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [137]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [138]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">TF</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">as_Boolean</span><span class="p">()</span>
@@ -11365,7 +11395,7 @@ $\text{True}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[137]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[138]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a = \frac{b}{c}$
 </div>
@@ -11377,7 +11407,7 @@ $a = \frac{b}{c}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [138]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [139]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">TF</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">a</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">c</span><span class="p">:</span><span class="mi">3</span><span class="p">})</span>
@@ -11391,7 +11421,7 @@ $a = \frac{b}{c}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[138]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[139]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{False}$
 </div>
@@ -11403,7 +11433,7 @@ $\text{False}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [139]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [140]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Getting everything on one side</span>
@@ -11418,7 +11448,7 @@ $\text{False}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[139]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[140]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a - \frac{b}{c}=0$
 </div>
@@ -11430,7 +11460,7 @@ $a - \frac{b}{c}=0$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [140]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [141]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">lhs</span>
@@ -11444,7 +11474,7 @@ $a - \frac{b}{c}=0$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[140]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[141]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $0=- a + \frac{b}{c}$
 </div>
@@ -11456,7 +11486,7 @@ $0=- a + \frac{b}{c}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [141]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [142]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">t</span><span class="o">.</span><span class="n">rewrite</span><span class="p">(</span><span class="n">Add</span><span class="p">)</span>
@@ -11470,7 +11500,7 @@ $0=- a + \frac{b}{c}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[141]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[142]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a - \frac{b}{c}=0$
 </div>
@@ -11493,7 +11523,7 @@ $a - \frac{b}{c}=0$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [142]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [143]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Test for errors</span>
@@ -11553,32 +11583,6 @@ False
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[142]:</div>
-<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\text{True}$
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [143]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">Equation</span><span class="p">(</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span> <span class="n">pi</span><span class="o">*</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span> 
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[143]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{True}$
@@ -11594,7 +11598,7 @@ $\text{True}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [144]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Equation</span><span class="p">(</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span> <span class="n">pi</span><span class="o">*</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span> 
 </pre></div>
 </div>
 </div>
@@ -11607,7 +11611,7 @@ $\text{True}$
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[144]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\text{False}$
+$\text{True}$
 </div>
 </div>
 </div>
@@ -11620,7 +11624,7 @@ $\text{False}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [145]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">Equation</span><span class="p">(</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span> <span class="n">pi</span><span class="o">*</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">+</span><span class="n">I</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -11646,7 +11650,7 @@ $\text{False}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [146]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">I</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">exp</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Equation</span><span class="p">(</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="p">),</span> <span class="n">pi</span><span class="o">*</span><span class="n">I</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">+</span><span class="n">I</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -11659,7 +11663,7 @@ $\text{False}$
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[146]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$\text{True}$
+$\text{False}$
 </div>
 </div>
 </div>
@@ -11672,7 +11676,7 @@ $\text{True}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [147]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">I</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="n">exp</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -11698,7 +11702,7 @@ $\text{True}$
 <div class="jp-InputPrompt jp-InputArea-prompt">In [148]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span><span class="o">+</span><span class="n">I</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">pi</span><span class="p">),</span><span class="n">exp</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="o">.</span><span class="n">simplify</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -11711,7 +11715,7 @@ $\text{True}$
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
 <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[148]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
-$-1=-1$
+$\text{True}$
 </div>
 </div>
 </div>
@@ -11722,6 +11726,32 @@ $-1=-1$
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In [149]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">Eqn</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span><span class="o">+</span><span class="n">I</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">pi</span><span class="p">),</span><span class="n">exp</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">pi</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[149]:</div>
+<div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
+$-1=-1$
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [150]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">_</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
@@ -11735,7 +11765,7 @@ $-1=-1$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[149]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[150]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\text{True}$
 </div>
@@ -11749,7 +11779,7 @@ $\text{True}$
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Atomatic-solutions-(sympy.solve)">Atomatic solutions (sympy.solve)<a class="anchor-link" href="#Atomatic-solutions-(sympy.solve)">¶</a></h3><p><strong>New!</strong> Please report problems on the <a href="https://github.com/gutow/Algebra_with_Sympy/issues">issues site</a>.</p>
+<h3 id="Atomatic-solutions-(sympy.solve)">Atomatic solutions (sympy.solve)<a class="anchor-link" href="#Atomatic-solutions-(sympy.solve)">¶</a></h3>
 </div>
 </div>
 </div>
@@ -11758,7 +11788,7 @@ $\text{True}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [150]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [151]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">eqtosolve</span> <span class="o">=@</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">=</span> <span class="n">c</span><span class="o">/</span><span class="n">a</span>
@@ -11773,7 +11803,7 @@ $\text{True}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[150]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[151]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a - b=\frac{c}{a}\,\,\,\,\,\,\,\,\,\,$(eqtosolve)
 </div>
@@ -11785,7 +11815,7 @@ $a - b=\frac{c}{a}\,\,\,\,\,\,\,\,\,\,$(eqtosolve)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [151]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [152]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
@@ -11799,7 +11829,7 @@ $a - b=\frac{c}{a}\,\,\,\,\,\,\,\,\,\,$(eqtosolve)
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[151]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[152]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}\right\}$
 </div>
@@ -11811,7 +11841,7 @@ $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqr
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [152]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [153]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">lhs</span><span class="o">-</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -11825,7 +11855,7 @@ $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqr
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[152]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[153]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ a : \frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}\right\}\right\}$
 </div>
@@ -11837,7 +11867,7 @@ $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [153]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [154]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
@@ -11851,7 +11881,7 @@ $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ 
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[153]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[154]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{c=a^{2} - a b\right\}$
 </div>
@@ -11863,7 +11893,7 @@ $\left\{c=a^{2} - a b\right\}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [154]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [155]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
@@ -11877,7 +11907,7 @@ $\left\{c=a^{2} - a b\right\}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[154]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[155]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{b=\frac{a^{2} - c}{a}\right\}$
 </div>
@@ -11889,7 +11919,7 @@ $\left\{b=\frac{a^{2} - c}{a}\right\}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [155]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [156]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">N1</span><span class="p">,</span><span class="n">Q</span><span class="p">)</span>
@@ -11903,7 +11933,7 @@ $\left\{b=\frac{a^{2} - c}{a}\right\}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[155]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[156]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{Q=e^{\frac{F z \left(- E + Eo\right)}{R T}}\right\}$
 </div>
@@ -11915,7 +11945,7 @@ $\left\{Q=e^{\frac{F z \left(- E + Eo\right)}{R T}}\right\}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [156]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [157]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># A system of equations with multiple solutions</span>
@@ -11933,7 +11963,7 @@ $\left\{Q=e^{\frac{F z \left(- E + Eo\right)}{R T}}\right\}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[156]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[157]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\right\}, \left\{x=3, y=-3\right\}\right\}$
 </div>
@@ -11945,7 +11975,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [157]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [158]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Very experimental use of solveset. It has the nice property that multiple solutions pretty print well.</span>
@@ -11961,7 +11991,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[157]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[158]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\frac{3}{2} - \frac{y}{2}, - \frac{y}{2} - \frac{3}{2}\right\}$
 </div>
@@ -11984,7 +12014,7 @@ $\left\{\frac{3}{2} - \frac{y}{2}, - \frac{y}{2} - \frac{3}{2}\right\}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [158]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [159]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">True</span>
@@ -12006,7 +12036,7 @@ $\left\{\frac{3}{2} - \frac{y}{2}, - \frac{y}{2} - \frac{3}{2}\right\}$
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[158]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[159]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\right\}, \left\{x=3, y=-3\right\}\right\}$
 </div>
@@ -12018,7 +12048,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [159]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [160]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
@@ -12033,7 +12063,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[159]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[160]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\right\}, \left\{x=3, y=-3\right\}\right\}$
 </div>
@@ -12045,7 +12075,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [160]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [161]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">True</span>
@@ -12068,7 +12098,7 @@ $\left\{\left\{x=-3, y=3\right\}, \left\{x=-1, y=-1\right\}, \left\{x=1, y=1\rig
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[160]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[161]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}\right\}$
 </div>
@@ -12080,7 +12110,7 @@ $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqr
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [161]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [162]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">lhs</span><span class="o">-</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -12101,7 +12131,7 @@ $\left\{a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}, a=\frac{b}{2} + \frac{\sqr
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[161]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[162]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ a : \frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}\right\}\right\}$
 </div>
@@ -12113,7 +12143,7 @@ $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ 
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [162]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [163]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">solns</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -12134,7 +12164,7 @@ $\left\{\left\{ a : \frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}\right\}, \left\{ 
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[162]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[163]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
@@ -12146,7 +12176,7 @@ $a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [163]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [164]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
@@ -12161,7 +12191,7 @@ $a=\frac{b}{2} - \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[163]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[164]:</div>
 <div class="jp-RenderedLatex jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/latex" tabindex="0">
 $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
@@ -12184,7 +12214,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [164]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [165]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">solve_to_list</span> <span class="o">=</span> <span class="kc">True</span>
@@ -12199,7 +12229,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[164]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[165]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>[Equation(a, b/2 - sqrt(b**2 + 4*c)/2), Equation(a, b/2 + sqrt(b**2 + 4*c)/2)]</pre>
 </div>
@@ -12211,7 +12241,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [165]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [166]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">(</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">lhs</span><span class="o">-</span><span class="n">eqtosolve</span><span class="o">.</span><span class="n">rhs</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -12225,7 +12255,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[165]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[166]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>[{a: b/2 - sqrt(b**2 + 4*c)/2}, {a: b/2 + sqrt(b**2 + 4*c)/2}]</pre>
 </div>
@@ -12237,7 +12267,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [166]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [167]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">solve</span><span class="p">([</span><span class="n">eq1</span><span class="p">,</span><span class="n">eq2</span><span class="p">],</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
@@ -12251,7 +12281,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[166]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[167]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>[[Equation(x, -3), Equation(y, 3)],
  [Equation(x, -1), Equation(y, -1)],
@@ -12277,7 +12307,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [167]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [168]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">algwsym_version</span>
@@ -12291,9 +12321,9 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[167]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[168]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>'1.0.2'</pre>
+<pre>'1.1.0'</pre>
 </div>
 </div>
 </div>
@@ -12303,7 +12333,7 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [168]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [169]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">algebra_with_sympy.version</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">spa_version</span>
@@ -12318,9 +12348,9 @@ $a=\frac{b}{2} + \frac{\sqrt{b^{2} + 4 c}}{2}$
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[168]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[169]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>'1.0.2'</pre>
+<pre>'1.1.0'</pre>
 </div>
 </div>
 </div>
