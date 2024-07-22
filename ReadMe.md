@@ -11,6 +11,7 @@
 ## [Website/Documentation (including API)](https://gutow.github.io/Algebra_with_Sympy/)
 
 ## Introduction
+<a class="anchor" href="#introduction"></a>
 
 This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
@@ -69,7 +70,7 @@ Even if you do not use the `Equation` class, there are some convenience
 tools and defaults that will probably make interactive use of SymPy in 
 Jupyter/IPython environments easier:
 
-* By default, all numbers _in Sympy expressions_ without decimal points are 
+* By default, all numbers *in Sympy expressions* without decimal points are 
   interpreted as integers (e.g. `2/3*x`, where x is a sympy symbol, -> 
   `2*x/3` not `x*0.6666...`, but if x is just a plain Python object then `2/3*x` 
   -> `x*0.66666...`). This can be turned off with `unset_integers_as_exact()`, 
@@ -84,6 +85,7 @@ Jupyter/IPython environments easier:
   Outputs](#controlling-the-format-of-interactive-outputs).  
 
 ## Controlling the Format of Interactive Outputs
+<a class="anchor" href="#controlling-the-format-of-interative-outputs"></a>
 * These controls impact all Sympy objects and the `Equation` class.
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the 
@@ -124,7 +126,7 @@ $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the
   solutions in the order the solve for variables were input.
 
 ## Setup/Installation
-
+<a class="anchor" href="#setupinstallation"></a>
 1. Use pip to install in your python environment: 
 `pip install -U Algebra-with-SymPy`
 2. To use in a running python session issue
@@ -144,18 +146,18 @@ algwsym_config = spa.algwsym_config
 ```
 
 ## Try in binder
-
+<a class="anchor" href="#try-in-binder"></a>
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master?labpath=Demonstration+of+equation+class.ipynb)
 
 ## Issues or Comments
-
+<a class="anchor" href="#issues-or-comments"></a>
 * Issues and bug reports should be [filed on 
 github](https://github.com/gutow/Algebra_with_Sympy/issues).
 * Comments, questions, show and tell, etc. should go in the [project 
   discussions](https://github.com/gutow/Algebra_with_Sympy/discussions).
 
 ## Change Log
-
+<a class="anchor" href="#change-log"></a>
 * 1.1.0 (July 21, 2024)
   * Setting integers as exact (`set_integers_as_exact()`, the default) now 
     only sets integers as exact within Sympy and Algebra_with_Sympy 
@@ -271,7 +273,7 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 [PR#21333](https://github.com/sympy/sympy/pull/21333).
 
 ## [licensed under GNU V3 license](https://gnu.org/licenses)
-
+<a class="anchor" href="#licensed-under-gnu-v3-licensehttpsgnuorglicenses"></a>
 This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or

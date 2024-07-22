@@ -4,6 +4,7 @@
 [Build PyPi Package](#building-pypi-package)|
 
 ## General Notes
+<a class="anchor" href="#general-notes"></a>
 * TODOs
   * Test collect when there isn't an available _eval_collect (not sure how 
     to get there).
@@ -18,7 +19,7 @@
     input engine.
 
 ## Constructing the Documentation
-
+<a class="anchor" href="#constructing-the-documentation"></a>
 1. Make sure pdoc is installed and updated in the virtual environment `pip 
    install -U pdoc`.
 2. Update any `.md` files included in `_init_.py`.
@@ -33,12 +34,12 @@ pdoc --logo https://gutow.github.io/Algebra_with_Sympy/alg_w_sympy.svg
    where `X.X.X` is the version number.
 
 ### Tasks for Documentation
+<a class="anchor" href="#tasks-for-documentation"></a>
 * Readme.md & Development Notes.md
-  * Hard code anchors so that navigation links work on pypi page.
   * Use absolute path to github pages for more examples.
 
 ## Running Tests
-
+<a class="anchor" href="#running-tests"></a>
 1. Install updated pytest in the virtual environment:
    ```
    pipenv shell
@@ -58,7 +59,7 @@ You can run all the tests using the dotests script: `./dotests.sh`.
 raw strings are being passed with specialized LaTex escaped characters.
 
 ## Building PyPi package
-
+<a class="anchor" href="#building-pypi-package"></a>
 1. Make sure to update the version number in setup.py first.
 1. Install updated  setuptools and twine in the virtual environment:
    ```
@@ -88,7 +89,7 @@ raw strings are being passed with specialized LaTex escaped characters.
        environment.
 
 ### Releasing on PyPi
-
+<a class="anchor" href="#releasing-on-pypi"></a>
 Proceed only if testing of the build is successful.
 
 1. Double check the version number in version.py.

@@ -78,12 +78,12 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="variable" href="#algwsym_version">algwsym_version</a>
+                    <a class="variable" href="#proper_sympy">proper_sympy</a>
             </li>
     </ul>
 
 
-            <footer>Algebra with Sympy v1.0.2</footer>
+            <footer>Algebra with Sympy v1.1.0</footer>
 
         <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
             built with <span class="visually-hidden">pdoc</span><img
@@ -110,6 +110,8 @@ algebra_with_sympy    </h1>
 <h2 id="websitedocumentation-including-apihttpsgutowgithubioalgebra_with_sympy"><a href="https://gutow.github.io/Algebra_with_Sympy/">Website/Documentation (including API)</a></h2>
 
 <h2 id="introduction">Introduction</h2>
+
+<p><a class="anchor" href="#introduction"></a></p>
 
 <p>This tool defines relations that all high school and college students would
 recognize as mathematical equations. 
@@ -168,10 +170,12 @@ tools and defaults that will probably make interactive use of SymPy in
 Jupyter/IPython environments easier:</p>
 
 <ul>
-<li>By default all numbers without decimal points are interpreted as integers. 
-One implication of this is that base ten fractions are exact (e.g. 2/3 -> 
-2/3 not 0.6666...). This can be turned off with <code>unset_integers_as_exact()</code>
-and on with <code>set_integers_as_exact()</code>. When on the flag
+<li>By default, all numbers <em>in Sympy expressions</em> without decimal points are 
+interpreted as integers (e.g. <code>2/3*x</code>, where x is a sympy symbol, -> 
+<code>2*x/3</code> not <code>x*0.6666...</code>, but if x is just a plain Python object then <code>2/3*x</code> 
+-> <code>x*0.66666...</code>). This can be turned off with <code>unset_integers_as_exact()</code>, 
+which leads to standard Python behavior (<code>2/3*x</code> -> <code>x*0.6666...</code>) even for 
+Sympy expressions. Turn on with <code>set_integers_as_exact()</code>. When on the flag
 <code>algwsym_config.numerics.integers_as_exact = True</code>.</li>
 <li>Results of <code>solve()</code> are wrapped in <code>FiniteSet()</code> to force pretty-printing 
 of all of a solution set. See <a href="#controlling-the-format-of-interactive-outputs">Controlling the Format of Interactive 
@@ -183,16 +187,21 @@ Outputs</a>.  </li>
 
 <h2 id="controlling-the-format-of-interactive-outputs">Controlling the Format of Interactive Outputs</h2>
 
+<p><a class="anchor" href="#controlling-the-format-of-interative-outputs"></a></p>
+
 <ul>
 <li>These controls impact all Sympy objects and the <code>Equation</code> class.</li>
-<li><p><strong>In graphical environments (Jupyter)</strong> you will get rendered Latex such as 
+<li><strong>In graphical environments (Jupyter)</strong> you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the 
 code representation (what can be copied and pasted for 
 additional computation) set <code>algwsym_config.output.show_code = True</code>. 
 This will print the code version (e.g. <code>Equation(a,b/c)</code>) of equations 
 and sympy expression in addition to the human readable version. This code 
 version can be accessed directly by calling <code>repr()</code> on the 
-equation or expression.</p></li>
+equation or expression.</li>
+</ul>
+
+<ul>
 <li><p><strong>In interactive text environments (IPython and command line)</strong> The human 
 readable string version of Sympy expressions are returned (for <code>Equations</code> a 
 = b rather than Equation(a,b)). This is equivalent to Calling <code>print()</code> 
@@ -225,6 +234,8 @@ solutions in the order the solve for variables were input.</p></li>
 
 <h2 id="setupinstallation">Setup/Installation</h2>
 
+<p><a class="anchor" href="#setupinstallation"></a></p>
+
 <ol>
 <li>Use pip to install in your python environment: 
 <code>pip install -U Algebra-with-SymPy</code></li>
@@ -247,9 +258,12 @@ algwsym_config = spa.algwsym_config
 
 <h2 id="try-in-binder">Try in binder</h2>
 
-<p><a href="https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master?labpath=Demonstration+of+equation+class.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+<p><a class="anchor" href="#try-in-binder"></a>
+<a href="https://mybinder.org/v2/gh/gutow/Algebra_with_Sympy.git/master?labpath=Demonstration+of+equation+class.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
 
 <h2 id="issues-or-comments">Issues or Comments</h2>
+
+<p><a class="anchor" href="#issues-or-comments"></a></p>
 
 <ul>
 <li>Issues and bug reports should be <a href="https://github.com/gutow/Algebra_with_Sympy/issues">filed on 
@@ -260,7 +274,19 @@ discussions</a>.</li>
 
 <h2 id="change-log">Change Log</h2>
 
+<p><a class="anchor" href="#change-log"></a></p>
+
 <ul>
+<li>1.1.0 (July 21, 2024)
+<ul>
+<li>Setting integers as exact (<code>set_integers_as_exact()</code>, the default) now 
+only sets integers as exact within Sympy and Algebra_with_Sympy 
+expressions. This increases compatibility with other packages that 
+depend on integers being Python integers.</li>
+<li>Refuse to import Algebra_with_Sympy if an incompatible 
+version of Sympy is installed in the environment.</li>
+<li>Added warning explaining how to install a compatible version of Sympy.</li>
+</ul></li>
 <li>1.0.2 (July 5, 2024)
 <ul>
 <li>Removed requirements for Jupyter and Jupyterlab as code will work in 
@@ -337,7 +363,7 @@ into the python <code>display_hook</code> and IPython <code>display_formatter</c
 will include jupyter.</li>
 <li>The way <code>__version__</code> was handled could break pip install. Changed to
 generating the internal version during setup. This means the version
-is now available as <code><a href="#algwsym_version">algwsym_version</a></code>.</li>
+is now available as <code>algwsym_version</code>.</li>
 </ul></li>
 <li>0.10.0 (Sep. 5, 2022)
 <ul>
@@ -390,7 +416,8 @@ environments.</li>
 
 <h2 id="licensed-under-gnu-v3-licensehttpsgnuorglicenses"><a href="https://gnu.org/licenses">licensed under GNU V3 license</a></h2>
 
-<p>This program is free software: you can redistribute it and/or modify
+<p><a class="anchor" href="#licensed-under-gnu-v3-licensehttpsgnuorglicenses"></a>
+This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -408,6 +435,8 @@ environments.</li>
 <a href="#building-pypi-package">Build PyPi Package</a>|</p>
 
 <h2 id="general-notes">General Notes</h2>
+
+<p><a class="anchor" href="#general-notes"></a></p>
 
 <ul>
 <li>TODOs
@@ -430,6 +459,8 @@ input engine.</li>
 
 <h2 id="constructing-the-documentation">Constructing the Documentation</h2>
 
+<p><a class="anchor" href="#constructing-the-documentation"></a></p>
+
 <ol>
 <li>Make sure pdoc is installed and updated in the virtual environment <code>pip 
 install -U pdoc</code>.</li>
@@ -449,15 +480,18 @@ where <code>X.X.X</code> is the version number.</li>
 
 <h3 id="tasks-for-documentation">Tasks for Documentation</h3>
 
+<p><a class="anchor" href="#tasks-for-documentation"></a></p>
+
 <ul>
 <li>Readme.md &amp; Development Notes.md
 <ul>
-<li>Hard code anchors so that navigation links work on pypi page.</li>
 <li>Use absolute path to github pages for more examples.</li>
 </ul></li>
 </ul>
 
 <h2 id="running-tests">Running Tests</h2>
+
+<p><a class="anchor" href="#running-tests"></a></p>
 
 <ol>
 <li>Install updated pytest in the virtual environment:
@@ -479,6 +513,8 @@ pip install -U pytest
 raw strings are being passed with specialized LaTex escaped characters.</p>
 
 <h2 id="building-pypi-package">Building PyPi package</h2>
+
+<p><a class="anchor" href="#building-pypi-package"></a></p>
 
 <ol>
 <li>Make sure to update the version number in setup.py first.</li>
@@ -512,7 +548,8 @@ environment.</li>
 
 <h3 id="releasing-on-pypi">Releasing on PyPi</h3>
 
-<p>Proceed only if testing of the build is successful.</p>
+<p><a class="anchor" href="#releasing-on-pypi"></a>
+Proceed only if testing of the build is successful.</p>
 
 <ol>
 <li>Double check the version number in version.py.</li>
@@ -533,46 +570,63 @@ it does not work, pull the release.</li>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">.. include:: ../Development Notes.md</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;numpy&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.algebraic_equation</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="c1"># Set up numerics behaviors</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">try</span><span class="p">:</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">get_ipython</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">if</span> <span class="n">get_ipython</span><span class="p">():</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">input_transformers_post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integers_as_exact</span><span class="p">)</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="n">algwsym_config</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integers_as_exact</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">pass</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">algebra_with_sympy.preparser</span> <span class="kn">import</span> <span class="o">*</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="c1"># Set the output formatting defaults</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">human_text</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">solve_to_list</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">latex_as_equations</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="c1"># Set version number for internal access</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="n">algwsym_version</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="k">try</span><span class="p">:</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="kn">from</span> <span class="nn">algebra_with_sympy.version</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">algwsym_version</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="ne">UserWarning</span><span class="p">(</span><span class="s1">&#39;Could not read the version.py file. Your installation&#39;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                <span class="s1">&#39; of algebra_with_sympy probably did not work correctly.&#39;</span><span class="p">)</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="n">proper_sympy</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="kn">from</span> <span class="nn">sympy.core.equation</span> <span class="kn">import</span> <span class="n">Equation</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">proper_sympy</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;You need the extended version of Sympy to use Algebra_with_Sympy. &#39;</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>         <span class="s1">&#39;Algebra_with_Sympy will not be loaded. You can use your current &#39;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>         <span class="s1">&#39;version of Sympy without the Algebra_with_Sympy features using &#39;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>         <span class="s1">&#39;the command `from sympy import *`. To get the extended version &#39;</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>         <span class="s1">&#39;of sympy:</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>         <span class="s1">&#39;1. uninstall your current version `pip uninstall sympy`.</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>         <span class="s1">&#39;2. install extended sympy `pip install sympy-for-algebra`.</span><span class="se">\n</span><span class="s1">&#39;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>         <span class="s1">&#39;NOTE: an update to extended sympy is usually issued soon after &#39;</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>         <span class="s1">&#39;each 1.XX.1 release of standard sympy.&#39;</span><span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="k">if</span> <span class="n">proper_sympy</span><span class="p">:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="kn">from</span> <span class="nn">algebra_with_sympy.algebraic_equation</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="c1"># Set up numerics behaviors</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">get_ipython</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">if</span> <span class="n">get_ipython</span><span class="p">():</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">input_transformers_post</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">integers_as_exact</span><span class="p">)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">algwsym_config</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">integers_as_exact</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="k">pass</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="kn">from</span> <span class="nn">algebra_with_sympy.preparser</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="c1"># Set the output formatting defaults</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">show_code</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">human_text</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">solve_to_list</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">algwsym_config</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">latex_as_equations</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="c1"># Set version number for internal access</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">algwsym_version</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="kn">from</span> <span class="nn">algebra_with_sympy.version</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">algwsym_version</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="ne">UserWarning</span><span class="p">(</span><span class="s1">&#39;Could not read the version.py file. Your installation&#39;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                    <span class="s1">&#39; of algebra_with_sympy probably did not work correctly.&#39;</span><span class="p">)</span>
 </span></pre></div>
 
 
             </section>
-                <section id="algwsym_version">
+                <section id="proper_sympy">
                     <div class="attr variable">
-            <span class="name">algwsym_version</span>        =
-<span class="default_value">&#39;1.0.2&#39;</span>
+            <span class="name">proper_sympy</span>        =
+<span class="default_value">True</span>
 
         
     </div>
-    <a class="headerlink" href="#algwsym_version"></a>
+    <a class="headerlink" href="#proper_sympy"></a>
     
     
 
