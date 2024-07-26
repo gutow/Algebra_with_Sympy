@@ -119,12 +119,14 @@ def toIntegerInSympyExpr(string):
             if kind == NAME:
                 if string == 'var':
                     match = re.search(r'\".*?\"|\'.*?\'', line)
-                    syms = match.group().replace('\"', '').replace('\'',
+                    if (match):
+                        syms = match.group().replace('\"', '').replace('\'',
                                                                    '').split(
                         ' ')
                 if string == 'units':
                     match = re.search(r'\".*?\"|\'.*?\'', line)
-                    syms = match.group().replace('\"', '').replace('\'',
+                    if (match):
+                        syms = match.group().replace('\"', '').replace('\'',
                                                                    '').split(
                         ' ')
                 if string == 'symbols':
