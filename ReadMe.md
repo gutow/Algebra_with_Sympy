@@ -158,6 +158,9 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 <a class="anchor" href="#change-log"></a>
+* 1.1.2 (August 13, 2024)
+  * Test updates.
+  * Verified compatibility with Sympy 1.13.2.
 * 1.1.1 (July 25, 2024)
   * BUG FIX accommodate empty re.search results in preparser. Prevents 
     unnecessary error messages.
