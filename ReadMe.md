@@ -158,6 +158,10 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 <a class="anchor" href="#change-log"></a>
+* 1.1.3 ()
+  * Moved determination of equation (actually any sympy basic object) python 
+    name to this package from the equation object, thus simplifying what is 
+    included in sympy.
 * 1.1.2 (August 13, 2024)
   * Test updates.
   * Verified compatibility with Sympy 1.13.2.
