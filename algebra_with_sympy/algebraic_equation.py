@@ -388,6 +388,21 @@ class algwsym_config():
             """
             return self.integers_as_exact
 
+def __get_sympy_expr_name__(expr):
+    """
+    Tries to find the python string name that refers to a sympy object. In
+    IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
+    If not in an IPython environment looks in __main__.
+    :return: string value if found or empty string.
+    """
+    import __main__ as shell
+    for k in dir(shell):
+        item = getattr(shell, k)
+        if isinstance(item, Basic):
+            if item == expr and not k.startswith('_'):
+                return k
+    return ''
+
 def __latex_override__(expr, *arg):
     algwsym_config = False
     ip = False
@@ -420,7 +435,7 @@ def __latex_override__(expr, *arg):
         tempstr = ''
         namestr = ''
         if isinstance(expr, Equation):
-            namestr = expr._get_eqn_name()
+            namestr = __get_sympy_expr_name__(expr)
         if namestr != '' and algwsym_config and algwsym_config.output.label:
             tempstr += r'$'+latex(expr)
             # work around for colab's inconsistent handling of mixed latex and
@@ -450,7 +465,7 @@ def __command_line_printing__(expr, *arg):
         labelstr = ''
         namestr = ''
         if isinstance(expr, Equation):
-            namestr = expr._get_eqn_name()
+            namestr = __get_sympy_expr_name__(expr)
         if namestr != '' and algwsym_config.output.label:
             labelstr += '          (' + namestr + ')'
         return print(tempstr + str(expr) + labelstr)
