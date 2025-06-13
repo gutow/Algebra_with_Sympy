@@ -1,5 +1,6 @@
 from pytest import raises
-from sympy import functions, FunctionClass, symbols, Equation
+from sympy import functions, FunctionClass, symbols
+from sympy import Equation
 import importlib
 
 #####

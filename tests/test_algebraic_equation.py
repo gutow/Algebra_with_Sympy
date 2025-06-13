@@ -1,11 +1,12 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
-from sympy import diff, FiniteSet, Equation, Function, Matrix, S, Eq
+from sympy import diff, FiniteSet, Function, Matrix, S, Eq
+from sympy import Equation, Eqn
 from sympy import sin, cos, log, exp, latex, Symbol, I, pi
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from algebra_with_sympy.algebraic_equation import solve, collect
 from algebra_with_sympy.algebraic_equation import Equality, units
-from sympy import Eqn, sqrt, root, Heaviside
+from sympy import sqrt, root, Heaviside
 from algebra_with_sympy.algebraic_equation import algwsym_config
 
 

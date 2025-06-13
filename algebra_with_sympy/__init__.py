@@ -6,7 +6,7 @@ __docformat__ = "numpy"
 from warnings import warn
 proper_sympy = True
 try:
-    from sympy.core.equation import Equation
+    from sympy import Equation
 except ImportError:
     proper_sympy = False
     warn('You need the extended version of Sympy to use Algebra_with_Sympy. '
@@ -14,8 +14,10 @@ except ImportError:
          'version of Sympy without the Algebra_with_Sympy features using '
          'the command `from sympy import *`. To get the extended version '
          'of sympy:\n'
-         '1. uninstall your current version `pip uninstall sympy`.\n'
-         '2. install extended sympy `pip install sympy-for-algebra`.\n'
+         '1. Uninstall your current version `pip uninstall sympy`.\n'
+         '2. If sympy-for-algebra is also installed, it must be uninstalled.\n'
+         '   `pip uninstall sympy-for-algebra`.\n'
+         '3. (Re)install extended sympy `pip install sympy-for-algebra`.\n'
          'NOTE: an update to extended sympy is usually issued soon after '
          'each 1.XX.1 release of standard sympy.')
 
