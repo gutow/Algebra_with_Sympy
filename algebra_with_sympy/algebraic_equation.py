@@ -430,7 +430,7 @@ def __latex_override__(expr, *arg):
     if show_code:
         print("Code version: " + repr(expr))
     if latex_as_equations:
-        return r'\begin{equation}'+latex(expr)+'\end{equation}'
+        return r'\begin{equation}'+latex(expr)+r'\end{equation}'
     else:
         tempstr = ''
         namestr = ''
@@ -441,7 +441,7 @@ def __latex_override__(expr, *arg):
             # work around for colab's inconsistent handling of mixed latex and
             # plain strings.
             if colab:
-                colabname = namestr.replace('_', '\_')
+                colabname = namestr.replace('_', r'\_')
                 tempstr += r'\,\,\,\,\,\,\,\,\,\,(' + colabname + ')$'
             else:
                 tempstr += r'\,\,\,\,\,\,\,\,\,\,$(' + namestr + ')'

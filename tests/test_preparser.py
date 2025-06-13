@@ -61,7 +61,7 @@ def test_toIntegerInSympyExpr():
     setattr(userns, 'c', symbols('c'))
     setattr(userns, 'x', symbols('x'))
     tststr ='z, d = symbols(\'z d\')\n'
-    tststr +='DG = Symbol("\Delta G")\n'
+    tststr +='DG = Symbol(r"\Delta G")\n'
     tststr += 'units("kg m s")\n'
     tststr += 'eq1 = Eqn(a*x**2 + b*x + c,\n'
     tststr += '0)\n'
@@ -75,7 +75,7 @@ def test_toIntegerInSympyExpr():
     tststr += 'y = [1, 2.0, 4, 5.6]\n'
     tststr += 'f = DG*5/2 + s\n'
     resultstr = 'z ,d =symbols (\'z d\')\n'
-    resultstr += 'DG =Symbol ("\\Delta G")\n'
+    resultstr += 'DG =Symbol (r"\Delta G")\n'
     resultstr += 'units ("kg m s")\n'
     resultstr += 'eq1 =Eqn (a *x **Integer (2 )+b *x +c ,\n'
     resultstr += 'Integer (0 ))\n'
