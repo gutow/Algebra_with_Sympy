@@ -165,6 +165,8 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
     name to this package from the equation object, thus simplifying what is 
     included in sympy.
   * Minor test updates.
+  * Added overrides of __repr__ and __str__ in preparation for inclusion of 
+    Equation class in Sympy.
 * 1.1.2 (August 13, 2024)
   * Test updates.
   * Verified compatibility with Sympy 1.13.2.
