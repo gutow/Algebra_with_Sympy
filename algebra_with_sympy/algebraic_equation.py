@@ -782,7 +782,6 @@ def solveset(f, symbols, domain=sympy.Complexes):
     solns = result
     return solns
 
-
 class Equality(Equality):
     """
     Extension of Equality class to include the ability to convert it to an
@@ -802,6 +801,22 @@ class Equality(Equality):
         return self.to_Equation()
 
 Eq = Equality
+
+def __Equation__repr__override__(self):
+    """Override of the default sympy representation to match normal python
+    behavior and allow for a human readable string representation.
+    """
+    return 'Equation(%s, %s)' % (repr(self.lhs), repr(self.rhs))
+
+sympy.core.Equation.__repr__ = __Equation__repr__override__
+
+def __Equation__str__override__(self):
+    """Override of the default sympy representation to match normal python
+    behavior and allow for a human readable string representation.
+    """
+    return '%s = %s' % (repr(self.lhs), repr(self.rhs))
+
+sympy.core.Equation.__str__ = __Equation__str__override__
 
 def __FiniteSet__repr__override__(self):
     """Override of the `FiniteSet.__repr__(self)` to overcome sympy's
