@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ['version']
+name="Algebra_with_SymPy"
+readme = 'ReadMe.md'
+description="Equations that can be algebraicly manipulated."
+authors=[{name = "Jonathan Gutow", email="gutow@uwosh.edu"}]
+keywords=["symbolic algebra",
+    "computer algebra",
+    "CAS",
+    "calculations with units",
+    "sympy"
+    ]
+license="GPL-3.0+"
+dependencies = [
+        "sympy-for-algebra ~= 1.13"
+    ]
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: End Users/Desktop',
+    'Programming Language :: Python :: 3',
+    'Operating System :: OS Independent'
+    ]
+[project.urls]
+Homepage = "https://gutow.github.io/Algebra_with_Sympy/"
+Repository = "https://github.com/gutow/Algebra_with_Sympy"
+Issues = "https://github.com/gutow/Algebra_with_Sympy/issues"
