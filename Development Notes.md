@@ -66,7 +66,7 @@ raw strings are being passed with specialized LaTex escaped characters.
    pipenv shell
    pip install -U setuptools wheel twine
    ```
-1. Build the distribution `python -m setup sdist bdist_wheel`.
+1. Build the distribution `python -m build`.
 1. Test it on `test.pypi.org`.
     1. Upload it (you will need an account on test.pypi.org):
        `python -m twine upload --repository testpypi dist/*`.
@@ -92,8 +92,8 @@ raw strings are being passed with specialized LaTex escaped characters.
 <a class="anchor" href="#releasing-on-pypi"></a>
 Proceed only if testing of the build is successful.
 
-1. Double check the version number in version.py.
-1. Rebuild the release: `python -m setup sdist bdist_wheel`.
+1. Double check the version number in `algebra_with_sympy/version.py`.
+1. Rebuild the release: `python -m build`.
 1. Upload it: `python -m twine upload dist/*`
 1. Make sure it works by installing it in a clean virtual environment. This
    is the same as on test.pypi.org except without `-i https://test.pypy...`. If
