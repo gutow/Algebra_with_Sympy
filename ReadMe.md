@@ -300,4 +300,4 @@ This program is free software: you can redistribute it and/or modify
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
-Copyright - Algebra with Sympy Contributors 2021, 2022, 2023, 2024
+Copyright - Algebra with Sympy Contributors 2021, 2022, 2023, 2024, 2025, 2026
