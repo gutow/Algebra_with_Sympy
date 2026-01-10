@@ -571,6 +571,61 @@ if ip and "text/latex" not in formatter.active_types:
                                                 __command_line_printing__)
     # print("For type Equation overriding plain text formatter = " + str(old))
 
+class algSymbol(Symbol):
+    """Extension of the Sympy Symbol class to allow special behavior such as
+    color coding.
+
+    If x.color is not set to black the value of x.color determines the
+    preferred color of the symbol when it is displayed. If it is set to black
+    the color will be determined by the value of x.variable_type.
+    """
+    def __new__(self, name, **assumptions):
+        self.variable_type = self._variable_type('None')
+        self.color = self._color('black')
+        return super().__new__(self, name, **assumptions)
+
+    class _variable_type():
+        def __init__(self, value):
+            from warnings import warn
+            self.allowed = ('none', 'known', 'unknown', 'constant')
+            self._variable_type = 'none'
+            if value.lower() in self.allowed:
+                self._variable_type = value.lower()
+            else:
+                warn('Must be one of ' + str(self.allowed)+'.')
+
+        def __set__(self, instance, value):
+            from warnings import warn
+            if value.lower() in self.allowed:
+                self._variable_type = value.lower()
+            else:
+                warn('Must be one of ' + str(self.allowed) + '.')
+
+        def __get__(self, key, owner):
+            return self._variable_type
+
+    class _color():
+        def __init__(self, value):
+            from warnings import warn
+            # High contrast colors. Red and green should not be used together.
+            self.allowed = ('black', 'blue', 'purple', 'red', 'orange',
+                            'white', 'magenta', 'green')
+            self._color = 'black'
+            if value.lower() in self.allowed:
+                self._color = value.lower()
+            else:
+                warn('Must be one of ' + str(self.allowed)+'.')
+
+        def __set__(self, instance, value):
+            from warnings import warn
+            if value.lower() in self.allowed:
+                self._color = value.lower()
+            else:
+                warn('Must be one of ' + str(self.allowed) + '.')
+
+        def __get__(self, key, owner):
+            return self._color
+
 def units(names):
     """
     This operation declares the symbols to be positive values, so that sympy
@@ -607,7 +662,7 @@ def units(names):
             frame_name = user_namespace['__name__']
     retstr +='('
     for k in syms:
-        user_namespace[k] = symbols(k, positive = True)
+        user_namespace[k] = symbols(k, cls = algSymbol, positive = True)
         retstr += k + ','
     retstr = retstr[:-1] + ')'
     return retstr
