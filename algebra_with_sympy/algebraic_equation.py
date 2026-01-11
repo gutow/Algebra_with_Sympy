@@ -665,6 +665,7 @@ def units(names):
         user_namespace[k] = symbols(k, cls = algSymbol, positive = True)
         retstr += k + ','
     retstr = retstr[:-1] + ')'
+    del user_namespace # to allow garbage collection?
     return retstr
 
 
