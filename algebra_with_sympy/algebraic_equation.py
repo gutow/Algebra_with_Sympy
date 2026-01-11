@@ -587,7 +587,7 @@ class algSymbol(Symbol):
     class _variable_type():
         def __init__(self, value):
             from warnings import warn
-            self.allowed = ('none', 'known', 'unknown', 'constant')
+            self.allowed = ('none', 'known', 'unknown', 'constant', 'unit')
             self._variable_type = 'none'
             if value.lower() in self.allowed:
                 self._variable_type = value.lower()
@@ -626,20 +626,9 @@ class algSymbol(Symbol):
         def __get__(self, key, owner):
             return self._color
 
-def units(names):
-    """
-    This operation declares the symbols to be positive values, so that sympy
-    will handle them properly when simplifying expressions containing units.
-    Units defined this way are just unit symbols. If you want units that are
-    aware of conversions see sympy.physics.units.
-
-
-    :param string names: a string containing a space separated list of
-    symbols to be treated as units.
-
-    :return string list of defined units: calls `name = symbols(name,
-    positive=True)` in the interactive namespace for each symbol name.
-    """
+def var(names, **assumptions):
+    """Override of Sympy `var()` that uses the extended type`algSymbol` in
+    place of Sympy's `Symbol`."""
     from sympy.core.symbol import symbols
     #import __main__ as shell
     user_namespace = None
@@ -649,7 +638,22 @@ def units(names):
             user_namespace = get_ipython().user_ns
     except ModuleNotFoundError:
         pass
-    syms = names.split(' ')
+    syms = ''
+    # clean up
+    names = names.strip()
+    names = names.replace('   ',' ')
+    names = names.replace('  ',' ')
+    if ',' in names:
+        syms = names.split(',')
+        for k in syms:
+            k = k.strip()
+    else:
+        syms = names.split(' ')
+        tempsyms = []
+        for k in syms:
+            if k!='':
+                tempsyms.append(k)
+        syms = tempsyms
     retstr = ''
 
     if user_namespace==None:
@@ -662,12 +666,22 @@ def units(names):
             frame_name = user_namespace['__name__']
     retstr +='('
     for k in syms:
-        user_namespace[k] = symbols(k, cls = algSymbol, positive = True)
+        user_namespace[k] = symbols(k, cls = algSymbol, **assumptions)
         retstr += k + ','
     retstr = retstr[:-1] + ')'
     del user_namespace # to allow garbage collection?
-    return retstr
+    return print(retstr)
 
+def units(names):
+    """
+    This operation declares the symbols to be positive values, so that sympy
+    will handle them properly when simplifying expressions containing units.
+    Units defined this way are just unit symbols. If you want units that are
+    aware of conversions see sympy.physics.units.
+
+    calls `var()` with assumptions set to `positive = True`.
+    """
+    return var(names, positive = True)
 
 def solve(f, *symbols, **flags):
     """
