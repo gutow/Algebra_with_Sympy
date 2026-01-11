@@ -665,8 +665,11 @@ def var(names, **assumptions):
             frame_num +=1
             frame_name = user_namespace['__name__']
     retstr +='('
+    unit = assumptions.pop('unit', False)
     for k in syms:
         user_namespace[k] = symbols(k, cls = algSymbol, **assumptions)
+        if unit:
+            user_namespace[k].variable_type = 'unit'
         retstr += k + ','
     retstr = retstr[:-1] + ')'
     del user_namespace # to allow garbage collection?
@@ -681,7 +684,7 @@ def units(names):
 
     calls `var()` with assumptions set to `positive = True`.
     """
-    return var(names, positive = True)
+    return var(names, positive = True, unit = True)
 
 def solve(f, *symbols, **flags):
     """
