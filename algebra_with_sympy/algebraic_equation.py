@@ -580,51 +580,55 @@ class algSymbol(Symbol):
     the color will be determined by the value of x.variable_type.
     """
     def __new__(self, name, **assumptions):
-        self.variable_type = self._variable_type('None')
-        self.color = self._color('black')
+        self._variable_type = 'none'
+        self._color = 'black'
         return super().__new__(self, name, **assumptions)
 
-    class _variable_type():
-        def __init__(self, value):
-            from warnings import warn
-            self.allowed = ('none', 'known', 'unknown', 'constant', 'unit')
-            self._variable_type = 'none'
-            if value.lower() in self.allowed:
-                self._variable_type = value.lower()
-            else:
-                warn('Must be one of ' + str(self.allowed)+'.')
+    @property
+    def variable_type(self):
+        return self._variable_type
+    @variable_type.setter
+    def variable_type(self, value):
+        from warnings import warn
+        allowed = ('none', 'known', 'unknown', 'constant', 'unit')
+        if value.lower() in allowed:
+            self._variable_type = value.lower()
+        else:
+            warn('Must be one of ' + str(allowed) + '.')
 
-        def __set__(self, instance, value):
-            from warnings import warn
-            if value.lower() in self.allowed:
-                self._variable_type = value.lower()
-            else:
-                warn('Must be one of ' + str(self.allowed) + '.')
+    @property
+    def color(self):
+        return self._color
+    @color.setter
+    def color(self, value):
+        """Color used to display the symbol. 'black' will give the default
+        color for the display being used. The choices are limited to the high
+        contrast selection of colors ('black', 'blue', 'purple', 'red',
+        'orange', 'white', 'magenta', 'green'). Avoid using 'red' and 'green' in
+        the same expression because of how common red-green color blindness is.
+        """
+        from warnings import warn
+        # High contrast colors. Red and green should not be used together.
+        allowed = ('black', 'blue', 'purple', 'red', 'orange',
+                   'white', 'magenta', 'green')
+        if value.lower() in allowed:
+            self._color = value.lower()
+        else:
+            warn('Must be one of ' + str(allowed) + '.')
 
-        def __get__(self, key, owner):
-            return self._variable_type
+    def _latex(self, printer):
+        sym_latex = latex(sympify(self.__str__()))
+        if self.variable_type != 'none':
+            if self.color=='black':
+                colordict ={'known':'purple', 'unknown':'red', 'constant':'blue',
+                            'unit':'black'}
+                return (r'{\color{' + str(colordict[self.variable_type]) + '}{'
+                        + sym_latex + '}}')
+        else:
+            if self.color == 'black':
+                return r''+sym_latex
+        return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
 
-    class _color():
-        def __init__(self, value):
-            from warnings import warn
-            # High contrast colors. Red and green should not be used together.
-            self.allowed = ('black', 'blue', 'purple', 'red', 'orange',
-                            'white', 'magenta', 'green')
-            self._color = 'black'
-            if value.lower() in self.allowed:
-                self._color = value.lower()
-            else:
-                warn('Must be one of ' + str(self.allowed)+'.')
-
-        def __set__(self, instance, value):
-            from warnings import warn
-            if value.lower() in self.allowed:
-                self._color = value.lower()
-            else:
-                warn('Must be one of ' + str(self.allowed) + '.')
-
-        def __get__(self, key, owner):
-            return self._color
 
 def var(names, **assumptions):
     """Override of Sympy `var()` that uses the extended type`algSymbol` in
@@ -673,7 +677,7 @@ def var(names, **assumptions):
         retstr += k + ','
     retstr = retstr[:-1] + ')'
     del user_namespace # to allow garbage collection?
-    return print(retstr)
+    return retstr
 
 def units(names):
     """
@@ -919,5 +923,21 @@ def __FiniteSet__str__override__(self):
 
 sympy.sets.FiniteSet.__str__ = __FiniteSet__str__override__
 
+
+# def __algSymbol_latex(self, expr):
+#     sym_latex = latex(sympify(expr.__str__()))
+#     if expr.variable_type != 'none':
+#         if expr.color == 'black':
+#             colordict = {'known': 'purple', 'unknown': 'red',
+#                          'constant': 'blue',
+#                          'unit': 'black'}
+#             return (r'\color{' + str(colordict[expr.variable_type]) + '}{'
+#                     + sym_latex + '}')
+#     else:
+#         if expr.color == 'black':
+#             return r'' + sym_latex
+#     return (r'\color{' + str(expr.color) + '}{' + sym_latex + '}')
+#
+# sympy.printing.latex._print_Symbol = __algSymbol_latex
 # Redirect python abs() to Abs()
 abs = Abs
