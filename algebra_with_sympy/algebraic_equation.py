@@ -329,6 +329,15 @@ class algwsym_config():
             The string names should correspond to color names understood by
             LaTex.
             """
+
+        @property
+        def colordict(self):
+            """
+            A dictionary used for mapping variable types to color for
+            highlighting when displayed. Currently only implemented for
+            typeset LaTex. Default = {'known': 'skyblue', 'unknown': 'magenta',
+                      'constant': 'blue', 'unit': 'darkorange'}
+            """
         @property
         def show_code(self):
             """
@@ -591,7 +600,8 @@ class algSymbol(Symbol):
     preferred color of the symbol when it is displayed. If it is set to
     'default' the color will be determined by the value of x.variable_type.
 
-    The colordict determines the mapping of variable_type to color.
+    The `algwsym_config.output.colordict` determines the mapping of
+    `variable_type` to color.
     """
 
     def __new__(self, name, **assumptions):
