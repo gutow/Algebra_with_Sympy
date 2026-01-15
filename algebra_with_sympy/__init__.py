@@ -43,6 +43,11 @@ if proper_sympy:
     algwsym_config.output.solve_to_list = False
     algwsym_config.output.latex_as_equations = False
 
+    algwsym_config.output.allowed_colors = ('default', 'blue', 'skyblue',
+                                    'magenta', 'grey', 'darkorange', 'teal')
+    algwsym_config.output.colordict = {'known': 'skyblue', 'unknown': 'magenta',
+                      'constant': 'blue', 'unit': 'darkorange'}
+
     # Set version number for internal access
     algwsym_version = 'unknown'
     try:

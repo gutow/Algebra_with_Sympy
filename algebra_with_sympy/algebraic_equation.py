@@ -318,6 +318,18 @@ class algwsym_config():
             pass
 
         @property
+        def allowed_colors(self):
+            """
+            A list of string names of allowed colors for symbols in
+            expressions. The list must contain the string 'default' to
+            support the default color for the display. Default list =
+            ('default', 'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
+            'teal'). This high contrast set works reasonably well on light
+            and dark backgrounds and for those with limited color perception.
+            The string names should correspond to color names understood by
+            LaTex.
+            """
+        @property
         def show_code(self):
             """
             If `True` code versions of the equation expression will be
@@ -575,17 +587,24 @@ class algSymbol(Symbol):
     """Extension of the Sympy Symbol class to allow special behavior such as
     color coding.
 
-    If x.color is not set to black the value of x.color determines the
-    preferred color of the symbol when it is displayed. If it is set to black
-    the color will be determined by the value of x.variable_type.
+    If x.color is not set to 'default' the value of x.color determines the
+    preferred color of the symbol when it is displayed. If it is set to
+    'default' the color will be determined by the value of x.variable_type.
+
+    The colordict determines the mapping of variable_type to color.
     """
+
     def __new__(self, name, **assumptions):
         self._variable_type = 'none'
-        self._color = 'black'
+        self._color = 'default'
         return super().__new__(self, name, **assumptions)
 
     @property
     def variable_type(self):
+        """
+        Variable type = 'none', 'known', 'unknown', 'constant' or 'unit'.
+        Default = 'none'. Currently used to color code symbols in expressions.
+        """
         return self._variable_type
     @variable_type.setter
     def variable_type(self, value):
@@ -598,34 +617,34 @@ class algSymbol(Symbol):
 
     @property
     def color(self):
+        """
+        Color used to display the symbol. 'default' will give the default
+        color for the display being used. Limited to the set of colors
+        defined in `algwsym_config.output.allowed_colors`.
+        """
         return self._color
     @color.setter
     def color(self, value):
-        """Color used to display the symbol. 'black' will give the default
-        color for the display being used. The choices are limited to the high
-        contrast selection of colors ('black', 'blue', 'purple', 'red',
-        'orange', 'white', 'magenta', 'green'). Avoid using 'red' and 'green' in
-        the same expression because of how common red-green color blindness is.
+        """
+        Color used to display the symbol. 'default' will give the default
+        color for the display being used. Limited to the set of colors
+        defined in `algwsym_config.output.allowed_colors`.
         """
         from warnings import warn
-        # High contrast colors. Red and green should not be used together.
-        allowed = ('black', 'blue', 'purple', 'red', 'orange',
-                   'white', 'magenta', 'green')
-        if value.lower() in allowed:
+        if value.lower() in algwsym_config.output.allowed_colors:
             self._color = value.lower()
         else:
-            warn('Must be one of ' + str(allowed) + '.')
+            warn('Must be one of ' + str(algwsym_config.output.allowed_colors)
+                 + '.')
 
     def _latex(self, printer):
         sym_latex = latex(sympify(self.__str__()))
         if self.variable_type != 'none':
-            if self.color=='black':
-                colordict ={'known':'purple', 'unknown':'red', 'constant':'blue',
-                            'unit':'black'}
-                return (r'{\color{' + str(colordict[self.variable_type]) + '}{'
-                        + sym_latex + '}}')
+            if self.color=='default':
+                return (r'{\color{' + str(algwsym_config.output.colordict[
+                            self.variable_type]) + '}{' + sym_latex + '}}')
         else:
-            if self.color == 'black':
+            if self.color == 'default':
                 return r''+sym_latex
         return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
 
