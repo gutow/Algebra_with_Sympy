@@ -253,33 +253,6 @@ from algebra_with_sympy.preparser import integers_as_exact
 from sympy import *
 
 ###
-# Utility functions
-###
-
-def _get_user_ns():
-    user_namespace = None
-    try:
-        import __main__ as user_namespace
-    except ModuleNotFoundError:
-        pass
-    return user_namespace
-
-def __get_sympy_expr_name__(expr):
-    """
-    Tries to find the python string name that refers to a sympy object. In
-    IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
-    If not in an IPython environment looks in __main__.
-    :return: string value if found or empty string.
-    """
-    import __main__ as shell
-    for k in dir(shell):
-        item = getattr(shell, k)
-        if isinstance(item, Basic):
-            if item == expr and not k.startswith('_'):
-                return k
-    return ''
-
-###
 # Configuration
 ###
 
@@ -554,6 +527,7 @@ class Config:
         self.numerics = Numerics()
 
 def __latex_override__(expr, *arg):
+    from .util import __get_sympy_expr_name__
     algwsym_config = False
     ip = False
     try:
@@ -570,6 +544,8 @@ def __latex_override__(expr, *arg):
         pass
     show_code = False
     latex_as_equations = False
+    # The following seems to work here, but not in things called through the
+    # sympy printing system.
     if ip:
         algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
     else:
@@ -601,6 +577,7 @@ def __latex_override__(expr, *arg):
 
 def __command_line_printing__(expr, *arg):
     # print('Entering __command_line_printing__')
+    from algebra_with_sympy.util import __get_sympy_expr_name__
     human_text = True
     show_code = False
     if algwsym_config:
@@ -669,6 +646,7 @@ def set_integers_as_exact():
     `Integer(2)/Integer(3)*x` if x is a sympy object. If `x` is just a Python
     object `2*x/3` --> `x*0.6666666666...`.
     """
+    from algebra_with_sympy.util import __get_algwsym_config
     ip = False
     try:
         from IPython import get_ipython
@@ -678,16 +656,12 @@ def set_integers_as_exact():
     if ip:
         if get_ipython():
             get_ipython().input_transformers_post.append(integers_as_exact)
-            user_namespace = _get_user_ns()
-            if hasattr(user_namespace, 'algwsym_config'):
-                algwsym_config = getattr(user_namespace, 'algwsym_config')
-                # below prevents infinite recursion with the
-                # integers_as_exact setter.
-                if not algwsym_config.numerics.integers_as_exact:
-                    algwsym_config.numerics.integers_as_exact = True
-            else:
-                raise ValueError("The algwsym_config object does not exist.")
-    return
+            algwsym_config = __get_algwsym_config()
+            # below prevents infinite recursion with the
+            # integers_as_exact setter.
+            if not algwsym_config.numerics.integers_as_exact:
+                algwsym_config.numerics.integers_as_exact = True
+    pass
 
 def unset_integers_as_exact():
     """This operation disables forcing of numbers input without
@@ -700,6 +674,7 @@ def unset_integers_as_exact():
     starts with `set_integers_as_exact()` enabled (
     `algwsym_config.numerics.integers_as_exact = True`).
     """
+    from algebra_with_sympy.util import __get_algwsym_config
     ip = False
     try:
         from IPython import get_ipython
@@ -714,16 +689,12 @@ def unset_integers_as_exact():
             for k in pre:
                 if "integers_as_exact" in k.__name__:
                     pre.remove(k)
-            user_namespace = _get_user_ns()
-            if hasattr(user_namespace, 'algwsym_config'):
-                algwsym_config = getattr(user_namespace, 'algwsym_config')
-                # below prevents infinite recursion with the
-                # integers_as_exact setter.
-                if algwsym_config.numerics.integers_as_exact:
-                    algwsym_config.numerics.integers_as_exact = False
-            else:
-                raise ValueError("The algwsym_config object does not exist.")
-    return
+            algwsym_config = __get_algwsym_config()
+            # below prevents infinite recursion with the
+            # integers_as_exact setter.
+            if algwsym_config.numerics.integers_as_exact:
+                algwsym_config.numerics.integers_as_exact = False
+    pass
 
 Eqn = Equation
 if ip and "text/latex" not in formatter.active_types:
@@ -746,7 +717,6 @@ class algSymbol(Symbol):
     The `algwsym_config.output.colordict` determines the mapping of
     `variable_type` to color.
     """
-
     def __new__(self, name, **assumptions):
         self._variable_type = 'none'
         self._color = 'default'
@@ -784,7 +754,9 @@ class algSymbol(Symbol):
         defined in `algwsym_config.output.allowed_colors`.
         """
         from warnings import warn
-        user_namespace = _get_user_ns()
+        # This import does not work so using full code snippet
+        #from .util import (__get_algwsym_config)
+        import __main__ as user_namespace
         algwsym_config = None
         if hasattr(user_namespace, 'algwsym_config'):
             algwsym_config = getattr(user_namespace, 'algwsym_config')
@@ -796,7 +768,9 @@ class algSymbol(Symbol):
         del user_namespace
 
     def _latex(self, printer):
-        user_namespace = _get_user_ns()
+        # This import does not seem to work after going through sympy printing
+        # from algebra_with_sympy.util import __get_algwsym_config
+        import __main__ as user_namespace
         algwsym_config = None
         if hasattr(user_namespace, 'algwsym_config'):
             algwsym_config = getattr(user_namespace, 'algwsym_config')
@@ -809,14 +783,16 @@ class algSymbol(Symbol):
                 return retstr
         else:
             if self.color == 'default':
+                del user_namespace
                 return r''+sym_latex
+        del user_namespace
         return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
 
 def var(names, **assumptions):
     """Override of Sympy `var()` that uses the extended type`algSymbol` in
     place of Sympy's `Symbol`."""
     from sympy.core.symbol import symbols
-    #import __main__ as shell
+    from algebra_with_sympy.util import _get_user_ns
     user_namespace = _get_user_ns()
     syms = ''
     # clean up
@@ -912,6 +888,8 @@ def solve(f, *symbols, **flags):
     """
     from sympy.solvers.solvers import solve
     from sympy.sets.sets import FiniteSet
+    from algebra_with_sympy.util import __get_algwsym_config
+    algwsym_config = __get_algwsym_config()
     newf =[]
     solns = []
     displaysolns = []
@@ -959,10 +937,6 @@ def solve(f, *symbols, **flags):
                 solns.append(solnset)
     else:
         solns = result
-    user_namespace = _get_user_ns()
-    algwsym_config = None
-    if hasattr(user_namespace, 'algwsym_config'):
-        algwsym_config = getattr(user_namespace, 'algwsym_config')
     if algwsym_config.output.solve_to_list:
         if len(solns) == 1 and hasattr(solns[0], "__iter__"):
             # no need to wrap a list of a single element inside another list
