@@ -696,15 +696,59 @@ def unset_integers_as_exact():
                 algwsym_config.numerics.integers_as_exact = False
     pass
 
-Eqn = Equation
 if ip and "text/latex" not in formatter.active_types:
-    old = formatter.formatters['text/plain'].for_type(Eqn,
+    old = formatter.formatters['text/plain'].for_type(Equation,
                                                 __command_line_printing__)
     # print("For type Equation overriding plain text formatter = " + str(old))
 
 ###
 # Extensions and overrides of sympy
 ###
+
+class Equation(Equation):
+    def known(self,*args):
+        """
+        This will set the type of the listed symbols in the equation to 'known'.
+        Shortcut for having to call `x.variable_type =` on multiple variables
+        in an equation.
+        """
+        retstr = 'The following symbols were set to type "known": '
+        for k in args:
+            if k in self.free_symbols:
+                k.variable_type = 'known'
+                retstr += str(k) +', '
+        retstr = retstr[:-2]+'.'
+        return retstr
+
+    def unknown(self,*args):
+        """
+        This will set the type of the listed symbols in the equation to
+        'unknown'. Shortcut for having to call `x.variable_type =` on
+        multiple variables in an equation.
+        """
+        retstr = 'The following symbols were set to type "unknown": '
+        for k in args:
+            if k in self.free_symbols:
+                k.variable_type = 'unknown'
+                retstr += str(k) +', '
+        retstr = retstr[:-2]+'.'
+        return retstr
+
+    def constant(self,*args):
+        """
+        This will set the type of the listed symbols in the equation to
+        'constant'. Shortcut for having to call `x.variable_type =` on
+        multiple variables in an equation.
+        """
+        retstr = 'The following symbols were set to type "constant": '
+        for k in args:
+            if k in self.free_symbols:
+                k.variable_type = 'constant'
+                retstr += str(k) +', '
+        retstr = retstr[:-2]+'.'
+        return retstr
+
+Eqn = Equation
 
 class algSymbol(Symbol):
     """Extension of the Sympy Symbol class to allow special behavior such as
