@@ -23,11 +23,12 @@ except ImportError:
 
 if proper_sympy:
     from algebra_with_sympy.algebraic_equation import *
-
+    # Initiate configuration
+    global algwsym_config
+    algwsym_config= Config()
     # Set up numerics behaviors
     try:
         from IPython import get_ipython
-
         if get_ipython():
             get_ipython().input_transformers_post.append(integers_as_exact)
             algwsym_config.numerics.integers_as_exact = True

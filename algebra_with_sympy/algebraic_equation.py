@@ -252,7 +252,221 @@ import sympy
 from algebra_with_sympy.preparser import integers_as_exact
 from sympy import *
 
-class algwsym_config():
+###
+# Utility functions
+###
+
+def _get_user_ns():
+    user_namespace = None
+    try:
+        import __main__ as user_namespace
+    except ModuleNotFoundError:
+        pass
+    return user_namespace
+
+def __get_sympy_expr_name__(expr):
+    """
+    Tries to find the python string name that refers to a sympy object. In
+    IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
+    If not in an IPython environment looks in __main__.
+    :return: string value if found or empty string.
+    """
+    import __main__ as shell
+    for k in dir(shell):
+        item = getattr(shell, k)
+        if isinstance(item, Basic):
+            if item == expr and not k.startswith('_'):
+                return k
+    return ''
+
+###
+# Configuration
+###
+
+class Output:
+
+    def __init__(self):
+        """This holds settings that impact output.
+        """
+        self._allowed_colors = None
+        self._colordict = None
+        self._show_code = False
+        self._human_text = True
+        self._solve_to_list = False
+        self._latex_as_equation = False
+        pass
+
+    @property
+    def allowed_colors(self):
+        """
+        A tuple of string names of allowed colors for symbols in
+        expressions. The tuple must contain the string 'default' to
+        support the default color for the display. Default tuple =
+        ('default', 'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
+        'teal'). This high contrast set works reasonably well on light
+        and dark backgrounds and for those with limited color perception.
+        The string names should correspond to color names understood by
+        LaTex.
+        """
+        return self._allowed_colors
+
+    @allowed_colors.setter
+    def allowed_colors(self, value):
+        from warnings import warn
+        if isinstance(value, tuple):
+            if 'default' in value:
+                self._allowed_colors = value
+            else:
+                warn('Must be a tuple of strings containing the string '
+                     '"default"')
+
+    @property
+    def colordict(self):
+        """
+        A dictionary used for mapping variable types to color for
+        highlighting when displayed. Currently only implemented for
+        typeset LaTex. Default = {'known': 'skyblue', 'unknown': 'magenta',
+                  'constant': 'blue', 'unit': 'darkorange'}
+        """
+        return self._colordict
+
+    @colordict.setter
+    def colordict(self,value):
+        from warnings import warn
+        if isinstance(value, dict):
+            keys = value.keys()
+            if 'known' in keys:
+                if 'unknown' in keys:
+                    if 'constant' in keys:
+                        if 'unit' in keys:
+                            self._colordict = value
+            else:
+                warn('colordict must contain the keys ("known", "unknown", '
+                     '"constant", "unit")')
+
+    @property
+    def show_code(self):
+        """
+        If `True` code versions of the equation expression will be
+        output in interactive environments. Default = `False`.
+        """
+        return self._show_code
+
+    @show_code.setter
+    def show_code(self,value):
+        from warnings import warn
+        if isinstance(value, bool):
+            self._show_code = value
+        else:
+            warn('show_code must be True or False.')
+
+    @property
+    def human_text(self):
+        """
+        If `True` the human readable equation expression will be
+        output in text interactive environments. Default = `False`.
+        """
+        return self._human_text
+
+    @human_text.setter
+    def human_text(self,value):
+        from warnings import warn
+        if isinstance(value, bool):
+            self._human_text = value
+        else:
+            warn('human_text must be True or False.')
+
+    @property
+    def solve_to_list(self):
+        """
+        If `True` the results of a call to `solve(...)` will return a
+        Python `list` rather than a Sympy `FiniteSet`. This recovers
+        behavior for versions before 0.11.0.
+
+        Note: setting this `True` means that expressions within the
+        returned solutions will not be pretty-printed in Jupyter and
+        IPython.
+        """
+        return self._solve_to_list
+
+    @solve_to_list.setter
+    def solve_to_list(self, value):
+        from warnings import warn
+        if isinstance(value, bool):
+            self._solve_to_list = value
+        else:
+            warn('solve_to_list must be True or False.')
+
+    @property
+    def latex_as_equations(self):
+        """
+        If `True` any output that is returned as LaTex for
+        pretty-printing will be wrapped in the formal Latex for an
+        equation. For example rather than
+        ```
+        $\\frac{a}{b}=c$
+        ```
+        the output will be
+        ```
+        \\begin{equation}\\frac{a}{b}=c\\end{equation}
+        ```
+        """
+        return self._latex_as_equation
+
+    @latex_as_equations.setter
+    def latex_as_equations(self, value):
+        from warnings import warn
+        if isinstance(value, bool):
+            self._latex_as_equation = value
+        else:
+            warn('latex_as_equations must be True or False.')
+
+class Numerics():
+
+    def __init__(self):
+        """This class holds settings for how numerical computation and
+        inputs are handled.
+        """
+        self._integers_as_exact = True
+
+    @property
+    def integers_as_exact(self):
+        """**This is a flag for informational purposes and interface
+        consistency. Changing the value will not change the behavior.**
+
+        To change the behavior call:
+        * `unset_integers_as_exact()` to turn this feature off.
+        * `set_integers_as_exact()` to turn this feature on (on by
+        default).
+
+        If set to `True` (the default) and if running in an
+        IPython/Jupyter environment any number input without a decimal
+        will be interpreted as a sympy integer. Thus, fractions and
+        related expressions will not evaluate to floating point numbers,
+        but be maintained as exact expressions (e.g. 2/3 -> 2/3 not the
+        float 0.6666...).
+        """
+        return self._integers_as_exact
+
+    @integers_as_exact.setter
+    def integers_as_exact(self, value):
+        """
+        Ensures that if the `integers_as_exact` flag is changed the preparser
+        settings are properly updated.
+        """
+        from warnings import warn
+        if isinstance(value, bool):
+            self._integers_as_exact = value
+            # if self._integers_as_exact:
+            #     set_integers_as_exact()
+            # else:
+            #     unset_integers_as_exact()
+        else:
+            warn('integer_as_exact must be True or False.')
+        pass
+
+
+class Config:
 
     def __init__(self):
         """
@@ -307,122 +521,37 @@ class algwsym_config():
         a default value of `False`. Setting this to `True` wraps
         output as LaTex equations wrapping them in `\\begin{equation}...\\end{
         equation}`.
+
+        Coloring Symbols
+        ----------------
+        Symbols of the extended type `algSymbol` (all symbols created using
+        `var()` or `units()` in an Algebra_with_Sympy environment) can be
+        assigned a color for display when typeset (displayed as interpreted
+        LaTex).
+
+        There are two methods for setting the color:
+        1. The color can be directly set by setting the `color` property of
+        the symbol. For example: `x.color = 'teal'`.
+        2. Setting the symbol `variable_type` property to one of ('known',
+        'unkown', 'constant', 'unit'). For example: `x.variable_type = 'known'`.
+
+        * The color of the displayed symbol is determined by the color
+          dictionary `algwsym_config.output.colordict` the default value of
+          which is {'known': 'skyblue', unknown': 'magenta', 'constant':
+          'blue', 'unit': 'darkorange'}. This dictionary can be set by the
+          user, but must only contain colors from the available colors.
+
+        * The available colors are limited to those set in the tuple
+          `algwsym_config.output.allowed_colors`. The default is ('default',
+          'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
+          'teal'). This high contrast set works reasonably well on light
+          and dark backgrounds and for those with limited color perception.
+          The string names should correspond to color names understood by
+          LaTex. This tuple must contain the string 'default' to support the
+          default color for the display.
         """
-        pass
-
-    class output():
-
-        def __init__(self):
-            """This holds settings that impact output.
-            """
-            pass
-
-        @property
-        def allowed_colors(self):
-            """
-            A list of string names of allowed colors for symbols in
-            expressions. The list must contain the string 'default' to
-            support the default color for the display. Default list =
-            ('default', 'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
-            'teal'). This high contrast set works reasonably well on light
-            and dark backgrounds and for those with limited color perception.
-            The string names should correspond to color names understood by
-            LaTex.
-            """
-
-        @property
-        def colordict(self):
-            """
-            A dictionary used for mapping variable types to color for
-            highlighting when displayed. Currently only implemented for
-            typeset LaTex. Default = {'known': 'skyblue', 'unknown': 'magenta',
-                      'constant': 'blue', 'unit': 'darkorange'}
-            """
-        @property
-        def show_code(self):
-            """
-            If `True` code versions of the equation expression will be
-            output in interactive environments. Default = `False`.
-            """
-            return self.show_code
-
-        @property
-        def human_text(self):
-            """
-            If `True` the human readable equation expression will be
-            output in text interactive environments. Default = `False`.
-            """
-            return self.human_text
-
-        @property
-        def solve_to_list(self):
-            """
-            If `True` the results of a call to `solve(...)` will return a
-            Python `list` rather than a Sympy `FiniteSet`. This recovers
-            behavior for versions before 0.11.0.
-
-            Note: setting this `True` means that expressions within the
-            returned solutions will not be pretty-printed in Jupyter and
-            IPython.
-            """
-            return self.solve_to_list
-
-        @property
-        def latex_as_equations(self):
-            """
-            If `True` any output that is returned as LaTex for
-            pretty-printing will be wrapped in the formal Latex for an
-            equation. For example rather than
-            ```
-            $\\frac{a}{b}=c$
-            ```
-            the output will be
-            ```
-            \\begin{equation}\\frac{a}{b}=c\\end{equation}
-            ```
-            """
-            return self.latex_as_equation
-
-    class numerics():
-
-        def __init__(self):
-            """This class holds settings for how numerical computation and
-            inputs are handled.
-            """
-            pass
-
-        def integers_as_exact(self):
-            """**This is a flag for informational purposes and interface
-            consistency. Changing the value will not change the behavior.**
-
-            To change the behavior call:
-            * `unset_integers_as_exact()` to turn this feature off.
-            * `set_integers_as_exact()` to turn this feature on (on by
-            default).
-
-            If set to `True` (the default) and if running in an
-            IPython/Jupyter environment any number input without a decimal
-            will be interpreted as a sympy integer. Thus, fractions and
-            related expressions will not evalute to floating point numbers,
-            but be maintained as exact expressions (e.g. 2/3 -> 2/3 not the
-            float 0.6666...).
-            """
-            return self.integers_as_exact
-
-def __get_sympy_expr_name__(expr):
-    """
-    Tries to find the python string name that refers to a sympy object. In
-    IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
-    If not in an IPython environment looks in __main__.
-    :return: string value if found or empty string.
-    """
-    import __main__ as shell
-    for k in dir(shell):
-        item = getattr(shell, k)
-        if isinstance(item, Basic):
-            if item == expr and not k.startswith('_'):
-                return k
-    return ''
+        self.output = Output()
+        self.numerics = Numerics()
 
 def __latex_override__(expr, *arg):
     algwsym_config = False
@@ -523,7 +652,10 @@ else:
     # print("Overriding command line printing of python.")
     sys.displayhook = __command_line_printing__
 
+###
 # Numerics controls
+###
+
 def set_integers_as_exact():
     """This operation causes any number input without a decimal that is
     part of a Sympy expression to be interpreted as a sympy
@@ -546,9 +678,13 @@ def set_integers_as_exact():
     if ip:
         if get_ipython():
             get_ipython().input_transformers_post.append(integers_as_exact)
-            algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
-            if algwsym_config:
-                algwsym_config.numerics.integers_as_exact = True
+            user_namespace = _get_user_ns()
+            if hasattr(user_namespace, 'algwsym_config'):
+                algwsym_config = getattr(user_namespace, 'algwsym_config')
+                # below prevents infinite recursion with the
+                # integers_as_exact setter.
+                if not algwsym_config.numerics.integers_as_exact:
+                    algwsym_config.numerics.integers_as_exact = True
             else:
                 raise ValueError("The algwsym_config object does not exist.")
     return
@@ -573,17 +709,20 @@ def unset_integers_as_exact():
     if ip:
         if get_ipython():
             pre = get_ipython().input_transformers_post
-            # The below looks excessively complicated, but more reliably finds the
-            # transformer to remove across varying IPython environments.
+            # The below looks excessively complicated, but more reliably finds
+            # the transformer to remove across varying IPython environments.
             for k in pre:
                 if "integers_as_exact" in k.__name__:
                     pre.remove(k)
-            algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
-            if algwsym_config:
-                algwsym_config.numerics.integers_as_exact = False
+            user_namespace = _get_user_ns()
+            if hasattr(user_namespace, 'algwsym_config'):
+                algwsym_config = getattr(user_namespace, 'algwsym_config')
+                # below prevents infinite recursion with the
+                # integers_as_exact setter.
+                if algwsym_config.numerics.integers_as_exact:
+                    algwsym_config.numerics.integers_as_exact = False
             else:
                 raise ValueError("The algwsym_config object does not exist.")
-
     return
 
 Eqn = Equation
@@ -591,6 +730,10 @@ if ip and "text/latex" not in formatter.active_types:
     old = formatter.formatters['text/plain'].for_type(Eqn,
                                                 __command_line_printing__)
     # print("For type Equation overriding plain text formatter = " + str(old))
+
+###
+# Extensions and overrides of sympy
+###
 
 class algSymbol(Symbol):
     """Extension of the Sympy Symbol class to allow special behavior such as
@@ -641,36 +784,40 @@ class algSymbol(Symbol):
         defined in `algwsym_config.output.allowed_colors`.
         """
         from warnings import warn
+        user_namespace = _get_user_ns()
+        algwsym_config = None
+        if hasattr(user_namespace, 'algwsym_config'):
+            algwsym_config = getattr(user_namespace, 'algwsym_config')
         if value.lower() in algwsym_config.output.allowed_colors:
             self._color = value.lower()
         else:
-            warn('Must be one of ' + str(algwsym_config.output.allowed_colors)
-                 + '.')
+            warn('Color must be one of ' + str(
+                algwsym_config.output.allowed_colors) + '.')
+        del user_namespace
 
     def _latex(self, printer):
+        user_namespace = _get_user_ns()
+        algwsym_config = None
+        if hasattr(user_namespace, 'algwsym_config'):
+            algwsym_config = getattr(user_namespace, 'algwsym_config')
         sym_latex = latex(sympify(self.__str__()))
         if self.variable_type != 'none':
             if self.color=='default':
-                return (r'{\color{' + str(algwsym_config.output.colordict[
+                retstr = (r'{\color{' + str(algwsym_config.output.colordict[
                             self.variable_type]) + '}{' + sym_latex + '}}')
+                del user_namespace
+                return retstr
         else:
             if self.color == 'default':
                 return r''+sym_latex
         return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
-
 
 def var(names, **assumptions):
     """Override of Sympy `var()` that uses the extended type`algSymbol` in
     place of Sympy's `Symbol`."""
     from sympy.core.symbol import symbols
     #import __main__ as shell
-    user_namespace = None
-    try:
-        from IPython import get_ipython
-        if get_ipython():
-            user_namespace = get_ipython().user_ns
-    except ModuleNotFoundError:
-        pass
+    user_namespace = _get_user_ns()
     syms = ''
     # clean up
     names = names.strip()
@@ -688,21 +835,13 @@ def var(names, **assumptions):
                 tempsyms.append(k)
         syms = tempsyms
     retstr = ''
-
-    if user_namespace==None:
-        import sys
-        frame_num = 0
-        frame_name = None
-        while frame_name != '__main__' and frame_num < 50:
-            user_namespace = sys._getframe(frame_num).f_globals
-            frame_num +=1
-            frame_name = user_namespace['__name__']
     retstr +='('
     unit = assumptions.pop('unit', False)
     for k in syms:
-        user_namespace[k] = symbols(k, cls = algSymbol, **assumptions)
+        setattr(user_namespace, k, symbols(k, cls = algSymbol, **assumptions))
         if unit:
-            user_namespace[k].variable_type = 'unit'
+            k_temp = getattr(user_namespace, k)
+            k_temp.variable_type = 'unit'
         retstr += k + ','
     retstr = retstr[:-1] + ')'
     del user_namespace # to allow garbage collection?
@@ -820,6 +959,10 @@ def solve(f, *symbols, **flags):
                 solns.append(solnset)
     else:
         solns = result
+    user_namespace = _get_user_ns()
+    algwsym_config = None
+    if hasattr(user_namespace, 'algwsym_config'):
+        algwsym_config = getattr(user_namespace, 'algwsym_config')
     if algwsym_config.output.solve_to_list:
         if len(solns) == 1 and hasattr(solns[0], "__iter__"):
             # no need to wrap a list of a single element inside another list
@@ -952,21 +1095,5 @@ def __FiniteSet__str__override__(self):
 
 sympy.sets.FiniteSet.__str__ = __FiniteSet__str__override__
 
-
-# def __algSymbol_latex(self, expr):
-#     sym_latex = latex(sympify(expr.__str__()))
-#     if expr.variable_type != 'none':
-#         if expr.color == 'black':
-#             colordict = {'known': 'purple', 'unknown': 'red',
-#                          'constant': 'blue',
-#                          'unit': 'black'}
-#             return (r'\color{' + str(colordict[expr.variable_type]) + '}{'
-#                     + sym_latex + '}')
-#     else:
-#         if expr.color == 'black':
-#             return r'' + sym_latex
-#     return (r'\color{' + str(expr.color) + '}{' + sym_latex + '}')
-#
-# sympy.printing.latex._print_Symbol = __algSymbol_latex
 # Redirect python abs() to Abs()
 abs = Abs
