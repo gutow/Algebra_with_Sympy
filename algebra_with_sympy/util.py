@@ -29,9 +29,9 @@ def __get_algwsym_config():
 
 def __get_sympy_expr_name__(expr):
     """
-    Tries to find the python string name that refers to a sympy object. In
-    IPython environments (IPython, Jupyter, etc...) looks in the user_ns.
-    If not in an IPython environment looks in __main__.
+    Tries to find the python string name that refers to a sympy object. Looks
+    in __main__. Historically also needed to look in the IPython user_ns,
+    but that no longer seems to be true.
     :return: string value if found or empty string.
     """
     import __main__ as shell

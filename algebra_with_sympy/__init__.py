@@ -24,8 +24,14 @@ except ImportError:
 if proper_sympy:
     from algebra_with_sympy.algebraic_equation import *
     # Initiate configuration
-    global algwsym_config
-    algwsym_config= Config()
+    import algebra_with_sympy.util as util
+    temp_userns = util._get_user_ns()
+    if temp_userns:
+        setattr(temp_userns, 'algwsym_config', Config())
+    else:
+        warn('Configuration settings will not work. Unable to find the '
+             'interactive user namespace.')
+    algwsym_config = getattr(temp_userns, 'algwsym_config', None)
     # Set up numerics behaviors
     try:
         from IPython import get_ipython
@@ -44,10 +50,10 @@ if proper_sympy:
     algwsym_config.output.solve_to_list = False
     algwsym_config.output.latex_as_equations = False
 
-    algwsym_config.output.allowed_colors = ('default', 'blue', 'skyblue',
+    algwsym_config.output.allowed_colors = ('default', 'royalblue', 'skyblue',
                                     'magenta', 'grey', 'darkorange', 'teal')
     algwsym_config.output.colordict = {'known': 'skyblue', 'unknown': 'magenta',
-                      'constant': 'blue', 'unit': 'darkorange'}
+                      'constant': 'royalblue', 'unit': 'grey'}
 
     # Set version number for internal access
     algwsym_version = 'unknown'

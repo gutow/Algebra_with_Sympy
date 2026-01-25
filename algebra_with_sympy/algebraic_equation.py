@@ -42,7 +42,11 @@ readable eqautions "lhs = rhs" in vanilla python by adjusting the settings
 in `algwsym_config` (see it's documentation). Output is human readable by
 default in IPython and Jupyter environments.
 >>> from algebra_with_sympy import *
->>> a, b, c, x = var('a b c x')
+>>> a, b, c, x = symbols('a b c x')
+
+In an interactive session you would normally use `var()` instead.
+>>> var('a b c x') #DOCTESTS +SKIP
+(a, b, c, x)
 >>> Equation(a,b/c)
 Equation(a, b/c)
 >>> t=Eqn(a,b/c)
@@ -148,6 +152,10 @@ Equation(p, 0.9334*atm)
 
 Substituting an equation into another equation:
 >>> P, P1, P2, A1, A2, E1, E2 = symbols("P, P1, P2, A1, A2, E1, E2")
+
+In an interactive session you would normally use `var()` instead.
+>>> var("P, P1, P2, A1, A2, E1, E2") #DOCTESTS +SKIP
+(P, P1, P2, A1, A2, E1, E2)
 >>> eq1 = Eqn(P, P1 + P2)
 >>> eq2 = Eqn(P1 / (A1 * E1), P2 / (A2 * E2))
 >>> P1_val = (eq1 - P2).swap
@@ -275,7 +283,7 @@ class Output:
         A tuple of string names of allowed colors for symbols in
         expressions. The tuple must contain the string 'default' to
         support the default color for the display. Default tuple =
-        ('default', 'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
+        ('default', 'royalblue', 'skyblue', 'magenta', 'grey', 'darkorange',
         'teal'). This high contrast set works reasonably well on light
         and dark backgrounds and for those with limited color perception.
         The string names should correspond to color names understood by
@@ -299,7 +307,7 @@ class Output:
         A dictionary used for mapping variable types to color for
         highlighting when displayed. Currently only implemented for
         typeset LaTex. Default = {'known': 'skyblue', 'unknown': 'magenta',
-                  'constant': 'blue', 'unit': 'darkorange'}
+                  'constant': 'royalblue', 'unit': 'grey'}
         """
         return self._colordict
 
@@ -430,10 +438,10 @@ class Numerics():
         from warnings import warn
         if isinstance(value, bool):
             self._integers_as_exact = value
-            # if self._integers_as_exact:
-            #     set_integers_as_exact()
-            # else:
-            #     unset_integers_as_exact()
+            if self._integers_as_exact:
+                set_integers_as_exact()
+            else:
+                unset_integers_as_exact()
         else:
             warn('integer_as_exact must be True or False.')
         pass
@@ -528,7 +536,10 @@ class Config:
 
 def __latex_override__(expr, *arg):
     from .util import __get_sympy_expr_name__
-    algwsym_config = False
+    from algebra_with_sympy.util import (__get_sympy_expr_name__,
+                                         __get_algwsym_config)
+    # making robust to which namespace it is implemented in.
+    algwsym_config = __get_algwsym_config()
     ip = False
     try:
         from IPython import get_ipython
@@ -546,10 +557,6 @@ def __latex_override__(expr, *arg):
     latex_as_equations = False
     # The following seems to work here, but not in things called through the
     # sympy printing system.
-    if ip:
-        algwsym_config = get_ipython().user_ns.get("algwsym_config", False)
-    else:
-        algwsym_config = globals()['algwsym_config']
     if algwsym_config:
         show_code = algwsym_config.output.show_code
         latex_as_equations = algwsym_config.output.latex_as_equations
@@ -577,7 +584,10 @@ def __latex_override__(expr, *arg):
 
 def __command_line_printing__(expr, *arg):
     # print('Entering __command_line_printing__')
-    from algebra_with_sympy.util import __get_sympy_expr_name__
+    from algebra_with_sympy.util import (__get_sympy_expr_name__,
+                                         __get_algwsym_config)
+    # making robust to which namespace it is implemented in.
+    algwsym_config = __get_algwsym_config()
     human_text = True
     show_code = False
     if algwsym_config:
@@ -655,7 +665,9 @@ def set_integers_as_exact():
         ip = False
     if ip:
         if get_ipython():
-            get_ipython().input_transformers_post.append(integers_as_exact)
+            pre = get_ipython().input_transformers_post
+            if integers_as_exact not in pre:
+                pre.append(integers_as_exact)
             algwsym_config = __get_algwsym_config()
             # below prevents infinite recursion with the
             # integers_as_exact setter.
@@ -684,11 +696,14 @@ def unset_integers_as_exact():
     if ip:
         if get_ipython():
             pre = get_ipython().input_transformers_post
-            # The below looks excessively complicated, but more reliably finds
-            # the transformer to remove across varying IPython environments.
-            for k in pre:
-                if "integers_as_exact" in k.__name__:
-                    pre.remove(k)
+            # the transformer should only be in the list once, but we check
+            # for multiple instances and remove them.
+            while integers_as_exact in pre:
+                # The below looks excessively complicated, but more reliably finds
+                # the transformer to remove across varying IPython environments.
+                for k in pre:
+                    if "integers_as_exact" in k.__name__:
+                        pre.remove(k)
             algwsym_config = __get_algwsym_config()
             # below prevents infinite recursion with the
             # integers_as_exact setter.
@@ -704,52 +719,6 @@ if ip and "text/latex" not in formatter.active_types:
 ###
 # Extensions and overrides of sympy
 ###
-
-class Equation(Equation):
-    def known(self,*args):
-        """
-        This will set the type of the listed symbols in the equation to 'known'.
-        Shortcut for having to call `x.variable_type =` on multiple variables
-        in an equation.
-        """
-        retstr = 'The following symbols were set to type "known": '
-        for k in args:
-            if k in self.free_symbols:
-                k.variable_type = 'known'
-                retstr += str(k) +', '
-        retstr = retstr[:-2]+'.'
-        return retstr
-
-    def unknown(self,*args):
-        """
-        This will set the type of the listed symbols in the equation to
-        'unknown'. Shortcut for having to call `x.variable_type =` on
-        multiple variables in an equation.
-        """
-        retstr = 'The following symbols were set to type "unknown": '
-        for k in args:
-            if k in self.free_symbols:
-                k.variable_type = 'unknown'
-                retstr += str(k) +', '
-        retstr = retstr[:-2]+'.'
-        return retstr
-
-    def constant(self,*args):
-        """
-        This will set the type of the listed symbols in the equation to
-        'constant'. Shortcut for having to call `x.variable_type =` on
-        multiple variables in an equation.
-        """
-        retstr = 'The following symbols were set to type "constant": '
-        for k in args:
-            if k in self.free_symbols:
-                k.variable_type = 'constant'
-                retstr += str(k) +', '
-        retstr = retstr[:-2]+'.'
-        return retstr
-
-Eqn = Equation
-
 class algSymbol(Symbol):
     """Extension of the Sympy Symbol class to allow special behavior such as
     color coding.
@@ -832,9 +801,93 @@ class algSymbol(Symbol):
         del user_namespace
         return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
 
+def known(*args):
+    """
+    This will set the type of the listed symbols in the equation to 'known'.
+    Shortcut for having to call `x.variable_type =` on multiple variables
+    in an equation.
+    """
+    setprestr = 'The following symbols were set to type "known": '
+    notsetprestr = ('The following are not defined as symbols so cannot be '
+                    'set as known: ')
+    symsstr = ''
+    notsymsstr = ''
+    for k in args:
+        if isinstance(k, algSymbol):
+            k.variable_type = 'known'
+            symsstr += str(k) + ', '
+        else:
+            notsymsstr += str(k) + ', '
+    if notsymsstr.endswith(', '):
+        notsymsstr = notsymsstr[:-2]
+    if symsstr.endswith(', '):
+        symsstr = symsstr[:-2]
+    if symsstr == '':
+        return notsetprestr + notsymsstr + '.'
+    elif notsymsstr == '':
+        return setprestr + symsstr + '.'
+    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr + '.'
+
+def unknown(*args):
+    """
+    This will set the type of the listed symbols in the equation to
+    'unknown'. Shortcut for having to call `x.variable_type =` on
+    multiple variables in an equation.
+    """
+    setprestr = 'The following symbols were set to type "unknown": '
+    notsetprestr = ('The following are not defined as symbols so cannot be '
+                    'set as unknown: ')
+    symsstr = ''
+    notsymsstr = ''
+    for k in args:
+        if isinstance(k, algSymbol):
+            k.variable_type = 'unknown'
+            symsstr += str(k) + ', '
+        else:
+            notsymsstr += str(k) + ', '
+    if notsymsstr.endswith(', '):
+        notsymsstr = notsymsstr[:-2]
+    if symsstr.endswith(', '):
+        symsstr = symsstr[:-2]
+    if symsstr == '':
+        return notsetprestr + notsymsstr + '.'
+    elif notsymsstr == '':
+        return setprestr + symsstr + '.'
+    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr + '.'
+
+def constant(*args):
+    """
+    This will set the type of the listed symbols in the equation to
+    'constant'. Shortcut for having to call `x.variable_type =` on
+    multiple variables in an equation.
+    """
+    setprestr = 'The following symbols were set to type "constant": '
+    notsetprestr = ('The following are not defined as symbols so cannot be '
+                    'set as constant: ')
+    symsstr =''
+    notsymsstr = ''
+    for k in args:
+        if isinstance(k,algSymbol):
+            k.variable_type = 'constant'
+            symsstr += str(k) +', '
+        else:
+            notsymsstr += str(k) +', '
+    if  notsymsstr.endswith(', '):
+        notsymsstr = notsymsstr[:-2]
+    if symsstr.endswith(', '):
+        symsstr = symsstr[:-2]
+    if symsstr == '':
+        return notsetprestr + notsymsstr+'.'
+    elif notsymsstr == '':
+        return setprestr + symsstr+'.'
+    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr+'.'
+
 def var(names, **assumptions):
     """Override of Sympy `var()` that uses the extended type`algSymbol` in
-    place of Sympy's `Symbol`."""
+    place of Sympy's `Symbol`.
+    >>> var('a b c x')
+    (a, b, c, x)
+    """
     from sympy.core.symbol import symbols
     from algebra_with_sympy.util import _get_user_ns
     user_namespace = _get_user_ns()
@@ -854,18 +907,18 @@ def var(names, **assumptions):
             if k!='':
                 tempsyms.append(k)
         syms = tempsyms
-    retstr = ''
-    retstr +='('
+    symret = []
     unit = assumptions.pop('unit', False)
     for k in syms:
         setattr(user_namespace, k, symbols(k, cls = algSymbol, **assumptions))
+        symret.append(getattr(user_namespace, k))
         if unit:
             k_temp = getattr(user_namespace, k)
             k_temp.variable_type = 'unit'
-        retstr += k + ','
-    retstr = retstr[:-1] + ')'
     del user_namespace # to allow garbage collection?
-    return retstr
+    if len(symret)== 1:
+        return symret[0]
+    return tuple(symret)
 
 def units(names):
     """
@@ -897,9 +950,12 @@ def solve(f, *symbols, **flags):
 
     Examples
     --------
+    >>> from algebra_with_sympy import *
     >>> a, b, c, x, y = symbols('a b c x y', real = True)
     >>> import sys
-    >>> sys.displayhook = __command_line_printing__ # set by default on normal initialization.
+
+    # set by default on normal initialization.
+    >>> sys.displayhook = __command_line_printing__
     >>> eq1 = Eqn(abs(2*x+y),3)
     >>> eq2 = Eqn(abs(x + 2*y),3)
     >>> B = solve((eq1,eq2))
@@ -930,9 +986,10 @@ def solve(f, *symbols, **flags):
     Code version: FiniteSet(FiniteSet(Equation(x, -3), Equation(y, 3)), FiniteSet(Equation(x, -1), Equation(y, -1)), FiniteSet(Equation(x, 1), Equation(y, 1)), FiniteSet(Equation(x, 3), Equation(y, -3)))
     {{x = -3, y = 3}, {x = -1, y = -1}, {x = 1, y = 1}, {x = 3, y = -3}}
     """
-    from sympy.solvers.solvers import solve
+    from sympy.solvers.solvers import solve as symsolve
     from sympy.sets.sets import FiniteSet
     from algebra_with_sympy.util import __get_algwsym_config
+    from algebra_with_sympy.algebraic_equation import Equation
     algwsym_config = __get_algwsym_config()
     newf =[]
     solns = []
@@ -952,7 +1009,9 @@ def solve(f, *symbols, **flags):
         else:
             newf.append(f)
     flags['dict'] = True
-    result = solve(newf, *symbols, **flags)
+    # for k in newf:
+    #     print(str(k)+' type '+ str(type(k)))
+    result = symsolve(newf, *symbols, **flags)
     if len(symbols) == 1 and hasattr(symbols[0], "__iter__"):
         symbols = symbols[0]
     if contains_eqn:

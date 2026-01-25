@@ -2,7 +2,7 @@
 
 from algebra_with_sympy.preparser import integers_as_exact
 from algebra_with_sympy.algebraic_equation import set_integers_as_exact, \
-    unset_integers_as_exact, algwsym_config
+    unset_integers_as_exact, Config
 from IPython import get_ipython
 from pytest import raises
 
@@ -13,7 +13,11 @@ if not(get_ipython()):
                            'use `pytest --ignore-glob="*test_numerics.py"`')
 
 # Set up the global config object
-get_ipython().user_ns['algwsym_config'] = algwsym_config
+import __main__ as userns
+setattr(userns,'algwsym_config',Config())
+algwsym_config = getattr(userns,'algwsym_config')
+algwsym_config.numerics.integers_as_exact = False
+
 def test_set_integers_as_exact():
     set_integers_as_exact()
     assert integers_as_exact in get_ipython().input_transformers_post

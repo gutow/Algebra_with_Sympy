@@ -4,13 +4,32 @@ from sympy import Equation, Eqn
 from sympy import sin, cos, log, exp, latex, Symbol, I, pi
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
+from sympy import sqrt, root, Heaviside
+from algebra_with_sympy.algebraic_equation import var, algSymbol
 from algebra_with_sympy.algebraic_equation import solve, collect
 from algebra_with_sympy.algebraic_equation import Equality, units
-from sympy import sqrt, root, Heaviside
-from algebra_with_sympy.algebraic_equation import algwsym_config
-
-
+from algebra_with_sympy.algebraic_equation import Config
+from algebra_with_sympy.algebraic_equation import Equation, Eqn
+from algebra_with_sympy.util import _get_user_ns
 from pytest import raises
+
+# Set up the default configuration
+ns = _get_user_ns()
+setattr(ns, 'algwsym_config', Config())
+algwsym_config= getattr(ns, 'algwsym_config')
+# Set up numerics behaviors
+algwsym_config.numerics.integers_as_exact = True
+# Set the output formatting defaults
+algwsym_config.output.show_code = False
+algwsym_config.output.human_text = True
+algwsym_config.output.label = True
+algwsym_config.output.solve_to_list = False
+algwsym_config.output.latex_as_equations = False
+
+algwsym_config.output.allowed_colors = ('default', 'blue', 'skyblue',
+                                'magenta', 'grey', 'darkorange', 'teal')
+algwsym_config.output.colordict = {'known': 'skyblue', 'unknown': 'magenta',
+                  'constant': 'blue', 'unit': 'darkorange'}
 
 #####
 # Testing that sympy functions work with Equations
@@ -90,9 +109,10 @@ def test_binary_op():
 
 
 def test_outputs(capsys):
-    from algebra_with_sympy import algwsym_config
+    # from algebra_with_sympy import algwsym_config
     from algebra_with_sympy.algebraic_equation import __latex_override__, \
         __command_line_printing__
+    from algebra_with_sympy.util import __get_sympy_expr_name__
 
     # check defaults
     assert algwsym_config.output.show_code == False
@@ -109,9 +129,12 @@ def test_outputs(capsys):
     assert tsteqn.__str__() == 'a = b/c'
     assert latex(tsteqn) == 'a=\\frac{b}{c}'
 
+    # In interactive environments user defined values are in __main__
     import __main__ as gs
-    vars(gs)['tsteqn'] = tsteqn
+    setattr(gs, 'tsteqn', Eqn(a,b/c))
+    tsteqn = getattr(gs,'tsteqn')
     assert tsteqn._get_eqn_name() == 'tsteqn'
+    assert __get_sympy_expr_name__(tsteqn) == 'tsteqn'
     __command_line_printing__(tsteqn)
     captured = capsys.readouterr()
     assert captured.out == 'a = b/c          (tsteqn)\n'
@@ -250,10 +273,12 @@ def test_units():
     assert 1.0*J + 5.0*mol == 1.0*J + 5.0*mol
     assert J > 0 and mol > 0 and K > 0
 
-def test_solve():
+def test_solve(capsys):
+    captured = capsys.readouterr()
     a, b, c, x = symbols('a b c x')
-    assert Equation(x, ((b - sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
-        Equation(a*x**2,b*x+c),x)
+    soln = solve(Equation(a*x**2,b*x+c),x)
+    print(captured)
+    assert Equation(x, ((b - sqrt(4*a*c + b**2))/(2*a)).expand()) in soln
     assert Equation(x, ((b + sqrt(4*a*c + b**2))/(2*a)).expand()) in solve(
         Equation(a*x**2,b*x+c),x)
     assert len(solve(Equation(a*x**2,b*x+c), x)) == 2
