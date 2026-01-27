@@ -898,8 +898,12 @@ def var(names, **assumptions):
     names = names.replace('  ',' ')
     if ',' in names:
         syms = names.split(',')
+        tempsyms = []
         for k in syms:
-            k = k.strip()
+            temp = k.strip()
+            if temp != '':
+                tempsyms.append(temp)
+        syms = tempsyms
     else:
         syms = names.split(' ')
         tempsyms = []

@@ -338,10 +338,29 @@ def test_units():
     J = user_namespace['J']
     mol = user_namespace['mol']
     K = user_namespace['K']
+    assert J.variable_type == 'unit'
     assert sqrt((123.2*J/mol/K)**2) == 123.2*J/mol/K
     assert 1.0*J + 5.0*J == 6.0*J
     assert 1.0*J + 5.0*mol == 1.0*J + 5.0*mol
     assert J > 0 and mol > 0 and K > 0
+
+def test_var():
+    var('a b')
+    ns = _get_user_ns()
+    a = getattr(ns,'a')
+    b = getattr(ns,'b')
+    assert isinstance(a,algSymbol)
+    assert isinstance(b,algSymbol)
+    var('c, d')
+    c = getattr(ns,'c')
+    d = getattr(ns,'d')
+    assert isinstance(c,algSymbol)
+    assert isinstance(d,algSymbol)
+    assert isinstance(var('f'), algSymbol)
+    assert isinstance(var('g h'), tuple)
+
+
+
 
 def test_solve(capsys):
     captured = capsys.readouterr()
