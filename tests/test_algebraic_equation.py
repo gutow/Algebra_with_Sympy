@@ -5,6 +5,8 @@ from sympy import sin, cos, log, exp, latex, Symbol, I, pi
 from sympy.core.function import AppliedUndef
 from sympy.printing.latex import LatexPrinter
 from sympy import sqrt, root, Heaviside
+
+from algebra_with_sympy import constant, known, unknown
 from algebra_with_sympy.algebraic_equation import var, algSymbol
 from algebra_with_sympy.algebraic_equation import solve, collect
 from algebra_with_sympy.algebraic_equation import Equality, units
@@ -91,6 +93,45 @@ def test_algSymbol():
         assert latex(a) == (r'{\color{' + str(a.color) + '}{' +
                             sym_latex + '}}')
 
+def test_variable_type_convenience_functions(capsys):
+    a = algSymbol('a')
+    b = algSymbol('b')
+    c = algSymbol('c')
+    x = algSymbol('x')
+    symlist = (a, b, c, x)
+    constant(a, b)
+    known(c)
+    unknown(x)
+    assert a.variable_type == 'constant'
+    assert b.variable_type == 'constant'
+    known(b)
+    assert b.variable_type == 'known'
+    assert c.variable_type == 'known'
+    assert x.variable_type == 'unknown'
+    unknown(a, b, c, x)
+    assert a.variable_type == 'unknown'
+    assert b.variable_type == 'unknown'
+    assert c.variable_type == 'unknown'
+    assert x.variable_type == 'unknown'
+    known(a, b, c)
+    assert a.variable_type == 'known'
+    assert b.variable_type == 'known'
+    assert c.variable_type == 'known'
+    F = Function('F')(x)
+    retstr = unknown(F, x)
+    retstr == ('The following symbols were set to type "unknown": '
+                            'x. The following are not defined as symbols so '
+                            'cannot be set as unknown: F(x).')
+    retstr = constant(F, x)
+    retstr == ('The following symbols were set to type '
+                            '"constant": '
+                            'x. The following are not defined as symbols so '
+                            'cannot be set as constant: F(x).')
+    retstr = known(F, x)
+    retstr == ('The following symbols were set to type '
+                            '"known": '
+                            'x. The following are not defined as symbols so '
+                            'cannot be set as known: F(x).')
 
 def test_define_equation():
     a, b, c = symbols('a b c')
