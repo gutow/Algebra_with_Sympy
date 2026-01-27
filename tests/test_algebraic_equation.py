@@ -1,5 +1,5 @@
 from sympy import symbols, integrate, simplify, expand, factor, Integral, Add
-from sympy import diff, FiniteSet, Function, Matrix, S, Eq
+from sympy import diff, FiniteSet, Function, Matrix, S, Eq, sympify
 from sympy import Equation, Eqn
 from sympy import sin, cos, log, exp, latex, Symbol, I, pi
 from sympy.core.function import AppliedUndef
@@ -11,7 +11,7 @@ from algebra_with_sympy.algebraic_equation import Equality, units
 from algebra_with_sympy.algebraic_equation import Config
 from algebra_with_sympy.algebraic_equation import Equation, Eqn
 from algebra_with_sympy.util import _get_user_ns
-from pytest import raises
+from pytest import raises, warns
 
 # Set up the default configuration
 ns = _get_user_ns()
@@ -26,10 +26,10 @@ algwsym_config.output.label = True
 algwsym_config.output.solve_to_list = False
 algwsym_config.output.latex_as_equations = False
 
-algwsym_config.output.allowed_colors = ('default', 'blue', 'skyblue',
+algwsym_config.output.allowed_colors = ('default', 'royalblue', 'skyblue',
                                 'magenta', 'grey', 'darkorange', 'teal')
 algwsym_config.output.colordict = {'known': 'skyblue', 'unknown': 'magenta',
-                  'constant': 'blue', 'unit': 'darkorange'}
+                  'constant': 'royalblue', 'unit': 'grey'}
 
 #####
 # Testing that sympy functions work with Equations
@@ -61,6 +61,35 @@ class CustomLatexPrinter(LatexPrinter):
 def my_latex(expr, **settings):
     """Mimic latex()"""
     return CustomLatexPrinter(settings).doprint(expr)
+
+def test_algSymbol():
+    a = algSymbol('a')
+    assert a._variable_type == 'none'
+    assert a.variable_type == 'none'
+    assert a._color == 'default'
+    assert a.color == 'default'
+    with warns(UserWarning, match ='be one of'):
+        a.color = 'not_a_color'
+        a.variable_type = 'something_random'
+    sym_latex = latex(sympify(a.__str__()))
+    # test manually set colors in latex output
+    for col in algwsym_config.output.allowed_colors:
+        a.color = col
+        if col == 'default':
+            assert latex(a) == r''+sym_latex
+        else:
+            assert latex(a) == (r'{\color{' + str(a.color) + '}{' +
+                                sym_latex + '}}')
+    # test coloring by variable type in latex output
+    for vartype, typecol in algwsym_config.output.colordict.items():
+        a.color = 'default'
+        a.variable_type = vartype
+        assert latex(a) == (r'{\color{' + str(typecol) + '}{' +
+                            sym_latex + '}}')
+        # manual color should override
+        a.color = 'teal'
+        assert latex(a) == (r'{\color{' + str(a.color) + '}{' +
+                            sym_latex + '}}')
 
 
 def test_define_equation():
