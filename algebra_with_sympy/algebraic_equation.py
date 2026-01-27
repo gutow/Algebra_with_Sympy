@@ -803,7 +803,7 @@ class algSymbol(Symbol):
 
 def known(*args):
     """
-    This will set the type of the listed symbols in the equation to 'known'.
+    This will set the type of the listed symbols to 'known'.
     Shortcut for having to call `x.variable_type =` on multiple variables
     in an equation.
     """
@@ -830,7 +830,7 @@ def known(*args):
 
 def unknown(*args):
     """
-    This will set the type of the listed symbols in the equation to
+    This will set the type of the listed symbols to
     'unknown'. Shortcut for having to call `x.variable_type =` on
     multiple variables in an equation.
     """
@@ -857,7 +857,7 @@ def unknown(*args):
 
 def constant(*args):
     """
-    This will set the type of the listed symbols in the equation to
+    This will set the type of the listed symbols to
     'constant'. Shortcut for having to call `x.variable_type =` on
     multiple variables in an equation.
     """
@@ -927,7 +927,10 @@ def units(names):
     Units defined this way are just unit symbols. If you want units that are
     aware of conversions see sympy.physics.units.
 
-    calls `var()` with assumptions set to `positive = True`.
+    calls extended `var()` with assumptions set to `positive = True` and
+    `unit = True`.
+    >>> units('kg m s J') #some common SI units
+    (kg, m, s, J)
     """
     return var(names, positive = True, unit = True)
 
