@@ -119,19 +119,29 @@ def test_variable_type_convenience_functions(capsys):
     assert c.variable_type == 'known'
     F = Function('F')(x)
     retstr = unknown(F, x)
-    retstr == ('The following symbols were set to type "unknown": '
+    assert retstr == ('The following symbols were set to type "unknown": '
                             'x. The following are not defined as symbols so '
                             'cannot be set as unknown: F(x).')
+    G = Matrix()
+    retstr = unknown(F, G)
+    assert retstr == ('The following are not defined as symbols so cannot be '
+                      'set as unknown: F(x), Matrix(0, 0, []).')
     retstr = constant(F, x)
-    retstr == ('The following symbols were set to type '
+    assert retstr == ('The following symbols were set to type '
                             '"constant": '
                             'x. The following are not defined as symbols so '
                             'cannot be set as constant: F(x).')
+    retstr = constant(F, G)
+    assert retstr == ('The following are not defined as symbols so cannot be '
+                      'set as constant: F(x), Matrix(0, 0, []).')
     retstr = known(F, x)
-    retstr == ('The following symbols were set to type '
+    assert retstr == ('The following symbols were set to type '
                             '"known": '
                             'x. The following are not defined as symbols so '
                             'cannot be set as known: F(x).')
+    retstr = known(F, G)
+    assert retstr == ('The following are not defined as symbols so cannot be '
+                      'set as known: F(x), Matrix(0, 0, []).')
 
 def test_define_equation():
     a, b, c = symbols('a b c')
