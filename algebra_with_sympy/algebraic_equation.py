@@ -807,7 +807,7 @@ class algSymbol(Symbol):
         algwsym_config = None
         if hasattr(user_namespace, 'algwsym_config'):
             algwsym_config = getattr(user_namespace, 'algwsym_config')
-        sym_latex = latex(sympify(self.__str__()))
+        sym_latex = latex(Symbol(self.name))
         if self.variable_type != 'none':
             if self.color=='default':
                 retstr = (r'{\color{' + str(algwsym_config.output.colordict[

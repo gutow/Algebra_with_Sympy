@@ -73,7 +73,15 @@ def test_algSymbol():
     with warns(UserWarning, match ='be one of'):
         a.color = 'not_a_color'
         a.variable_type = 'something_random'
-    sym_latex = latex(sympify(a.__str__()))
+    # test have not lost what sympy.core.symbol.Symbol knows about printing
+    # itself
+    tst = algSymbol('a1')
+    assert latex(tst) == 'a_{1}'
+    tst = algSymbol('a_sub')
+    assert latex(tst) == 'a_{sub}'
+    tst = algSymbol(r'\Delta H')
+    assert latex(tst) == r'\Delta H'
+    sym_latex = latex(Symbol(a.name))
     # test manually set colors in latex output
     for col in algwsym_config.output.allowed_colors:
         a.color = col
