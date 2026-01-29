@@ -199,6 +199,25 @@ def test_outputs(capsys):
     assert algwsym_config.output.human_text == True
     assert algwsym_config.output.label == True
     assert algwsym_config.output.solve_to_list == False
+    assert algwsym_config.output.allowed_colors == ('default', 'royalblue',
+                                                    'skyblue', 'magenta',
+                                                    'grey', 'darkorange', 'teal')
+    assert algwsym_config.output.colordict == {'known': 'skyblue', 'unknown':
+        'magenta', 'constant': 'royalblue', 'unit': 'grey'}
+    # Check warnings
+    with warns(UserWarning, match = 'must be True or False.'):
+        algwsym_config.output.show_code = 'blue'
+        algwsym_config.output.label = 'blue'
+        algwsym_config.output.human_text = 'blue'
+        algwsym_config.output.solve_to_list = 'blue'
+        algwsym_config.output.latex_as_equations = 'blue'
+    with warns(UserWarning, match = ('must be a tuple of strings containing '
+                                     'the string "default"')):
+        algwsym_config.output.allowed_colors = 'default'
+        algwsym_config.output.allowed_colors = ('blue', 'red')
+    with warns(UserWarning, match = 'colordict must contain the keys'):
+        algwsym_config.output.colordict = {'known': 'green'}
+
 
     a, b, c = symbols('a b c')
     tsteqn = Eqn(a, b/c)
@@ -285,6 +304,17 @@ def test_outputs(capsys):
                             'Equation(y, -1)), FiniteSet(Equation(x, 1), ' \
                             'Equation(y, 1)), FiniteSet(Equation(x, 3), ' \
                             'Equation(y, -3)))\n'
+
+def test_numerics():
+    assert algwsym_config.numerics.integers_as_exact == True
+    # in this vanilla python environment this just sets the flag
+    # IPython environment tests in test_numerics.py
+    algwsym_config.numerics.integers_as_exact = False
+    assert algwsym_config.numerics.integers_as_exact == False
+    # test warnings
+    with warns(UserWarning, match = 'must be True or False'):
+        algwsym_config.numerics.integers_as_exact = 'blue'
+        algwsym_config.numerics.integers_as_exact = 'blue'
 
 def test_sympy_functions():
     a, b, c = symbols('a b c')

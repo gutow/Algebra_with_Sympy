@@ -273,6 +273,7 @@ class Output:
         self._colordict = None
         self._show_code = False
         self._human_text = True
+        self._label = True
         self._solve_to_list = False
         self._latex_as_equation = False
         pass
@@ -297,9 +298,10 @@ class Output:
         if isinstance(value, tuple):
             if 'default' in value:
                 self._allowed_colors = value
-            else:
-                warn('Must be a tuple of strings containing the string '
-                     '"default"')
+                return
+        warn('allowed_colors must be a tuple of strings containing the string '
+                 '"default"')
+        return
 
     @property
     def colordict(self):
@@ -321,9 +323,10 @@ class Output:
                     if 'constant' in keys:
                         if 'unit' in keys:
                             self._colordict = value
-            else:
-                warn('colordict must contain the keys ("known", "unknown", '
-                     '"constant", "unit")')
+                            return
+        warn('colordict must contain the keys ("known", "unknown", '
+                 '"constant", "unit")')
+        return
 
     @property
     def show_code(self):
@@ -340,6 +343,23 @@ class Output:
             self._show_code = value
         else:
             warn('show_code must be True or False.')
+
+    @property
+    def label(self):
+        """
+        If `True` the equation expression will be labeled with its python
+        in interactive environments. This is similar to equation numbers.
+        Default = `True`.
+        """
+        return self._label
+
+    @label.setter
+    def label(self, value):
+        from warnings import warn
+        if isinstance(value, bool):
+            self._label = value
+        else:
+            warn('label must be True or False.')
 
     @property
     def human_text(self):
