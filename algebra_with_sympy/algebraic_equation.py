@@ -821,86 +821,69 @@ class algSymbol(Symbol):
         del user_namespace
         return (r'{\color{' + str(self.color) + '}{' + sym_latex + '}}')
 
-def known(*args):
+def _set_mult_symbol_type(*args, type = 'none'):
     """
-    This will set the type of the listed symbols to 'known'.
-    Shortcut for having to call `x.variable_type =` on multiple variables
-    in an equation.
+    This will set the type of the listed symbols to the string value provide
+    in the keyword argument 'type'. The currently accepted values are:
+    'known', 'unknown', 'constant'. Called by the convenience functions
+    `constant()`, `known()`, `unknown()`, which are shortcuts for having to
+    call `x.variable_type =` on multiple variables.
     """
-    setprestr = 'The following symbols were set to type "known": '
+    from .util import _isnumber
+    if type not in ('known', 'unknown', 'constant'):
+        raise ValueError('Only "known", "unknown", and "constant" accepted.')
+    setprestr = 'The following symbols were set to type "'+type+'": '
     notsetprestr = ('The following are not defined as symbols so cannot be '
-                    'set as known: ')
+                    'set as "'+type+'": ')
     symsstr = ''
     notsymsstr = ''
+    somenumberstr = ''
     for k in args:
         if isinstance(k, algSymbol):
-            k.variable_type = 'known'
+            k.variable_type = type
             symsstr += str(k) + ', '
         else:
-            notsymsstr += str(k) + ', '
+            if _isnumber(k):
+                somenumberstr = ('Cannot set objects with a numerical value as '
+                                 'variable_type "constant", "known" or '
+                                 '"unknown".')
+            else:
+                notsymsstr += str(k) + ', '
     if notsymsstr.endswith(', '):
         notsymsstr = notsymsstr[:-2]
     if symsstr.endswith(', '):
         symsstr = symsstr[:-2]
-    if symsstr == '':
-        return notsetprestr + notsymsstr + '.'
+    if symsstr == '' and notsymsstr == '':
+        return print(somenumberstr)
+    elif symsstr == '':
+        return print(notsetprestr + notsymsstr + '. ' + somenumberstr)
     elif notsymsstr == '':
-        return setprestr + symsstr + '.'
-    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr + '.'
+        return print(setprestr + symsstr + '. ' + somenumberstr)
+    return print(setprestr + symsstr + '. ' + notsetprestr + notsymsstr + '. '
+            + somenumberstr)
+
+def known(*args):
+    """
+    This will set the type of the listed symbols to 'known'.
+    Shortcut for having to call `x.variable_type =` on multiple variables.
+    """
+    return _set_mult_symbol_type(*args, type = 'known')
 
 def unknown(*args):
     """
     This will set the type of the listed symbols to
     'unknown'. Shortcut for having to call `x.variable_type =` on
-    multiple variables in an equation.
+    multiple variables.
     """
-    setprestr = 'The following symbols were set to type "unknown": '
-    notsetprestr = ('The following are not defined as symbols so cannot be '
-                    'set as unknown: ')
-    symsstr = ''
-    notsymsstr = ''
-    for k in args:
-        if isinstance(k, algSymbol):
-            k.variable_type = 'unknown'
-            symsstr += str(k) + ', '
-        else:
-            notsymsstr += str(k) + ', '
-    if notsymsstr.endswith(', '):
-        notsymsstr = notsymsstr[:-2]
-    if symsstr.endswith(', '):
-        symsstr = symsstr[:-2]
-    if symsstr == '':
-        return notsetprestr + notsymsstr + '.'
-    elif notsymsstr == '':
-        return setprestr + symsstr + '.'
-    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr + '.'
+    return _set_mult_symbol_type(*args, type = 'unknown')
 
 def constant(*args):
     """
     This will set the type of the listed symbols to
     'constant'. Shortcut for having to call `x.variable_type =` on
-    multiple variables in an equation.
+    multiple variables.
     """
-    setprestr = 'The following symbols were set to type "constant": '
-    notsetprestr = ('The following are not defined as symbols so cannot be '
-                    'set as constant: ')
-    symsstr =''
-    notsymsstr = ''
-    for k in args:
-        if isinstance(k,algSymbol):
-            k.variable_type = 'constant'
-            symsstr += str(k) +', '
-        else:
-            notsymsstr += str(k) +', '
-    if  notsymsstr.endswith(', '):
-        notsymsstr = notsymsstr[:-2]
-    if symsstr.endswith(', '):
-        symsstr = symsstr[:-2]
-    if symsstr == '':
-        return notsetprestr + notsymsstr+'.'
-    elif notsymsstr == '':
-        return setprestr + symsstr+'.'
-    return setprestr + symsstr + '. ' + notsetprestr + notsymsstr+'.'
+    return _set_mult_symbol_type(*args, type = 'constant')
 
 def var(names, **assumptions):
     """Override of Sympy `var()` that uses the extended type`algSymbol` in

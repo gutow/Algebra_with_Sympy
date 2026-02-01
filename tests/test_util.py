@@ -1,6 +1,6 @@
-from sympy import symbols, Equation, Eqn
+from sympy import symbols, Equation, Eqn, oo
 from algebra_with_sympy.util import (_get_user_ns, __get_algwsym_config,
-                                     __get_sympy_expr_name__)
+                                     __get_sympy_expr_name__, _isnumber)
 from algebra_with_sympy.algebraic_equation import Config
 
 ###
@@ -43,3 +43,15 @@ def test__get_sympy_expr_name():
     # cleanup
     delattr(ns, 'tstexpr')
     delattr(ns, 'tsteqn')
+
+def test__isnumber():
+    a, b, = symbols('a b')
+    assert _isnumber(a) == False
+    assert _isnumber(b) == False
+    assert _isnumber(1.0) == True
+    assert _isnumber(1) == True
+    assert _isnumber(oo) == False
+    b = 2.0
+    a = 1
+    assert _isnumber(a) == True
+    assert _isnumber(b) == True

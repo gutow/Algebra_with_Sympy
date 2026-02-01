@@ -7,7 +7,7 @@ from sympy.printing.latex import LatexPrinter
 from sympy import sqrt, root, Heaviside
 
 from algebra_with_sympy import constant, known, unknown
-from algebra_with_sympy.algebraic_equation import var, algSymbol
+from algebra_with_sympy.algebraic_equation import var, algSymbol, _set_mult_symbol_type
 from algebra_with_sympy.algebraic_equation import solve, collect
 from algebra_with_sympy.algebraic_equation import Equality, units
 from algebra_with_sympy.algebraic_equation import Config
@@ -106,50 +106,65 @@ def test_variable_type_convenience_functions(capsys):
     b = algSymbol('b')
     c = algSymbol('c')
     x = algSymbol('x')
-    symlist = (a, b, c, x)
+    with raises (ValueError):
+        _set_mult_symbol_type(a, b, type = 'blue')
     constant(a, b)
+    # collect terminal output, but ignore for now
+    retstr = capsys.readouterr()
     known(c)
+    retstr = capsys.readouterr()
     unknown(x)
+    retstr = capsys.readouterr()
     assert a.variable_type == 'constant'
     assert b.variable_type == 'constant'
     known(b)
+    retstr = capsys.readouterr()
     assert b.variable_type == 'known'
     assert c.variable_type == 'known'
     assert x.variable_type == 'unknown'
     unknown(a, b, c, x)
+    retstr = capsys.readouterr()
     assert a.variable_type == 'unknown'
     assert b.variable_type == 'unknown'
     assert c.variable_type == 'unknown'
     assert x.variable_type == 'unknown'
     known(a, b, c)
+    retstr = capsys.readouterr()
     assert a.variable_type == 'known'
     assert b.variable_type == 'known'
     assert c.variable_type == 'known'
     F = Function('F')(x)
-    retstr = unknown(F, x)
-    assert retstr == ('The following symbols were set to type "unknown": '
-                            'x. The following are not defined as symbols so '
-                            'cannot be set as unknown: F(x).')
+    unknown(F, x)
+    retstr = capsys.readouterr().out.strip()
+    assert retstr == ('The following symbols were set to type "unknown": x. '
+                      'The following are not defined as symbols so cannot be '
+                      'set as "unknown": F(x).')
     G = Matrix()
-    retstr = unknown(F, G)
+    unknown(F, G)
+    retstr = capsys.readouterr().out.strip()
     assert retstr == ('The following are not defined as symbols so cannot be '
-                      'set as unknown: F(x), Matrix(0, 0, []).')
-    retstr = constant(F, x)
-    assert retstr == ('The following symbols were set to type '
-                            '"constant": '
-                            'x. The following are not defined as symbols so '
-                            'cannot be set as constant: F(x).')
-    retstr = constant(F, G)
+                      'set as "unknown": F(x), Matrix(0, 0, []).')
+    constant(F, x)
+    retstr = capsys.readouterr().out.strip()
+    assert retstr == ('The following symbols were set to type "constant": x. '
+                      'The following are not defined as symbols so cannot be '
+                      'set as "constant": F(x).')
+    constant(F, G)
+    retstr = capsys.readouterr().out.strip()
     assert retstr == ('The following are not defined as symbols so cannot be '
-                      'set as constant: F(x), Matrix(0, 0, []).')
-    retstr = known(F, x)
-    assert retstr == ('The following symbols were set to type '
-                            '"known": '
-                            'x. The following are not defined as symbols so '
-                            'cannot be set as known: F(x).')
-    retstr = known(F, G)
-    assert retstr == ('The following are not defined as symbols so cannot be '
-                      'set as known: F(x), Matrix(0, 0, []).')
+                      'set as "constant": F(x), Matrix(0, 0, []).')
+    t = 2.0
+    constant(F, x, t)
+    retstr = capsys.readouterr().out.strip()
+    assert retstr == ('The following symbols were set to type "constant": x. '
+                      'The following are not defined as symbols so cannot be '
+                      'set as "constant": F(x). Cannot set objects with a '
+                      'numerical value as variable_type "constant", "known" '
+                      'or "unknown".')
+    known(t)
+    retstr = capsys.readouterr().out.strip()
+    assert retstr == ('Cannot set objects with a numerical value as '
+                      'variable_type "constant", "known" or "unknown".')
 
 def test_define_equation():
     a, b, c = symbols('a b c')

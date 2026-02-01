@@ -2,8 +2,6 @@
 # Utility functions
 ###
 
-from sympy.core.basic import Basic
-
 def _get_user_ns():
     """
     Returns the module `__main__` or None, if it cannot be found.
@@ -35,9 +33,23 @@ def __get_sympy_expr_name__(expr):
     :return: string value if found or empty string.
     """
     import __main__ as shell
+    from sympy.core.basic import Basic
     for k in dir(shell):
         item = getattr(shell, k)
         if isinstance(item, Basic):
             if item == expr and not k.startswith('_'):
                 return k
     return ''
+
+def _isnumber(item):
+    """
+    Checks if item is any of the following types: `float`, `integer` `Float`,
+    'Integer`. The last two are Sympy specific.
+    Returns: True or False
+    """
+    from sympy import Float, Integer
+    if (isinstance(item, int)) or (isinstance(item, Integer) or
+        (isinstance(item, float)) or (isinstance(item, Float))):
+        return True
+    else:
+        return False
