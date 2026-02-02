@@ -28,9 +28,9 @@ algwsym_config.output.label = True
 algwsym_config.output.solve_to_list = False
 algwsym_config.output.latex_as_equations = False
 
-algwsym_config.output.allowed_colors = ('default', 'royalblue', 'skyblue',
+algwsym_config.output.allowed_colors = ('default', 'royalblue', 'brown',
                                 'magenta', 'grey', 'darkorange', 'teal')
-algwsym_config.output.colordict = {'known': 'skyblue', 'unknown': 'magenta',
+algwsym_config.output.colordict = {'known': 'brown', 'unknown': 'magenta',
                   'constant': 'royalblue', 'unit': 'grey'}
 
 #####
@@ -223,9 +223,9 @@ def test_outputs(capsys):
     assert algwsym_config.output.label == True
     assert algwsym_config.output.solve_to_list == False
     assert algwsym_config.output.allowed_colors == ('default', 'royalblue',
-                                                    'skyblue', 'magenta',
+                                                    'brown', 'magenta',
                                                     'grey', 'darkorange', 'teal')
-    assert algwsym_config.output.colordict == {'known': 'skyblue', 'unknown':
+    assert algwsym_config.output.colordict == {'known': 'brown', 'unknown':
         'magenta', 'constant': 'royalblue', 'unit': 'grey'}
     # Check warnings
     with warns(UserWarning, match = 'must be True or False.'):

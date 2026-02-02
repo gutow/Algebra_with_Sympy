@@ -284,7 +284,7 @@ class Output:
         A tuple of string names of allowed colors for symbols in
         expressions. The tuple must contain the string 'default' to
         support the default color for the display. Default tuple =
-        ('default', 'royalblue', 'skyblue', 'magenta', 'grey', 'darkorange',
+        ('default', 'royalblue', 'brown', 'magenta', 'grey', 'darkorange',
         'teal'). This high contrast set works reasonably well on light
         and dark backgrounds and for those with limited color perception.
         The string names should correspond to color names understood by
@@ -308,7 +308,7 @@ class Output:
         """
         A dictionary used for mapping variable types to color for
         highlighting when displayed. Currently only implemented for
-        typeset LaTex. Default = {'known': 'skyblue', 'unknown': 'magenta',
+        typeset LaTex. Default = {'known': 'brown', 'unknown': 'magenta',
                   'constant': 'royalblue', 'unit': 'grey'}
         """
         return self._colordict
@@ -538,13 +538,13 @@ class Config:
 
         * The color of the displayed symbol is determined by the color
           dictionary `algwsym_config.output.colordict` the default value of
-          which is {'known': 'skyblue', unknown': 'magenta', 'constant':
+          which is {'known': 'brown', unknown': 'magenta', 'constant':
           'blue', 'unit': 'darkorange'}. This dictionary can be set by the
           user, but must only contain colors from the available colors.
 
         * The available colors are limited to those set in the tuple
           `algwsym_config.output.allowed_colors`. The default is ('default',
-          'blue', 'skyblue', 'magenta', 'grey', 'darkorange',
+          'blue', 'brown', 'magenta', 'grey', 'darkorange',
           'teal'). This high contrast set works reasonably well on light
           and dark backgrounds and for those with limited color perception.
           The string names should correspond to color names understood by
@@ -770,6 +770,7 @@ class algSymbol(Symbol):
             self._variable_type = value.lower()
         else:
             warn('Must be one of ' + str(allowed) + '.')
+        pass
 
     @property
     def color(self):
@@ -799,6 +800,7 @@ class algSymbol(Symbol):
             warn('Color must be one of ' + str(
                 algwsym_config.output.allowed_colors) + '.')
         del user_namespace
+        pass
 
     def _latex(self, printer):
         # This import does not seem to work after going through sympy printing

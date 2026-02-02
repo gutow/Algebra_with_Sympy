@@ -60,7 +60,8 @@ raw strings are being passed with specialized LaTex escaped characters.
 
 ## Building PyPi package
 <a class="anchor" href="#building-pypi-package"></a>
-1. Make sure to update the version number in setup.py first.
+(note: migrating to pyproject.toml, but have not migrated to poetry or hatch)
+1. Make sure to update the version number in `version.py` first.
 1. Install updated  setuptools and twine in the virtual environment:
    ```
    pipenv shell

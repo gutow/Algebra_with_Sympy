@@ -78,15 +78,17 @@ Jupyter/IPython environments easier:
   Sympy expressions. Turn on with `set_integers_as_exact()`. When on the flag
   `algwsym_config.numerics.integers_as_exact = True`.
 * Results of `solve()` are wrapped in `FiniteSet()` to force pretty-printing 
-  of all of a solution set. See [Controlling the Format of Interactive 
-  Outputs](#controlling-the-format-of-interactive-outputs).
+  of all of a solution set of equations. See [Controlling the Format of 
+  Interactive Outputs](#controlling-the-format-of-interactive-outputs).
 * It is possible to set the default display to show both the pretty-printed 
   result and the code version simultaneously. See [Controlling the Format of Interactive 
   Outputs](#controlling-the-format-of-interactive-outputs).  
 
 ## Controlling the Format of Interactive Outputs
 <a class="anchor" href="#controlling-the-format-of-interative-outputs"></a>
-* These controls impact all Sympy objects and the `Equation` class.
+These controls impact all Sympy objects and the `Equation` class.
+
+### Adjusting how equations are displayed
 * **In graphical environments (Jupyter)** you will get rendered Latex such as 
 $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the 
   code representation (what can be copied and pasted for 
@@ -117,13 +119,68 @@ $\frac{a}{b} = \frac{c}{d}$ or $e^{\frac{-x^2}{\sigma^2}}$. To also see the
   independent of the setting of `algwsym_config.output.label`.
 
 * By default **solutions output by `solve()`** are returned as a SymPy 
-  `FiniteSet()` to force typesetting of the included solutions. To get Python 
+  `FiniteSet()` of equations to force typesetting of the included solutions. To 
+  get Python 
   lists instead you can override this for the whole session by setting
   `algwsym_config.output.solve_to_list = True`. For a one-off, simply 
   wrap the output of a solve in `list()` (e.g. `list(solve(...))`). One 
   advantage of list mode is that lists can be ordered. When
   `algwsym_config.output.solve_to_list = True` `solve()` maintains the 
   solutions in the order the solve for variables were input.
+
+### Color coding symbols (eye candy)
+For those who like to have symbols in expressions color coded, assigning a 
+color to a symbol is supported. Currently, symbols will only be displayed 
+in color when rendered as typeset LaTex in graphical environments. A 
+screenshot of a short Jupyter session using color coding is shown 
+immediately before the description of how to adjust and control color coding. By 
+default only a limited set of colors that works reasonably for those with 
+limited color vision and has good contrast against both 
+black and white backgrounds is allowed. The user can change this set by 
+adjusting configuration settings (see below). For convenience, symbols can be 
+assigned a `variable_type` of "known", "unkown", "constant" or "unit". Symbols 
+are automatically rendered in different colors depending on their assigned 
+`variable_type`. Again the color assignment can be changed by adjusting 
+configuration settings.
+
+![Screenshot colored symbols in Jupyter](docs/resources/color_code_1.png)
+* There are two options for **Setting a symbol's `variable_type`**: 
+  1. Once symbols are declared using `var()` use one of the convenience 
+     functions `known(), unknown() or constant()` to set the variable type. 
+     A symbol's `variable_type` can be changed from one type to another.
+     These convenience functions accept a list of symbols so that multiple 
+     can be set simultaneously:
+      ```commandline
+      >>> var('a b c x')
+      (a, b, c, x)
+      >>> known(a, c)
+      The following symbols were set to type "known": a, c.
+      >>> constant(b)
+      The following symbols were set to type "constant": b.
+      >>> unknown(x)
+      The following symbols were set to type "unknown": x.
+      ```
+     Note: that units should be declared using `units()` in place of `var()` 
+     because they require additional assumptions to behave as units when 
+     manipulated using sympy tools.
+  2. Directly set the value of `variable_type` for the symbol using standard 
+     Python assignment: `x.variable_type = 'constant'`.
+* **Setting a symbol's `color`** is done using standard Python assignment: 
+  `x.color = 'royalblue'`. You will be required to choose from the set of 
+  allowed colors.
+* The **list of allowed colors** is available in the configuration settings:
+  ```commandline
+  >>> algwsym_config.output.allowed_colors
+  ('default', 'royalblue', 'brown', 'magenta', 'grey', 'darkorange', 'teal')
+  ```
+  To change use Python assignment. The list must always include `'default'`.
+* The **association of color with `variable_type`** is stored in the 
+  configuration settings as a dictionary and can also be changed using 
+  standard Python assignment:
+  ```commandline
+  >>> algwsym_config.output.colordict
+  {'known': 'brown', 'unknown': 'magenta', 'constant': 'royalblue', 'unit':'grey'}
+  ```
 
 ## Setup/Installation
 <a class="anchor" href="#setupinstallation"></a>
@@ -158,6 +215,16 @@ github](https://github.com/gutow/Algebra_with_Sympy/issues).
 
 ## Change Log
 <a class="anchor" href="#change-log"></a>
+* 1.2.0dev (XX, YY, 2026)
+  * NEW FEATURE: colored symbols in typeset LaTex output.
+  * NEW FEATURE: definition of symbol types: constant, known, unknown.
+  * NEW FEATURE: symbol types constant, known, unknown, unit automatically 
+    color coded.
+  * Added value and type checking to configuration setting.
+  * Refactoring to reduce code redundancy.
+  * Extensions of test coverage.
+  * Updates to docstrings.
+  * Updates to documentation.
 * 1.1.3 (September 7, 2025)
   * Better checking for an incompatible sympy installation and improved 
     warning on how to solve the problem.
