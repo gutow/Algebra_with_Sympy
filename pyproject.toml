@@ -16,7 +16,7 @@ keywords=["symbolic algebra",
     ]
 license="GPL-3.0+"
 dependencies = [
-        "sympy-for-algebra ~= 1.13"
+        "sympy-for-algebra ~= 1.14"
     ]
 classifiers=[
     'Development Status :: 5 - Production/Stable',
