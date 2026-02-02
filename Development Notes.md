@@ -5,10 +5,6 @@
 
 ## General Notes
 <a class="anchor" href="#general-notes"></a>
-* TODOs
-  * Test collect when there isn't an available _eval_collect (not sure how 
-    to get there).
-  * Test for _binary_op NotImplemented error (not sure how to get there).
 * To consider
   * Include [Sympy Plot Backends](https://sympy-plot-backends.readthedocs.io/en/latest/)
     in the default setup.
